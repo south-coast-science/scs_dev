@@ -6,7 +6,7 @@ Created on 18 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./status_sampler.py | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/json
+./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/json
 """
 
 import json
