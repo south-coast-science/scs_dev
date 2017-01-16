@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./status_sampler.py | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/json
-'''
+"""
 
 import json
 import sys
@@ -64,7 +64,7 @@ if __name__ == '__main__':
             publisher.publish(cmd.topic, datum)
 
             if cmd.echo:
-                print(line, end = "")
+                print(line, end="")
                 sys.stdout.flush()
 
 

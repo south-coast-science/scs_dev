@@ -1,18 +1,19 @@
-'''
+"""
 Created on 13 Jul 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import optparse
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdScalar(object):
-    '''unix command line handler'''
+    """unix command line handler"""
 
-    def __init__(self, default_interval = 1):
-        '''stuff'''
+    def __init__(self, default_interval=1):
+        """stuff"""
         self.__parser = optparse.OptionParser(usage="%prog [-i INTERVAL] [-n SAMPLES] [-v]", version="%prog 1.0")
 
         # optional...

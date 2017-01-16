@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./afe_sn_sampler.py -s 4 -i 0.5 -n 10
-'''
+"""
 
 import sys
 
@@ -30,16 +30,16 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 class AFESNSampler(Sampler):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, pt1000, sensors, sn, interval, sample_count=0):
-        '''
+        """
         Constructor
-        '''
+        """
         Sampler.__init__(self, interval, sample_count)
 
         self.__sn = sn

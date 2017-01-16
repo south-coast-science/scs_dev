@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 26 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./product_id.py
-'''
+"""
 
 import sys
 

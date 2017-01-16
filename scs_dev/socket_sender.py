@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 18 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./status_sampler.py -n 10 | ./socket_sender.py bruno.local -e
-'''
+"""
 
 import sys
 
@@ -58,7 +58,7 @@ if __name__ == '__main__':
             sender.send(line)
 
             if cmd.echo:
-                print(line, end = "", file=sys.stderr)
+                print(line, end="", file=sys.stderr)
                 sys.stderr.flush()
 
 

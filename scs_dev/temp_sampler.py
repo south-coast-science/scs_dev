@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 2 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./temp_sampler.py -i 2 -n 10
-'''
+"""
 
 import sys
 
@@ -31,16 +31,16 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 class TempSampler(Sampler):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, climate, pt1000, board, interval, sample_count = 0):
-        '''
+    def __init__(self, climate, pt1000, board, interval, sample_count=0):
+        """
         Constructor
-        '''
+        """
         Sampler.__init__(self, interval, sample_count)
 
         self.__climate = climate

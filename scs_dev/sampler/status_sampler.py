@@ -1,8 +1,8 @@
-'''
+"""
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.location.gpgga import GPGGA
@@ -20,16 +20,16 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count = 0):
-        '''
+    def __init__(self, interval, sample_count=0):
+        """
         Constructor
-        '''
+        """
         Sampler.__init__(self, interval, sample_count)
 
         self.__board = MCP9808(True)
@@ -50,7 +50,7 @@ class StatusSampler(Sampler):
             self.__gps.open()
             gga = self.__gps.report(GPGGA)
             location = GPSLocation.construct(gga)
-        except:
+        except RuntimeError:
             location = None
 
         finally:

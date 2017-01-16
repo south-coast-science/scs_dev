@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 19 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./temp_sampler.py | ./csv_writer.py temp.csv -e
-'''
+"""
 
 import sys
 

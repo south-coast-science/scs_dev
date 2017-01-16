@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 2 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
 ./bluetooth_monitor.py > /dev/null &
-'''
+"""
 
 import sys
 
@@ -28,9 +28,9 @@ from scs_host.sys.hostname import Hostname
 # --------------------------------------------------------------------------------------------------------------------
 
 class BluetoothHandler(object):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 

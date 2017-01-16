@@ -1,18 +1,19 @@
-'''
+"""
 Created on 13 Jul 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import optparse
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdSN(object):
-    '''unix command line handler'''
+    """unix command line handler"""
 
     def __init__(self):
-        '''stuff'''
+        """stuff"""
         self.__parser = optparse.OptionParser(usage="%prog -s SENSOR [-i INTERVAL] [-n SAMPLES] [-v]", version="%prog 1.0")
 
         # compulsory...

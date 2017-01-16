@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 5 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import os
 import threading

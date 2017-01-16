@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import time
 

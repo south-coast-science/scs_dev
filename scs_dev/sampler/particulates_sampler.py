@@ -1,8 +1,8 @@
-'''
+"""
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import time
 
@@ -16,16 +16,16 @@ from scs_dfe.particulate.opc_n2 import OPCN2
 # --------------------------------------------------------------------------------------------------------------------
 
 class ParticulatesSampler(Sampler):
-    '''
+    """
     classdocs
-    '''
+    """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count = 0):
-        '''
+    def __init__(self, interval, sample_count=0):
+        """
         Constructor
-        '''
+        """
         Sampler.__init__(self, interval, sample_count)
 
         self.__opc = OPCN2()

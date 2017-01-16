@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-'''
+"""
 Created on 11 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-'''
+"""
 
 import sys
 
@@ -32,18 +32,19 @@ topic = "/users/southcoastscience-dev/test/json"
 auth = DeviceAuth(username, device_id, device_password)
 print(auth)
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class MCUTempSampler(Sampler):
-    '''
+    """
     classdocs
-    '''
+    """
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, interval, sample_count = 0):
-        '''
+        """
         Constructor
-        '''
+        """
         Sampler.__init__(self, interval, sample_count)
 
 
