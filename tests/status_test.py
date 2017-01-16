@@ -9,7 +9,7 @@ Created on 20 Oct 2016
 from scs_dev.sampler.status_sampler import StatusSampler
 from scs_dfe.bus.i2c import I2C
 from scs_host.sys.host import Host
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------

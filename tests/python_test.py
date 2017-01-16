@@ -9,7 +9,7 @@ Created on 17 Oct 2016
 import os
 import sys
 
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 
 # --------------------------------------------------------------------------------------------------------------------
 

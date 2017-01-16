@@ -17,7 +17,7 @@ from scs_dfe.bus.i2c import I2C
 
 from scs_host.sys.host import Host
 
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------

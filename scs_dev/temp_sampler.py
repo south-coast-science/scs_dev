@@ -11,8 +11,8 @@ command line example:
 
 import sys
 
-from scs_core.common.json import JSONify
-from scs_core.common.localized_datetime import LocalizedDatetime
+from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.sample_datum import SampleDatum
 from scs_core.sync.sampler import Sampler
 from scs_core.sys.exception_report import ExceptionReport

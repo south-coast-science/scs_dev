@@ -4,7 +4,7 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 '''
 
-from scs_core.common.localized_datetime import LocalizedDatetime
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.location.gpgga import GPGGA
 from scs_core.location.gps_location import GPSLocation
 from scs_core.sample.status_datum import StatusDatum

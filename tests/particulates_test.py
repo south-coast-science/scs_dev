@@ -9,7 +9,7 @@ Created on 20 Oct 2016
 import time
 
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
-from scs_core.common.json import JSONify
+from scs_core.data.json import JSONify
 
 
 # --------------------------------------------------------------------------------------------------------------------
