@@ -8,9 +8,10 @@ Created on 11 Nov 2016
 
 import sys
 
-from scs_host.client.mqtt_client import MQTTClient
 from scs_core.osio.client.device_auth import DeviceAuth
 from scs_core.osio.client.topic_client import TopicClient
+
+from scs_host.client.mqtt_client import MQTTClient
 
 
 # --------------------------------------------------------------------------------------------------------------------

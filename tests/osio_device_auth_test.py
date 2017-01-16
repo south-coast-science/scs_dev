@@ -12,8 +12,9 @@ examples:
 {"msg": {"op": "scs-rpi-006", "spec": "scs-rpi-006"}, "err": null}
 '''
 
-from scs_host.sys.host import Host
 from scs_core.osio.client.device_auth import DeviceAuth
+
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
