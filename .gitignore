@@ -87,3 +87,10 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# South Coast Science
+**/*.csv
+**/*.log
+
+# PyCharm
+.idea/

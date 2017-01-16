@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+
+'''
+Created on 5 Dec 2016
+
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+command line example:
+./status_sampler.py -i 10 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/status
+'''
+
+import sys
+
+from scs_dev.cmd.cmd_scalar import CmdScalar
+
+from scs_dev.sampler.status_sampler import StatusSampler
+from scs_dfe.bus.i2c import I2C
+from scs_host.sys.host import Host
+from scs_core.common.json import JSONify
+from scs_core.sys.exception_report import ExceptionReport
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdScalar(10)
+
+    if cmd.verbose:
+        print(cmd, file=sys.stderr)
+
+    try:
+        I2C.open(Host.I2C_SENSORS)
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resource...
+
+        sampler = StatusSampler(cmd.interval, cmd.samples)
+
+        if cmd.verbose:
+            print(sampler, file=sys.stderr)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
+
+        for sample in sampler.samples():
+            print(JSONify.dumps(sample))
+            sys.stdout.flush()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    except KeyboardInterrupt as ex:
+        if cmd.verbose:
+            print("status_sampler: KeyboardInterrupt", file=sys.stderr)
+
+    except Exception as ex:
+        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
+    finally:
+        I2C.close()
