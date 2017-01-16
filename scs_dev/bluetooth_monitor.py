@@ -11,20 +11,18 @@ command line example:
 
 import sys
 
+from scs_core.common.json import JSONify
+from scs_core.monitor.monitor_error import MonitorError
+from scs_core.monitor.monitor_response import MonitorResponse
+from scs_core.sys.exception_report import ExceptionReport
+
 from scs_dfe.network.bluetooth_connection import BluetoothConnection
 from scs_dfe.network.bluetooth_serial import BluetoothSerial
 from scs_dfe.network.interface import Interface
-from scs_dfe.network.wpa_supplicant_file import WPASupplicantFile
 from scs_dfe.network.wifi_station import WiFiStation
+from scs_dfe.network.wpa_supplicant_file import WPASupplicantFile
 
 from scs_host.sys.hostname import Hostname
-
-from scs_core.common.json import JSONify
-
-from scs_core.monitor.monitor_error import MonitorError
-from scs_core.monitor.monitor_response import MonitorResponse
-
-from scs_core.sys.exception_report import ExceptionReport
 
 
 # --------------------------------------------------------------------------------------------------------------------

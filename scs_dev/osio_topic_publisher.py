@@ -11,16 +11,18 @@ command line example:
 
 import json
 import sys
+
 from collections import OrderedDict
 
-from scs_host.sys.host import Host
-
-from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
-from scs_host.client.mqtt_client import MQTTClient
 from scs_core.common.json import JSONify
 from scs_core.osio.client.device_auth import DeviceAuth
 from scs_core.osio.client.topic_client import TopicClient
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
+
+from scs_host.client.mqtt_client import MQTTClient
+from scs_host.sys.host import Host
 
 
 # TODO: make this work with HTTP PUT

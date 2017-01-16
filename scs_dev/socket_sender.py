@@ -11,10 +11,12 @@ command line example:
 
 import sys
 
-from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
-from scs_dfe.network.socket_sender import SocketSender
 from scs_core.common.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
+
+from scs_dfe.network.socket_sender import SocketSender
 
 
 # --------------------------------------------------------------------------------------------------------------------

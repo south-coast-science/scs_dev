@@ -11,13 +11,11 @@ command line example:
 
 import sys
 
-from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
-
 from scs_core.common.json import JSONify
-
 from scs_core.csv.csv_reader import CSVReader
-
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 
 
 # --------------------------------------------------------------------------------------------------------------------

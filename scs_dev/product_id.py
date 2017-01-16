@@ -11,9 +11,10 @@ command line example:
 
 import sys
 
-from scs_dfe.board.product_id import ProductID
 from scs_core.common.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_dfe.board.product_id import ProductID
 
 
 # --------------------------------------------------------------------------------------------------------------------
