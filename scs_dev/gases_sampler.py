@@ -6,7 +6,7 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./gases_sampler.py -i 5 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
+./scs_dev/gases_sampler.py -i 5 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
 """
 
 import sys

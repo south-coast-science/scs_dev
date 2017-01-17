@@ -6,7 +6,7 @@ Created on 2 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./temp_sampler.py -i 2 -n 10
+./scs_dev/temp_sampler.py -i 2 -n 10
 """
 
 import sys

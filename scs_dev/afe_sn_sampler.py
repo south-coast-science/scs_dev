@@ -6,7 +6,7 @@ Created on 27 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./afe_sn_sampler.py -s 4 -i 0.5 -n 10
+./scs_dev/afe_sn_sampler.py -s 4 -i 0.5 -n 10
 """
 
 import sys

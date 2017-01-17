@@ -6,7 +6,7 @@ Created on 18 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./status_sampler.py -n 10 | ./socket_sender.py bruno.local -e
+./scs_dev/status_sampler.py -n 10 | ./scs_dev/socket_sender.py bruno.local -e
 """
 
 import sys

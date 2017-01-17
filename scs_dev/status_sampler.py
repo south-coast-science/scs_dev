@@ -6,7 +6,7 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./status_sampler.py -i 10 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/status
+./scs_dev/status_sampler.py -i 10 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/status
 """
 
 import sys
