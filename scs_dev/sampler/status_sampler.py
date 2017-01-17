@@ -63,7 +63,7 @@ class StatusSampler(Sampler):
         temperature = SystemTemp.construct(board_sample, mcu_sample)
 
         # exception...
-        exception = None
+        exception = None    # TODO: handle exception sending
 
         return StatusDatum(recorded, location, temperature, exception)
 
