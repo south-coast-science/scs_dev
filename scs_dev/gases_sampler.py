@@ -17,11 +17,11 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_scalar import CmdScalar
 from scs_dev.sampler.gases_sampler import GasesSampler
 
-from scs_dfe.bus.i2c import I2C
 from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.afe_conf import AFEConf
 from scs_dfe.gas.pt1000_calib import Pt1000Calib
 
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 

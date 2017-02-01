@@ -17,8 +17,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_scalar import CmdScalar
 from scs_dev.sampler.status_sampler import StatusSampler
 
-from scs_dfe.bus.i2c import I2C
-
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 

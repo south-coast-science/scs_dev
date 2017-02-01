@@ -20,11 +20,11 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_scalar import CmdScalar
 
 from scs_dfe.board.mcp9808 import MCP9808
-from scs_dfe.bus.i2c import I2C
 from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.afe import AFE
 from scs_dfe.gas.pt1000_calib import Pt1000Calib
 
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
