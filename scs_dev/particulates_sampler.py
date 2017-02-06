@@ -10,18 +10,26 @@ command line example:
 """
 
 import sys
+import time
 
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
+from scs_dfe.board.io import IO
+from scs_dfe.particulate.opc_n2 import OPCN2
+
 from scs_dev.cmd.cmd_scalar import CmdScalar
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
+
+from scs_host.bus.i2c import I2C
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
+    io = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -35,6 +43,14 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resource...
+
+        I2C.open(Host.I2C_SENSORS)
+
+        io = IO()
+        print(io)
+
+        io.opc_power = True
+        time.sleep(OPCN2.BOOT_TIME)
 
         sampler = ParticulatesSampler(cmd.interval, cmd.samples)
 
@@ -66,3 +82,8 @@ if __name__ == '__main__':
     finally:
         if sampler:
             sampler.off()
+
+        if io:
+            io.opc_power = False
+
+        I2C.close()
