@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
         I2C.open(Host.I2C_SENSORS)
 
-        io = IO()
+        io = IO(IO.filename(Host))
 
         io.opc_power = IO.HIGH
         time.sleep(OPCN2.BOOT_TIME)
