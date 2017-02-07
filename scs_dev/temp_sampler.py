@@ -83,10 +83,10 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        sht_conf = SHTConf.load(Host)
+        sht_conf = SHTConf.load_from_host(Host)
         climate = sht_conf.ext_sht()
 
-        calib = Pt1000Calib.load(Host)
+        calib = Pt1000Calib.load_from_host(Host)
         pt1000 = calib.pt1000()
 
         board = MCP9808(True)

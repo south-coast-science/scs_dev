@@ -39,6 +39,6 @@ print("-")
 
 auth.save(Host)
 
-auth = DeviceAuth.load(Host)
+auth = DeviceAuth.load_from_host(Host)
 print(auth)
 print("-")

@@ -61,10 +61,10 @@ class AFESampler(Sampler):
 
 if __name__ == '__main__':
 
-    calib = Pt1000Calib.load(Host)
+    calib = Pt1000Calib.load_from_host(Host)
     pt1000 = calib.pt1000()
 
-    conf = AFEConf.load(Host)
+    conf = AFEConf.load_from_host(Host)
     sensors = conf.sensors()
 
 

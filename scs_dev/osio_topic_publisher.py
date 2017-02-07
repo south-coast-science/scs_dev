@@ -48,7 +48,7 @@ if __name__ == '__main__':
         # resource...
 
         client = MQTTClient()
-        auth = DeviceAuth.load(Host)
+        auth = DeviceAuth.load_from_host(Host)
 
         publisher = TopicClient(client, auth)
 

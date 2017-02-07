@@ -28,13 +28,13 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    sht_conf = SHTConf.load(Host)
-    sht = sht_conf.ext_sht()            # TODO: this should be int_sht() but we don't have one yet
+    sht_conf = SHTConf.load_from_host(Host)
+    sht = sht_conf.ext_sht()                    # TODO: this should be int_sht() but we don't have one yet
 
-    calib = Pt1000Calib.load(Host)
+    calib = Pt1000Calib.load_from_host(Host)
     pt1000 = calib.pt1000()
 
-    conf = AFEConf.load(Host)
+    conf = AFEConf.load_from_host(Host)
     sensors = conf.sensors()
 
 
