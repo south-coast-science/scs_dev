@@ -47,9 +47,8 @@ if __name__ == '__main__':
         I2C.open(Host.I2C_SENSORS)
 
         io = IO()
-        print(io)
 
-        io.opc_power = True
+        io.opc_power = IO.HIGH
         time.sleep(OPCN2.BOOT_TIME)
 
         sampler = ParticulatesSampler(cmd.interval, cmd.samples)
@@ -84,6 +83,6 @@ if __name__ == '__main__':
             sampler.off()
 
         if io:
-            io.opc_power = False
+            io.opc_power = IO.LOW
 
         I2C.close()
