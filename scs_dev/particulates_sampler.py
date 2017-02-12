@@ -49,7 +49,7 @@ if __name__ == '__main__':
         io = IO(IO.filename(Host))
 
         io.opc_power = IO.HIGH
-        time.sleep(OPCN2.BOOT_TIME)
+        time.sleep(OPCN2.BOOT_TIME)     # TODO: only wait if power was off
 
         sampler = ParticulatesSampler(cmd.interval, cmd.samples)
 
