@@ -12,12 +12,13 @@ import optparse
 class CmdOPCPower(object):
     """unix command line handler"""
 
-    def __init__(self, default_interval=1):
+    def __init__(self):
         """stuff"""
         self.__parser = optparse.OptionParser(usage="%prog 1 | 0 [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False, help="report narrative to stderr")
+        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
+                                 help="report narrative to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
 

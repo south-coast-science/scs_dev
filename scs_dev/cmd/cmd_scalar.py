@@ -17,10 +17,14 @@ class CmdScalar(object):
         self.__parser = optparse.OptionParser(usage="%prog [-i INTERVAL] [-n SAMPLES] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval", default=default_interval, help="sampling interval in seconds (default %0.1f)" % default_interval)
-        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", default=0, dest="samples", help="number of samples (default for-ever = 0)")
+        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval", default=default_interval,
+                                 help="sampling interval in seconds (default %0.1f)" % default_interval)
 
-        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False, help="report narrative to stderr")
+        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", default=0, dest="samples",
+                                 help="number of samples (default for-ever = 0)")
+
+        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
+                                 help="report narrative to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
 

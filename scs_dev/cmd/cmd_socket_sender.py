@@ -17,10 +17,14 @@ class CmdSocketSender(object):
         self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version="%prog 1.0")
 
         # optional
-        self.__parser.add_option("--port", "-p", type="int", nargs=1, action="store", default=2000, dest="port", help="socket port [default 2000]")
+        self.__parser.add_option("--port", "-p", type="int", nargs=1, action="store", default=2000, dest="port",
+                                 help="socket port [default 2000]")
 
-        self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False, help="report samples to stdout")
-        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False, help="report narrative to stderr")
+        self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
+                                 help="report samples to stdout")
+
+        self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
+                                 help="report narrative to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
 
