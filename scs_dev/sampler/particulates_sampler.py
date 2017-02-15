@@ -34,12 +34,14 @@ class ParticulatesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def on(self):
-        self.__opc.on()
+        self.__opc.power_on()
+        self.__opc.operations_on()
         time.sleep(5)
 
 
     def off(self):
-        self.__opc.off()
+        self.__opc.operations_off()
+        self.__opc.power_off()
 
 
     def reset(self):

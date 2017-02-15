@@ -23,8 +23,7 @@ from scs_dfe.particulate.opc_n2 import OPCN2
 
 if __name__ == '__main__':
 
-    sckt = None
-    sender = None
+    opc = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -51,10 +50,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        opc.power_on()
+
         if cmd.power:
-            opc.on()
+            opc.operations_on()
         else:
-            opc.off()
+            opc.operations_off()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -66,3 +67,7 @@ if __name__ == '__main__':
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
+    finally:
+        if opc:
+            opc.power_off()

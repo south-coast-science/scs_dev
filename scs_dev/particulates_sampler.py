@@ -6,17 +6,14 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/particulates_sampler.py -i 10 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/particulates
+./scs_dev/particulates_sampler.py -i 10 | \
+./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/particulates
 """
 
 import sys
-import time
 
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
-
-from scs_dfe.board.io import IO
-from scs_dfe.particulate.opc_n2 import OPCN2
 
 from scs_dev.cmd.cmd_scalar import CmdScalar
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
@@ -46,10 +43,6 @@ if __name__ == '__main__':
 
         I2C.open(Host.I2C_SENSORS)
 
-        io = IO()
-
-        io.opc_power = IO.LOW
-        time.sleep(OPCN2.BOOT_TIME)         # TODO: only wait if power was off
 
         sampler = ParticulatesSampler(cmd.interval, cmd.samples)
 
@@ -81,8 +74,5 @@ if __name__ == '__main__':
     finally:
         if sampler:
             sampler.off()
-
-        if io:
-            io.opc_power = IO.HIGH
 
         I2C.close()
