@@ -17,6 +17,8 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_scalar import CmdScalar
 from scs_dev.sampler.status_sampler import StatusSampler
 
+from scs_dfe.gps.pam7q import PAM7Q
+
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
@@ -38,6 +40,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # resource...
+
+        gps = PAM7Q()
+        gps.power_on()
 
         sampler = StatusSampler(cmd.interval, cmd.samples)
 
