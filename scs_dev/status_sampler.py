@@ -14,7 +14,7 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_scalar import CmdScalar
+from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.status_sampler import StatusSampler
 
 from scs_dfe.gps.pam7q import PAM7Q
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdScalar(10)
+    cmd = CmdSampler(10)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)

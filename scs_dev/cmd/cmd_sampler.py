@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdScalar(object):
+class CmdSampler(object):
     """unix command line handler"""
 
     def __init__(self, default_interval=1):
@@ -54,5 +54,5 @@ class CmdScalar(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdScalar:{interval:%0.1f, samples:%d, verbose:%s, args:%s}" % \
+        return "CmdSampler:{interval:%0.1f, samples:%d, verbose:%s, args:%s}" % \
                     (self.interval, self.samples, self.verbose, self.args)

@@ -14,7 +14,7 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_scalar import CmdScalar
+from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_dfe.climate.sht_conf import SHTConf
@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdScalar()
+    cmd = CmdSampler()
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)

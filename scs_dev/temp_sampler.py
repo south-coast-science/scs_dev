@@ -17,7 +17,7 @@ from scs_core.sample.sample_datum import SampleDatum
 from scs_core.sync.sampler import Sampler
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_scalar import CmdScalar
+from scs_dev.cmd.cmd_sampler import CmdSampler
 
 from scs_dfe.board.mcp9808 import MCP9808
 from scs_dfe.climate.sht_conf import SHTConf
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # cmd...
 
-        cmd = CmdScalar()
+        cmd = CmdSampler()
 
         if cmd.verbose:
             print(cmd, file=sys.stderr)
