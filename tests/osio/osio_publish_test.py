@@ -25,11 +25,11 @@ from scs_host.sys.host import Host
 device_id = "5406"                  # json-test
 device_password = "jtxSrK2e"
 
-username = "southcoastscience-dev"
+user_id = "southcoastscience-dev"
 
 topic = "/users/southcoastscience-dev/test/json"
 
-auth = ClientAuth(username, device_id, device_password)
+auth = ClientAuth(user_id, device_id, device_password)
 print(auth)
 
 

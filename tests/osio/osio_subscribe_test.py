@@ -19,11 +19,11 @@ from scs_host.client.mqtt_client import MQTTClient
 device_id = "5404"                      # listener
 device_password = "mh7nxziu"
 
-username = "southcoastscience-dev"
+user_id = "southcoastscience-dev"
 
 topic = "/users/southcoastscience-dev/test/json"
 
-auth = ClientAuth(username, device_id, device_password)
+auth = ClientAuth(user_id, device_id, device_password)
 print(auth)
 
 

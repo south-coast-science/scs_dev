@@ -5,7 +5,7 @@ Created on 17 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-username, device_id, device_password
+user_id, device_id, device_password
 
 examples:
 {"msg": null, "err": {"code": "UNKNOWN_CMD", "value": "hello"}}
@@ -19,8 +19,8 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-username = "southcoastscience-dev"
-print(username)
+user_id = "southcoastscience-dev"
+print(user_id)
 
 device_id = "5406"
 print(device_id)
@@ -33,7 +33,7 @@ print("-")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-auth = ClientAuth(username, device_id, device_password)
+auth = ClientAuth(user_id, device_id, device_password)
 print(auth)
 print("-")
 
