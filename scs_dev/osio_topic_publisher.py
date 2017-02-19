@@ -20,6 +20,7 @@ from scs_core.data.json import JSONify
 from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
 from scs_core.osio.config.publication import Publication
+from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
@@ -59,6 +60,15 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(auth, file=sys.stderr)
 
+        device_id = DeviceID.load_from_host(Host)
+
+        if device_id is None:
+            print("DeviceID not available.")
+            exit()
+
+        if cmd.verbose:
+            print(device_id, file=sys.stderr)
+
 
         if cmd.channel:
             publication = Publication.load_from_host(Host)
@@ -77,7 +87,7 @@ if __name__ == '__main__':
                 topic = publication.particulates_topic()
 
             else:
-                topic = publication.status_topic()
+                topic = publication.status_topic(device_id)
 
         else:
             topic = cmd.topic
