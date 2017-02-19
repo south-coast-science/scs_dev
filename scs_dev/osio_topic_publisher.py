@@ -15,7 +15,7 @@ import sys
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
-from scs_core.osio.client.device_auth import DeviceAuth
+from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         # resource...
 
         client = MQTTClient()
-        auth = DeviceAuth.load_from_host(Host)
+        auth = ClientAuth.load_from_host(Host)
 
         publisher = TopicClient(client, auth)
 

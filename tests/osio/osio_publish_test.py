@@ -10,7 +10,7 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.osio.client.device_auth import DeviceAuth
+from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
 from scs_core.sample.sample_datum import SampleDatum
 from scs_core.sync.sampler import Sampler
@@ -29,7 +29,7 @@ username = "southcoastscience-dev"
 
 topic = "/users/southcoastscience-dev/test/json"
 
-auth = DeviceAuth(username, device_id, device_password)
+auth = ClientAuth(username, device_id, device_password)
 print(auth)
 
 

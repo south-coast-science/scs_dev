@@ -12,7 +12,7 @@ examples:
 {"msg": {"op": "scs-rpi-006", "spec": "scs-rpi-006"}, "err": null}
 """
 
-from scs_core.osio.client.device_auth import DeviceAuth
+from scs_core.osio.client.client_auth import ClientAuth
 
 from scs_host.sys.host import Host
 
@@ -33,12 +33,12 @@ print("-")
 
 # --------------------------------------------------------------------------------------------------------------------
 
-auth = DeviceAuth(username, device_id, device_password)
+auth = ClientAuth(username, device_id, device_password)
 print(auth)
 print("-")
 
 auth.save(Host)
 
-auth = DeviceAuth.load_from_host(Host)
+auth = ClientAuth.load_from_host(Host)
 print(auth)
 print("-")

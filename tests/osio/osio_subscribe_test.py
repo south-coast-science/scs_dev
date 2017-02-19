@@ -8,7 +8,7 @@ Created on 11 Nov 2016
 
 import sys
 
-from scs_core.osio.client.device_auth import DeviceAuth
+from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
 
 from scs_host.client.mqtt_client import MQTTClient
@@ -23,7 +23,7 @@ username = "southcoastscience-dev"
 
 topic = "/users/southcoastscience-dev/test/json"
 
-auth = DeviceAuth(username, device_id, device_password)
+auth = ClientAuth(username, device_id, device_password)
 print(auth)
 
 
