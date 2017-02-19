@@ -13,8 +13,18 @@ class CmdTopicPublisher(object):
     """unix command line handler"""
 
     def __init__(self):
-        """stuff"""
-        self.__parser = optparse.OptionParser(usage="%prog TOPIC [-e] [-v]", version="%prog 1.0")
+        """
+        Constructor
+        """
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S } } [-e] [-v]",
+                                              version="%prog 1.0")
+
+        # compulsory...
+        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
+                                 help="topic path")
+
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="publication channel")
 
         # optional...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
@@ -29,8 +39,12 @@ class CmdTopicPublisher(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.topic is None:
+        if bool(self.topic) == bool(self.channel):
             return False
+
+        if self.channel:
+            if self.channel != 'C' and self.channel != 'G' and self.channel != 'P' and self.channel != 'S':
+                return False
 
         return True
 
@@ -39,7 +53,12 @@ class CmdTopicPublisher(object):
 
     @property
     def topic(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+        return self.__opts.topic
+
+
+    @property
+    def channel(self):
+        return self.__opts.channel
 
 
     @property
@@ -64,5 +83,5 @@ class CmdTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdTopicPublisher:{topic:%s, echo:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.echo, self.verbose, self.args)
+        return "CmdTopicPublisher:{topic:%s, channel:%s, echo:%s, verbose:%s, args:%s}" % \
+                    (self.topic, self.channel, self.echo, self.verbose, self.args)

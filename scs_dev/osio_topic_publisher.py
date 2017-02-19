@@ -5,8 +5,10 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Mey require Publication document.
+
 command line example:
-./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/json
+./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
 """
 
 import json
@@ -17,6 +19,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
+from scs_core.osio.config.publication import Publication
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
@@ -35,21 +38,55 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdTopicPublisher()
+    if cmd.verbose:
+        print(cmd, file=sys.stderr)
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit()
 
-    if cmd.verbose:
-        print(cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        client = MQTTClient()
         auth = ClientAuth.load_from_host(Host)
 
+        if auth is None:
+            print("ClientAuth not available.")
+            exit()
+
+        if cmd.verbose:
+            print(auth, file=sys.stderr)
+
+
+        if cmd.channel:
+            publication = Publication.load_from_host(Host)
+
+            if publication is None:
+                print("Publication not available.")
+                exit()
+
+            if cmd.channel == 'C':
+                topic = publication.climate_topic()
+
+            elif cmd.channel == 'G':
+                topic = publication.gasses_topic()
+
+            elif cmd.channel == 'P':
+                topic = publication.particulates_topic()
+
+            else:
+                topic = publication.status_topic()
+
+        else:
+            topic = cmd.topic
+
+        if cmd.verbose:
+            print(topic, file=sys.stderr)
+
+
+        client = MQTTClient()
         publisher = TopicClient(client, auth)
 
         if cmd.verbose:
@@ -61,7 +98,7 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
-            publisher.publish(cmd.topic, datum)
+            publisher.publish(topic, datum)
 
             if cmd.echo:
                 print(line, end="")
@@ -73,7 +110,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt as ex:
         if cmd.verbose:
-            print("osi_topic_publisher: KeyboardInterrupt", file=sys.stderr)
+            print("osio_topic_publisher: KeyboardInterrupt", file=sys.stderr)
 
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+    # except Exception as ex:
+    #     print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
