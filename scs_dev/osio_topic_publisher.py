@@ -108,7 +108,13 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
-            publisher.publish(topic, datum)
+
+            while True:
+                try:
+                    publisher.publish(topic, datum)
+                    break
+                except:
+                    pass
 
             if cmd.echo:
                 print(line, end="")
