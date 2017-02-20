@@ -29,8 +29,6 @@ from scs_host.client.mqtt_client import MQTTClient
 from scs_host.sys.host import Host
 
 
-# TODO: make this work with HTTP PUT
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -128,5 +126,5 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("osio_topic_publisher: KeyboardInterrupt", file=sys.stderr)
 
-    # except Exception as ex:
-    #     print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+    except Exception as ex:
+        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
