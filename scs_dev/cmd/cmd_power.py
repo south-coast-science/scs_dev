@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdOPCPower(object):
+class CmdPower(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -61,5 +61,5 @@ class CmdOPCPower(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOPCPower:{power:%d, verbose:%s, args:%s}" % \
+        return "CmdPower:{power:%d, verbose:%s, args:%s}" % \
                     (self.power, self.verbose, self.args)

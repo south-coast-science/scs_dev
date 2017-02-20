@@ -14,7 +14,7 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_opc_power import CmdOPCPower
+from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.particulate.opc_n2 import OPCN2
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdOPCPower()
+    cmd = CmdPower()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
