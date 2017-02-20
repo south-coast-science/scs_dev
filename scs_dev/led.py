@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
 """
-Created on 5 Dec 2016
+Created on 20 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/particulates_sampler.py -i 10 | \
-./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/particulates
+./scs_dev/led.py -s G
 """
 
 import sys
@@ -15,8 +14,9 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_sampler import CmdSampler
-from scs_dev.sampler.particulates_sampler import ParticulatesSampler
+from scs_dev.cmd.cmd_led import CmdLED
+
+from scs_dfe.climate.led import LED
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -26,16 +26,18 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    io = None
-    sampler = None
-
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSampler(10)
+    cmd = CmdLED()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit()
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
+
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -43,35 +45,23 @@ if __name__ == '__main__':
 
         I2C.open(Host.I2C_SENSORS)
 
-        sampler = ParticulatesSampler(cmd.interval, cmd.samples)
-
-        if cmd.verbose:
-            print(sampler, file=sys.stderr)
-
-        sampler.on()
-        sampler.reset_timer()
+        led = LED()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        for sample in sampler.samples():
-            print(JSONify.dumps(sample))
-            sys.stdout.flush()
+        if cmd.set():
+            led.colour = cmd.colour
+
+        print(led.colour)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt as ex:
-        if cmd.verbose:
-            print("particulates_sampler: KeyboardInterrupt", file=sys.stderr)
-
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
-        if sampler:
-            sampler.off()
-
         I2C.close()
