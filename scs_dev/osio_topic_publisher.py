@@ -81,7 +81,7 @@ if __name__ == '__main__':
                 topic = publication.climate_topic()
 
             elif cmd.channel == 'G':
-                topic = publication.gasses_topic()
+                topic = publication.gases_topic()
 
             elif cmd.channel == 'P':
                 topic = publication.particulates_topic()
