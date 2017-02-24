@@ -76,16 +76,16 @@ if __name__ == '__main__':
                 exit()
 
             if cmd.channel == 'C':
-                topic = publication.climate_topic()
+                topic = publication.climate_topic_path()
 
             elif cmd.channel == 'G':
-                topic = publication.gases_topic()
+                topic = publication.gases_topic_path()
 
             elif cmd.channel == 'P':
-                topic = publication.particulates_topic()
+                topic = publication.particulates_topic_path()
 
             else:
-                topic = publication.status_topic(device_id)
+                topic = publication.status_topic_path(device_id)
 
         else:
             topic = cmd.topic
