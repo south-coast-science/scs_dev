@@ -28,6 +28,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
+# TODO: use int and ext SHTs
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class TempSampler(Sampler):
