@@ -37,23 +37,26 @@ class TempSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, climate, pt1000, board, interval, sample_count=0):
+    def __init__(self, int_climate, ext_climate, pt1000, board, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__climate = climate
+        self.__int_climate = int_climate
+        self.__ext_climate = ext_climate
         self.__afe = AFE(pt1000, [])
         self.__board = board
 
-        self.__climate.reset()
+        self.__int_climate.reset()
+        self.__ext_climate.reset()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def sample(self):
-        return ('sht', self.__climate.sample()), ('pt1', self.__afe.sample_temp()), ('brd', self.__board.sample()), ('host', Host.mcu_temp())
+        return (('int', self.__int_climate.sample()), ('ext', self.__ext_climate.sample()),
+                ('pt1', self.__afe.sample_temp()), ('brd', self.__board.sample()), ('host', Host.mcu_temp()))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -84,14 +87,16 @@ if __name__ == '__main__':
         # resource...
 
         sht_conf = SHTConf.load_from_host(Host)
-        climate = sht_conf.ext_sht()
+
+        int_climate = sht_conf.int_sht()
+        ext_climate = sht_conf.ext_sht()
 
         calib = Pt1000Calib.load_from_host(Host)
         pt1000 = calib.pt1000()
 
         board = MCP9808(True)
 
-        sampler = TempSampler(climate, pt1000, board, cmd.interval, cmd.samples)
+        sampler = TempSampler(int_climate, ext_climate, pt1000, board, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -100,9 +105,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        for sht_datum, pt1000_datum, board_datum, mcu_datum in sampler.samples():
+        for int_datum, ext_datum, pt1000_datum, board_datum, mcu_datum in sampler.samples():
             recorded = LocalizedDatetime.now()
-            datum = SampleDatum(recorded, sht_datum, pt1000_datum, board_datum, mcu_datum)
+            datum = SampleDatum(recorded, int_datum, ext_datum, pt1000_datum, board_datum, mcu_datum)
 
             print(JSONify.dumps(datum))
             sys.stdout.flush()
