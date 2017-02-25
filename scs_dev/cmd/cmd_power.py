@@ -36,10 +36,13 @@ class CmdPower(object):
 
     @property
     def power(self):
-        try:
-            return bool(int(self.__args[0]))
-        except RuntimeError:
-            return None
+        if len(self.__args) > 0:
+            try:
+                return bool(int(self.__args[0]))
+            except RuntimeError:
+                return None
+
+        return None
 
 
     # ----------------------------------------------------------------------------------------------------------------
