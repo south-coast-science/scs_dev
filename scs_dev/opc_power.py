@@ -70,8 +70,8 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("opc_power: KeyboardInterrupt", file=sys.stderr)
 
-    # except Exception as ex:
-    #     print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+    except Exception as ex:
+        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if opc:
