@@ -14,14 +14,16 @@ class CmdSN(object):
 
     def __init__(self):
         """stuff"""
-        self.__parser = optparse.OptionParser(usage="%prog -s SENSOR [-i INTERVAL] [-n SAMPLES] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -s SENSOR [-i INTERVAL] [-n SAMPLES] [-v]",
+                                              version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--sn", "-s", type="int", nargs=1, action="store", dest="sn",
                                  help="sensor number (1 to 4)")
 
         # optional...
-        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval", default=1.0,
+        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
+                                 default=1.0,
                                  help="sampling interval in seconds (default 1.0)")
 
         self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", default=0, dest="samples",

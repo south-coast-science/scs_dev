@@ -11,7 +11,7 @@ from scs_core.data.json import JSONify
 from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_dfe.climate.sht_conf import SHTConf
-from scs_dfe.gas.afe_conf import AFEConf
+from scs_dfe.gas.afe_calib import AFECalib
 from scs_dfe.gas.pt1000_calib import Pt1000Calib
 
 from scs_host.bus.i2c import I2C
@@ -26,8 +26,8 @@ sht = sht_conf.int_sht()
 calib = Pt1000Calib.load_from_host(Host)
 pt1000 = calib.pt1000()
 
-conf = AFEConf.load_from_host(Host)
-sensors = conf.sensors()
+calib = AFECalib.load_from_host(Host)
+sensors = calib.sensors()
 
 try:
     I2C.open(Host.I2C_SENSORS)

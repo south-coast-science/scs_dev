@@ -8,6 +8,7 @@ import optparse
 
 from scs_dfe.climate.led import LED
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdLED(object):
