@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 
 """
-Created on 21 Jan 2017
+Created on 28 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/opc_power.py 1
+./scs_dev/modem_power.py -v 0
 """
 
 import sys
+
+from scs_comms.modem.io import IO
 
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_power import CmdPower
-
-from scs_dfe.particulate.opc_n2 import OPCN2
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -25,8 +25,6 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-
-    opc = None
 
     I2C.open(Host.I2C_SENSORS)
 
@@ -46,35 +44,31 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        opc = OPCN2()
+        io = IO()
 
         if cmd.verbose:
-            print(opc, file=sys.stderr)
+            print(io, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        opc.power_on()
-
         if cmd.power:
-            opc.operations_on()
+            # modem...
+            io.power = IO.LOW
+            io.output_enable = IO.HIGH
+
         else:
-            opc.operations_off()
+            # modem...
+            io.output_enable = IO.LOW
+            io.power = IO.HIGH
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt as ex:
-        if cmd.verbose:
-            print("opc_power: KeyboardInterrupt", file=sys.stderr)
-
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
-        if opc:
-            opc.power_off()
-
         I2C.close()
