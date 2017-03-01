@@ -20,6 +20,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_sn import CmdSN
 
 from scs_dfe.gas.afe import AFE
+from scs_dfe.gas.afe_baseline import AFEBaseline
 from scs_dfe.gas.afe_calib import AFECalib
 from scs_dfe.gas.pt1000_calib import Pt1000Calib
 
@@ -66,8 +67,10 @@ if __name__ == '__main__':
     calib = Pt1000Calib.load_from_host(Host)
     pt1000 = calib.pt1000()
 
+    afe_baseline = AFEBaseline.load_from_host(Host)
+
     calib = AFECalib.load_from_host(Host)
-    sensors = calib.sensors()
+    sensors = calib.sensors(afe_baseline)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -18,6 +18,7 @@ from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_dfe.climate.sht_conf import SHTConf
+from scs_dfe.gas.afe_baseline import AFEBaseline
 from scs_dfe.gas.afe_calib import AFECalib
 from scs_dfe.gas.pt1000_calib import Pt1000Calib
 
@@ -34,8 +35,10 @@ if __name__ == '__main__':
     calib = Pt1000Calib.load_from_host(Host)
     pt1000 = calib.pt1000()
 
+    afe_baseline = AFEBaseline.load_from_host(Host)
+
     calib = AFECalib.load_from_host(Host)
-    sensors = calib.sensors()
+    sensors = calib.sensors(afe_baseline)
 
 
     # ----------------------------------------------------------------------------------------------------------------
