@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
         else:
             # OPC...
-            opc.power_off()         # needed because some DFEs do not have OPC power control
+            opc.operations_off()         # needed because some DFEs do not have OPC power control
 
             # DFE...
             io.gps_power = IO.HIGH
