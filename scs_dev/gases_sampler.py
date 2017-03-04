@@ -5,6 +5,8 @@ Created on 5 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Note: this script uses the internal SHT temp sensor for temperature compensation.
+
 command line example:
 ./scs_dev/gases_sampler.py -i 5 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
 """

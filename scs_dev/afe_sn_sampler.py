@@ -5,6 +5,8 @@ Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Note: this script uses the Pt1000 temp sensor for temperature compensation.
+
 command line example:
 ./scs_dev/afe_sn_sampler.py -s 4 -i 0.5 -n 10
 """

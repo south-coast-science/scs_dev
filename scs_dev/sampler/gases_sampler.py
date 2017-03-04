@@ -39,10 +39,10 @@ class GasesSampler(Sampler):
     def sample(self):
         recorded = LocalizedDatetime.now()
 
-        afe_sample = self.__afe.sample()
-        sht_sample = self.__sht.sample()
+        sht_datum = self.__sht.sample()
+        afe_datum = self.__afe.sample(sht_datum)
 
-        return GasesDatum(recorded, afe_sample, sht_sample)
+        return GasesDatum(recorded, afe_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
