@@ -17,6 +17,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.board.io import IO
+from scs_dfe.particulate.opc_n2 import OPCN2
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -49,6 +50,8 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(io, file=sys.stderr)
 
+        opc = OPCN2()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -63,6 +66,9 @@ if __name__ == '__main__':
             io.led_green = IO.HIGH
 
         else:
+            # OPC...
+            opc.power_off()         # needed because some DFEs do not have OPC power control
+
             # DFE...
             io.gps_power = IO.HIGH
             io.opc_power = IO.HIGH
