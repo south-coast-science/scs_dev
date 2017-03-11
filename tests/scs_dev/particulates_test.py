@@ -18,7 +18,9 @@ from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 sampler = None
 
 try:
-    sampler = ParticulatesSampler(10)
+    tag = "scs-ap1-0"
+
+    sampler = ParticulatesSampler(tag, 10)
     print(sampler)
     print("-")
 

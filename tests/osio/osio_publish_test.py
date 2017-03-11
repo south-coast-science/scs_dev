@@ -22,6 +22,10 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
+tag = "scs-ap1-0"
+print(tag)
+print("-")
+
 device_id = "5406"                  # json-test
 device_password = "jtxSrK2e"
 
@@ -73,7 +77,7 @@ temp = MCUTempSampler(5, 0)
 try:
     for sample in temp.samples():
         recorded = LocalizedDatetime.now()
-        datum = SampleDatum(recorded, sample)
+        datum = SampleDatum(tag, recorded, sample)
 
         topic_client.publish(topic, datum)
 

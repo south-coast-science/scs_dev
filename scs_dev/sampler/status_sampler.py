@@ -26,12 +26,13 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count=0):
+    def __init__(self, tag, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
+        self.__tag = tag
         self.__board = MCP9808(True)
         self.__gps = PAM7Q()
 
@@ -65,11 +66,11 @@ class StatusSampler(Sampler):
         # exception...
         exception = None    # TODO: handle exception sending
 
-        return StatusDatum(recorded, location, temperature, exception)
+        return StatusDatum(self.__tag, recorded, location, temperature, exception)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{board:%s, timer:%s, sample_count:%d}" % \
-                    (self.__board, self.timer, self.sample_count)
+        return "StatusSampler:{tag:%s, board:%s, timer:%s, sample_count:%d}" % \
+                    (self.__tag, self.__board, self.timer, self.sample_count)

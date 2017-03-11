@@ -20,7 +20,9 @@ from scs_host.sys.host import Host
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = StatusSampler(1.0)
+    tag = "scs-ap1-0"
+
+    sampler = StatusSampler(tag, 1.0)
     print(sampler)
     print("-")
 

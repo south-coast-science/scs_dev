@@ -18,12 +18,13 @@ class ClimateSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, sht, interval, sample_count=0):
+    def __init__(self, tag, sht, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
+        self.__tag = tag
         self.__sht = sht
 
 
@@ -38,10 +39,11 @@ class ClimateSampler(Sampler):
 
         sht_sample = self.__sht.sample()
 
-        return ClimateDatum(recorded, sht_sample)
+        return ClimateDatum(self.__tag, recorded, sht_sample)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClimateSampler:{sht:%s, timer:%s, sample_count:%d}" % (self.__sht, self.timer, self.sample_count)
+        return "ClimateSampler:{tag:%s, sht:%s, timer:%s, sample_count:%d}" % \
+               (self.__tag, self.__sht, self.timer, self.sample_count)

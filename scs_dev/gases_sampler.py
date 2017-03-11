@@ -5,6 +5,8 @@ Created on 5 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Requires DeviceID document.
+
 Note: this script uses the internal SHT temp sensor for temperature compensation.
 
 command line example:
@@ -14,6 +16,7 @@ command line example:
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -58,7 +61,17 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        sampler = GasesSampler(sht, pt1000, sensors, cmd.interval, cmd.samples)
+        device_id = DeviceID.load_from_host(Host)
+
+        if device_id is None:
+            print("DeviceID not available.")
+            exit()
+
+        if cmd.verbose:
+            print(device_id, file=sys.stderr)
+
+
+        sampler = GasesSampler(device_id.message_tag(), sht, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

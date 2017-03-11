@@ -107,11 +107,12 @@ if __name__ == '__main__':
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
 
-            while True:         # TODO: dangerous - find what the problem is
+            while True:
                 try:
                     publisher.publish(topic, datum)
                     break
                 except:
+                    # TODO: log the exception
                     pass
 
             if cmd.echo:

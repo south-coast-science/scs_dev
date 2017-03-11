@@ -5,6 +5,8 @@ Created on 5 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Requires DeviceID document.
+
 command line example:
 ./scs_dev/particulates_sampler.py -i 10 | \
 ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/particulates
@@ -13,6 +15,7 @@ command line example:
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -43,7 +46,18 @@ if __name__ == '__main__':
 
         I2C.open(Host.I2C_SENSORS)
 
-        sampler = ParticulatesSampler(cmd.interval, cmd.samples)
+
+        device_id = DeviceID.load_from_host(Host)
+
+        if device_id is None:
+            print("DeviceID not available.")
+            exit()
+
+        if cmd.verbose:
+            print(device_id, file=sys.stderr)
+
+
+        sampler = ParticulatesSampler(device_id.message_tag(), cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

@@ -5,6 +5,8 @@ Created on 5 Dec 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Requires DeviceID document.
+
 command line example:
 ./scs_dev/status_sampler.py -i 10 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/status
 """
@@ -12,6 +14,7 @@ command line example:
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -41,10 +44,20 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
+        device_id = DeviceID.load_from_host(Host)
+
+        if device_id is None:
+            print("DeviceID not available.")
+            exit()
+
+        if cmd.verbose:
+            print(device_id, file=sys.stderr)
+
+
         gps = PAM7Q()
         gps.power_on()
 
-        sampler = StatusSampler(cmd.interval, cmd.samples)
+        sampler = StatusSampler(device_id.message_tag(), cmd.interval, cmd.samples)      # TODO: add tag
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

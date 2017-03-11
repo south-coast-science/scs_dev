@@ -5,6 +5,8 @@ Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Requires DeviceID document.
+
 Note: this script uses the Pt1000 temp sensor for temperature compensation.
 
 command line example:
@@ -17,6 +19,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.sample_datum import SampleDatum
 from scs_core.sync.sampler import Sampler
+from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sn import CmdSN
@@ -94,6 +97,17 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
+
+        device_id = DeviceID.load_from_host(Host)
+
+        if device_id is None:
+            print("DeviceID not available.")
+            exit()
+
+        if cmd.verbose:
+            print(device_id, file=sys.stderr)
+
+
         afe = AFESNSampler(pt1000, sensors, cmd.sn, cmd.interval, cmd.samples)
 
         if cmd.verbose:
@@ -105,7 +119,7 @@ if __name__ == '__main__':
 
         for sample in afe.samples():
             recorded = LocalizedDatetime.now()
-            datum = SampleDatum(recorded, sample)
+            datum = SampleDatum(device_id.message_tag(), recorded, sample)
 
             print(JSONify.dumps(datum))
             sys.stdout.flush()

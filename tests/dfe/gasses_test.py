@@ -21,6 +21,8 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
+tag = "scs-ap1-0"
+
 sht_conf = SHTConf.load_from_host(Host)
 sht = sht_conf.int_sht()
 
@@ -36,7 +38,7 @@ sensors = calib.sensors(afe_baseline)
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = GasesSampler(sht, pt1000, sensors, 1)
+    sampler = GasesSampler(tag, sht, pt1000, sensors, 1)
     print(sampler)
     print("-")
 
