@@ -9,8 +9,11 @@ Created on 20 Oct 2016
 import time
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
+
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -18,9 +21,13 @@ from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 sampler = None
 
 try:
-    tag = "scs-ap1-0"
+    device_id = DeviceID.load_from_host(Host)
 
-    sampler = ParticulatesSampler(tag, 10)
+    if device_id is None:
+        print("DeviceID not available.")
+        exit()
+
+    sampler = ParticulatesSampler(device_id, 10)
     print(sampler)
     print("-")
 

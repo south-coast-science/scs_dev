@@ -57,7 +57,7 @@ if __name__ == '__main__':
         gps = PAM7Q()
         gps.power_on()
 
-        sampler = StatusSampler(device_id.message_tag(), cmd.interval, cmd.samples)      # TODO: add tag
+        sampler = StatusSampler(device_id, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

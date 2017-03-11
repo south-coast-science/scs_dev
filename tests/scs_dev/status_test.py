@@ -7,6 +7,7 @@ Created on 20 Oct 2016
 """
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 
 from scs_dev.sampler.status_sampler import StatusSampler
 
@@ -20,9 +21,13 @@ from scs_host.sys.host import Host
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    tag = "scs-ap1-0"
+    device_id = DeviceID.load_from_host(Host)
 
-    sampler = StatusSampler(tag, 1.0)
+    if device_id is None:
+        print("DeviceID not available.")
+        exit()
+
+    sampler = StatusSampler(device_id, 1.0)
     print(sampler)
     print("-")
 

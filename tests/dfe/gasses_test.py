@@ -7,6 +7,7 @@ Created on 20 Oct 2016
 """
 
 from scs_core.data.json import JSONify
+from scs_core.sys.device_id import DeviceID
 
 from scs_dev.sampler.gases_sampler import GasesSampler
 
@@ -21,7 +22,11 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-tag = "scs-ap1-0"
+device_id = DeviceID.load_from_host(Host)
+
+if device_id is None:
+    print("DeviceID not available.")
+    exit()
 
 sht_conf = SHTConf.load_from_host(Host)
 sht = sht_conf.int_sht()
@@ -38,7 +43,7 @@ sensors = calib.sensors(afe_baseline)
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = GasesSampler(tag, sht, pt1000, sensors, 1)
+    sampler = GasesSampler(device_id, sht, pt1000, sensors, 1)
     print(sampler)
     print("-")
 

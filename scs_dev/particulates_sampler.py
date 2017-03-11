@@ -57,7 +57,7 @@ if __name__ == '__main__':
             print(device_id, file=sys.stderr)
 
 
-        sampler = ParticulatesSampler(device_id.message_tag(), cmd.interval, cmd.samples)
+        sampler = ParticulatesSampler(device_id, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

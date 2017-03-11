@@ -71,7 +71,7 @@ if __name__ == '__main__':
         calib = AFECalib.load_from_host(Host)
         sensors = calib.sensors(afe_baseline)
 
-        sampler = GasesSampler(device_id.message_tag(), sht, pt1000, sensors, cmd.interval, cmd.samples)
+        sampler = GasesSampler(device_id, sht, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

@@ -57,7 +57,7 @@ if __name__ == '__main__':
         sht_conf = SHTConf.load_from_host(Host)
         sht = sht_conf.ext_sht()
 
-        sampler = ClimateSampler(device_id.message_tag(), sht, cmd.interval, cmd.samples)
+        sampler = ClimateSampler(device_id, sht, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

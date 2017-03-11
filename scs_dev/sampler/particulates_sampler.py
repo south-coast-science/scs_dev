@@ -22,13 +22,13 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, tag, interval, sample_count=0):
+    def __init__(self, device_id, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__tag = tag
+        self.__device_id = device_id
         self.__opc = OPCN2()
 
 
@@ -52,13 +52,15 @@ class ParticulatesSampler(Sampler):
     def sample(self):
         recorded = LocalizedDatetime.now()
 
+        tag = self.__device_id.message_tag()
+
         opc_sample = self.__opc.sample()
 
-        return ParticulatesDatum(self.__tag, recorded, opc_sample)
+        return ParticulatesDatum(tag, recorded, opc_sample)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParticulatesSampler:{tag:%s, opc:%s, timer:%s, sample_count:%d}" % \
-                    (self.__tag, self.__opc, self.timer, self.sample_count)
+        return "ParticulatesSampler:{device_id:%s, opc:%s, timer:%s, sample_count:%d}" % \
+                    (self.__device_id, self.__opc, self.timer, self.sample_count)
