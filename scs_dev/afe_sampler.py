@@ -67,15 +67,6 @@ class AFESampler(Sampler):
 
 if __name__ == '__main__':
 
-    calib = Pt1000Calib.load_from_host(Host)
-    pt1000 = calib.pt1000()
-
-    afe_baseline = AFEBaseline.load_from_host(Host)
-
-    calib = AFECalib.load_from_host(Host)
-    sensors = calib.sensors(afe_baseline)
-
-
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -100,6 +91,14 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
+
+        calib = Pt1000Calib.load_from_host(Host)
+        pt1000 = calib.pt1000()
+
+        afe_baseline = AFEBaseline.load_from_host(Host)
+
+        calib = AFECalib.load_from_host(Host)
+        sensors = calib.sensors(afe_baseline)
 
         afe = AFESampler(pt1000, sensors, cmd.interval, cmd.samples)
 

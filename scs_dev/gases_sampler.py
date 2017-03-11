@@ -34,17 +34,6 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    sht_conf = SHTConf.load_from_host(Host)
-    sht = sht_conf.int_sht()
-
-    calib = Pt1000Calib.load_from_host(Host)
-    pt1000 = calib.pt1000()
-
-    afe_baseline = AFEBaseline.load_from_host(Host)
-
-    calib = AFECalib.load_from_host(Host)
-    sensors = calib.sensors(afe_baseline)
-
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -70,6 +59,17 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
+
+        sht_conf = SHTConf.load_from_host(Host)
+        sht = sht_conf.int_sht()
+
+        calib = Pt1000Calib.load_from_host(Host)
+        pt1000 = calib.pt1000()
+
+        afe_baseline = AFEBaseline.load_from_host(Host)
+
+        calib = AFECalib.load_from_host(Host)
+        sensors = calib.sensors(afe_baseline)
 
         sampler = GasesSampler(device_id.message_tag(), sht, pt1000, sensors, cmd.interval, cmd.samples)
 

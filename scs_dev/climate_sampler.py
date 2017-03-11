@@ -29,9 +29,6 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    sht_conf = SHTConf.load_from_host(Host)
-    sht = sht_conf.ext_sht()
-
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -57,6 +54,8 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
+        sht_conf = SHTConf.load_from_host(Host)
+        sht = sht_conf.ext_sht()
 
         sampler = ClimateSampler(device_id.message_tag(), sht, cmd.interval, cmd.samples)
 
