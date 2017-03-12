@@ -13,7 +13,9 @@ class CmdSampler(object):
     """unix command line handler"""
 
     def __init__(self, default_interval=1):
-        """stuff"""
+        """
+        Constructor
+        """
         self.__parser = optparse.OptionParser(usage="%prog [-i INTERVAL] [-n SAMPLES] [-v]", version="%prog 1.0")
 
         # optional...

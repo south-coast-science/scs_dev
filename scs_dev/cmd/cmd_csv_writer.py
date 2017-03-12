@@ -13,7 +13,9 @@ class CmdCSVWriter(object):
     """unix command line handler"""
 
     def __init__(self):
-        """stuff"""
+        """
+        Constructor
+        """
         self.__parser = optparse.OptionParser(usage="%prog [FILENAME] [-a] [-e] [-v]", version="%prog 1.0")
 
         # optional...

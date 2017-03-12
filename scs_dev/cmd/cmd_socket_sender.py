@@ -13,7 +13,9 @@ class CmdSocketSender(object):
     """unix command line handler"""
 
     def __init__(self):
-        """stuff"""
+        """
+        Constructor
+        """
         self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version="%prog 1.0")
 
         # optional

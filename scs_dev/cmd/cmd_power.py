@@ -13,7 +13,9 @@ class CmdPower(object):
     """unix command line handler"""
 
     def __init__(self):
-        """stuff"""
+        """
+        Constructor
+        """
         self.__parser = optparse.OptionParser(usage="%prog 1 | 0 [-v]", version="%prog 1.0")
 
         # optional...

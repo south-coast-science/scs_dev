@@ -13,7 +13,9 @@ class CmdSN(object):
     """unix command line handler"""
 
     def __init__(self):
-        """stuff"""
+        """
+        Constructor
+        """
         self.__parser = optparse.OptionParser(usage="%prog -s SENSOR [-i INTERVAL] [-n SAMPLES] [-v]",
                                               version="%prog 1.0")
 
