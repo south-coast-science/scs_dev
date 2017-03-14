@@ -52,7 +52,7 @@ if __name__ == '__main__':
         auth = ClientAuth.load_from_host(Host)
 
         if auth is None:
-            print("ClientAuth not available.")
+            print("ClientAuth not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
@@ -61,7 +61,7 @@ if __name__ == '__main__':
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
-            print("DeviceID not available.")
+            print("DeviceID not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
@@ -72,7 +72,7 @@ if __name__ == '__main__':
             publication = Publication.load_from_host(Host)
 
             if publication is None:
-                print("Publication not available.")
+                print("Publication not available.", file=sys.stderr)
                 exit()
 
             if cmd.channel == 'C':

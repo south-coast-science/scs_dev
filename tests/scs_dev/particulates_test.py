@@ -24,7 +24,7 @@ try:
     device_id = DeviceID.load_from_host(Host)
 
     if device_id is None:
-        print("DeviceID not available.")
+        print("DeviceID not available.", file=sys.stderr)
         exit()
 
     sampler = ParticulatesSampler(device_id, 10)
