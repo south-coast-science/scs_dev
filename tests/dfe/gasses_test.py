@@ -6,6 +6,8 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
+
 from scs_core.data.json import JSONify
 from scs_core.sys.device_id import DeviceID
 
