@@ -114,6 +114,7 @@ if __name__ == '__main__':
             if cmd.log:
                 time = LocalizedDatetime.now()
                 log_file.write("%s: rec: %s\n" % (time, datum['rec']))
+                log_file.flush()
 
             while True:
                 try:
@@ -121,14 +122,11 @@ if __name__ == '__main__':
                     break
 
                 except Exception as ex:
-                    if log_file:
+                    if cmd.log:
                         log_file.write("except: %s\n" % ex)
+                        log_file.flush()
 
                     time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
-
-            if cmd.log:
-                log_file.write("-\n")
-                log_file.flush()
 
             if cmd.echo:
                 print(line, end="")
