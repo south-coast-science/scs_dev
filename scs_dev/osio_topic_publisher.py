@@ -13,6 +13,7 @@ command line example:
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -119,6 +120,8 @@ if __name__ == '__main__':
 
                         log_file.write("%s: %s\n" % (time, ex))
                         log_file.flush()
+
+                    time.sleep(1)
 
             if cmd.echo:
                 print(line, end="")
