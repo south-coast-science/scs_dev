@@ -42,8 +42,7 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit()
 
-    if cmd.log:
-        sys.stderr = open(cmd.log, 'w')
+    log_file = open(cmd.log, 'w') if cmd.log else None
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -117,8 +116,9 @@ if __name__ == '__main__':
                     raise RuntimeError("hello")
                     # break
                 except Exception as ex:
-                    time = LocalizedDatetime.now()
-                    print("%s: %s" %(time, ex), file=sys.stderr)
+                    if log_file:
+                        time = LocalizedDatetime.now()
+                        print("%s: %s" %(time, ex), file=sys.stderr)
                     # pass
                     break
 
@@ -139,4 +139,4 @@ if __name__ == '__main__':
 
     finally:
         if cmd.log:
-            sys.stderr.close()
+            log_file.close()
