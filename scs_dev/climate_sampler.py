@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
         for sample in sampler.samples():
             if cmd.log:
-                log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), sample.rec))
+                log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), sample.rec.as_iso8601()))
                 log_file.flush()
 
             print(JSONify.dumps(sample))
