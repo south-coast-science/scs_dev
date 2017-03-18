@@ -12,6 +12,7 @@ command line example:
 """
 
 import json
+import random
 import sys
 import time
 
@@ -110,18 +111,23 @@ if __name__ == '__main__':
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
 
+            if cmd.log:
+                time = LocalizedDatetime.now()
+                log_file.write("%s: rec: %s\n" % (time, datum.rec))
+                log_file.flush()
+
             while True:
                 try:
                     publisher.publish(topic, datum)
                     break
+
                 except Exception as ex:
                     if log_file:
-                        time = LocalizedDatetime.now()
-
-                        log_file.write("%s: %s\n" % (time, ex))
+                        log_file.write("except: %s\n" % ex)
                         log_file.flush()
 
-                    time.sleep(1)
+                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
+
 
             if cmd.echo:
                 print(line, end="")

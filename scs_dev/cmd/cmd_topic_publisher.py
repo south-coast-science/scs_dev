@@ -16,7 +16,7 @@ class CmdTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S } } [-e] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S } } [-l LOG] [-e] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -27,14 +27,14 @@ class CmdTopicPublisher(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--log", "-l", type="string", nargs=1, dest="log", default=False,
+                                 help="append exceptions to log")
+
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="report samples to stdout")
 
-        self.__parser.add_option("--log", "-l", type="string", nargs=1, dest="log", default=False,
-                                 help="log to file (stderr if none given)")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
-                                 help="report narrative to stderr or log")
+                                 help="report narrative to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
 
@@ -65,13 +65,13 @@ class CmdTopicPublisher(object):
 
 
     @property
-    def echo(self):
-        return self.__opts.echo
+    def log(self):
+        return self.__opts.log
 
 
     @property
-    def log(self):
-        return self.__opts.log
+    def echo(self):
+        return self.__opts.echo
 
 
     @property
@@ -91,5 +91,5 @@ class CmdTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdTopicPublisher:{topic:%s, channel:%s, echo:%s, log:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.channel, self.echo, self.log, self.verbose, self.args)
+        return "CmdTopicPublisher:{topic:%s, channel:%s, log:%s, echo:%s, verbose:%s, args:%s}" % \
+                    (self.topic, self.channel, self.log, self.echo, self.verbose, self.args)
