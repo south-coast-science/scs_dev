@@ -144,6 +144,10 @@ if __name__ == '__main__':
             print("osio_topic_publisher: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
+        if cmd.log:
+            log_file.write("%s: except: %s\n" % (LocalizedDatetime.now().as_iso8601(), ex))
+            log_file.flush()
+
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
