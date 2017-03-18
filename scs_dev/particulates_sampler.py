@@ -15,6 +15,7 @@ command line example:
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -36,6 +37,8 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdSampler(10)
+
+    log_file = open(cmd.log, 'a') if cmd.log else None
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -70,6 +73,10 @@ if __name__ == '__main__':
         # run...
 
         for sample in sampler.samples():
+            if cmd.log:
+                log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), sample.rec.as_iso8601()))
+                log_file.flush()
+
             print(JSONify.dumps(sample))
             sys.stdout.flush()
 
@@ -89,3 +96,6 @@ if __name__ == '__main__':
             sampler.off()
 
         I2C.close()
+
+        if cmd.log:
+            log_file.close()
