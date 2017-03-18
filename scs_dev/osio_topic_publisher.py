@@ -17,6 +17,7 @@ import sys
 from collections import OrderedDict
 
 from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
 from scs_core.osio.config.publication import Publication
@@ -110,10 +111,13 @@ if __name__ == '__main__':
             while True:
                 try:
                     publisher.publish(topic, datum)
+                    raise RuntimeError("hello")
+                    # break
+                except Exception as ex:
+                    time = LocalizedDatetime.now()
+                    print("%s: %s" %(time, ex))
+                    # pass
                     break
-                except:
-                    # TODO: log the exception
-                    pass
 
             if cmd.echo:
                 print(line, end="")
