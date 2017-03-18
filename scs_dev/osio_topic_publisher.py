@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
             if cmd.log:
                 time = LocalizedDatetime.now()
-                log_file.write("%s: rec: %s\n" % (time, datum['rec']))
+                log_file.write("%s: rec: %s\n" % (time.as_iso8601(), datum['rec']))
                 log_file.flush()
 
             while True:
