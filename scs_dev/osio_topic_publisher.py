@@ -118,7 +118,7 @@ if __name__ == '__main__':
                 except Exception as ex:
                     if log_file:
                         time = LocalizedDatetime.now()
-                        print("%s: %s" %(time, ex), file=sys.stderr)
+                        print("%s: %s" %(time, ex), file=log_file)
                     # pass
                     break
 
