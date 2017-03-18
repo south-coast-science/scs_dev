@@ -42,7 +42,7 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit()
 
-    log_file = open(cmd.log, 'w') if cmd.log else None
+    log_file = open(cmd.log, 'a') if cmd.log else None
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -120,6 +120,7 @@ if __name__ == '__main__':
                         time = LocalizedDatetime.now()
 
                         log_file.write("%s: %s\n" % (time, ex))
+                        log_file.flush()
                     # pass
                     break
 
