@@ -103,7 +103,6 @@ if __name__ == '__main__':
             print(publisher, file=sys.stderr)
 
 
-
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
@@ -113,16 +112,13 @@ if __name__ == '__main__':
             while True:
                 try:
                     publisher.publish(topic, datum)
-                    raise RuntimeError("hello")
-                    # break
+                    break
                 except Exception as ex:
                     if log_file:
                         time = LocalizedDatetime.now()
 
                         log_file.write("%s: %s\n" % (time, ex))
                         log_file.flush()
-                    # pass
-                    break
 
             if cmd.echo:
                 print(line, end="")
