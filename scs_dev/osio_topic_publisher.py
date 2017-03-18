@@ -111,13 +111,12 @@ if __name__ == '__main__':
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
 
-            if cmd.log:
-                time = LocalizedDatetime.now()
-                log_file.write("%s: rec: %s\n" % (time.as_iso8601(), datum['rec']))
-                log_file.flush()
-
             while True:
                 try:
+                    if cmd.log:
+                        log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), datum['rec']))
+                        log_file.flush()
+
                     publisher.publish(topic, datum)
                     break
 
@@ -127,6 +126,10 @@ if __name__ == '__main__':
                         log_file.flush()
 
                     time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
+
+            if cmd.log:
+                log_file.write("-\n")
+                log_file.flush()
 
             if cmd.echo:
                 print(line, end="")
