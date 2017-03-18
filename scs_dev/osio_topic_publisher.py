@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
             if cmd.log:
                 time = LocalizedDatetime.now()
-                log_file.write("%s: rec: %s\n" % (time, datum.rec))
+                log_file.write("%s: rec: %s\n" % (time, datum.payload.payload.rec))
                 log_file.flush()
 
             while True:
