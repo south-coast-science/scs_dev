@@ -38,13 +38,14 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdTopicPublisher()
-    if cmd.verbose:
-        print(cmd, file=sys.stderr)
-
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit()
 
+    log_file = sys.stderr if cmd.log is None else open(cmd.log, 'a')
+
+    if cmd.verbose:
+        print(cmd, file=log_file)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -57,23 +58,23 @@ if __name__ == '__main__':
             exit()
 
         if cmd.verbose:
-            print(auth, file=sys.stderr)
+            print(auth, file=log_file)
 
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
-            print("DeviceID not available.", file=sys.stderr)
+            print("DeviceID not available.", file=log_file)
             exit()
 
         if cmd.verbose:
-            print(device_id, file=sys.stderr)
+            print(device_id, file=log_file)
 
 
         if cmd.channel:
             publication = Publication.load_from_host(Host)
 
             if publication is None:
-                print("Publication not available.", file=sys.stderr)
+                print("Publication not available.", file=log_file)
                 exit()
 
             if cmd.channel == 'C':
@@ -92,14 +93,15 @@ if __name__ == '__main__':
             topic = cmd.topic
 
         if cmd.verbose:
-            print(topic, file=sys.stderr)
+            print(topic, file=log_file)
 
 
         client = MQTTClient()
         publisher = TopicClient(client, auth)
 
         if cmd.verbose:
-            print(publisher, file=sys.stderr)
+            print(publisher, file=log_file)
+
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -115,7 +117,7 @@ if __name__ == '__main__':
                     # break
                 except Exception as ex:
                     time = LocalizedDatetime.now()
-                    print("%s: %s" %(time, ex), file=sys.stderr)
+                    print("%s: %s" %(time, ex), file=log_file)
                     # pass
                     break
 
@@ -129,7 +131,11 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt as ex:
         if cmd.verbose:
-            print("osio_topic_publisher: KeyboardInterrupt", file=sys.stderr)
+            print("osio_topic_publisher: KeyboardInterrupt", file=log_file)
 
     except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+        print(JSONify.dumps(ExceptionReport.construct(ex)), file=log_file)
+
+    finally:
+        if cmd.log:
+            log_file.close()
