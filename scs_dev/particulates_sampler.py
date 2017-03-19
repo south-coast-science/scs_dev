@@ -90,7 +90,8 @@ if __name__ == '__main__':
 
     except Exception as ex:
         if cmd.log:
-            log_file.write("%s: except: %s\n" % (LocalizedDatetime.now().as_iso8601(), ex))
+            report = JSONify.dumps(ExceptionReport.construct(ex))
+            log_file.write("%s: %s\n" % (LocalizedDatetime.now().as_iso8601(), report))
             log_file.flush()
 
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
