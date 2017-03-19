@@ -36,6 +36,8 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    publisher = None
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -101,6 +103,8 @@ if __name__ == '__main__':
         client = MQTTClient()
         publisher = TopicClient(client, auth)
 
+        publisher.connect()
+
         if cmd.verbose:
             print(publisher, file=sys.stderr)
 
@@ -117,8 +121,10 @@ if __name__ == '__main__':
                         log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), datum['rec']))
                         log_file.flush()
 
-                    publisher.publish(topic, datum)
-                    break
+                    success = publisher.publish(topic, datum)
+
+                    if success:
+                        break
 
                 except Exception as ex:
                     if cmd.log:
@@ -126,7 +132,7 @@ if __name__ == '__main__':
                         log_file.write("%s\n" % report)
                         log_file.flush()
 
-                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
+                time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
 
             if cmd.log:
                 log_file.write("-\n")
@@ -153,5 +159,8 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
+        if publisher:
+            publisher.disconnect()
+
         if cmd.log:
             log_file.close()

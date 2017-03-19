@@ -69,6 +69,8 @@ class MCUTempSampler(Sampler):
 message_client = MQTTClient()
 
 topic_client = TopicClient(message_client, auth)
+topic_client.connect()
+
 print(topic_client)
 print("-")
 
@@ -87,5 +89,8 @@ try:
 except KeyboardInterrupt:
     print()
     pass
+
+finally:
+    topic_client.disconnect()
 
 
