@@ -123,8 +123,11 @@ if __name__ == '__main__':
 
                     success = publisher.publish(topic, datum)
 
-                    if success:
-                        break
+                    if cmd.log and not success:
+                        log_file.write("%s: abandoned")
+                        log_file.flush()
+
+                    break
 
                 except Exception as ex:
                     if cmd.log:
