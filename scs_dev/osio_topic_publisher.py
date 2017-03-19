@@ -135,6 +135,7 @@ if __name__ == '__main__':
                 time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
 
             if cmd.log:
+                log_file.write("%s: done\n" % LocalizedDatetime.now().as_iso8601())
                 log_file.write("-\n")
                 log_file.flush()
 
