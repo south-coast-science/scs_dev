@@ -50,11 +50,11 @@ class ParticulatesSampler(Sampler):
 
 
     def sample(self):
-        recorded = LocalizedDatetime.now()
-
         tag = self.__device_id.message_tag()
 
         opc_sample = self.__opc.sample()
+
+        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
         return ParticulatesDatum(tag, recorded, opc_sample)
 

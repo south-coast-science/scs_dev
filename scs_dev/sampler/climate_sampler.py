@@ -35,11 +35,11 @@ class ClimateSampler(Sampler):
 
 
     def sample(self):
-        recorded = LocalizedDatetime.now()
-
         tag = self.__device_id.message_tag()
 
         sht_sample = self.__sht.sample()
+
+        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
         return ClimateDatum(tag, recorded, sht_sample)
 
