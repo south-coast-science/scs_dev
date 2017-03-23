@@ -120,7 +120,8 @@ if __name__ == '__main__':
 
         for int_datum, ext_datum, pt1000_datum, board_datum, mcu_datum in sampler.samples():
             recorded = LocalizedDatetime.now()
-            datum = SampleDatum(device_id.message_tag(), recorded, int_datum, ext_datum, pt1000_datum, board_datum, mcu_datum)
+            datum = SampleDatum(device_id.message_tag(), recorded, int_datum, ext_datum, pt1000_datum, board_datum,
+                                mcu_datum)
 
             print(JSONify.dumps(datum))
             sys.stdout.flush()

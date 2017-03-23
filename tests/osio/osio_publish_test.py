@@ -45,7 +45,7 @@ class MCUTempSampler(Sampler):
     """
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, interval, sample_count = 0):
+    def __init__(self, interval, sample_count=0):
         """
         Constructor
         """
