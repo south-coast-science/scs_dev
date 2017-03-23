@@ -5,7 +5,7 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Mey require Project document.
+Requires ClientAuth and DeviceID documents.
 
 command line example:
 ./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
