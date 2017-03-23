@@ -5,10 +5,12 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+WARNING: only one MQTT client can run at any one time on one TCP/IP host.
+
 Requires ClientAuth document.
 
 command line example:
-./scs_dev/status_sampler.py | ./scs_dev/mqtt_client.py -e
+./scs_dev/status_sampler.py | ./scs_dev/mqtt_client.py -p -e
 """
 
 import json
@@ -29,6 +31,8 @@ from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 from scs_host.client.mqtt_client import MQTTClient
 from scs_host.sys.host import Host
 
+
+# TODO: host and client auth should be generalised - point to file as command line param
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -64,7 +68,7 @@ if __name__ == '__main__':
 
 
         client = MQTTClient()
-        client.connect(ClientAuth.MQTT_HOST, auth.client_id, auth.username, auth.password)
+        client.connect(ClientAuth.MQTT_HOST, auth.client_id, auth.user_id, auth.client_password)
 
         if cmd.verbose:
             print(client, file=sys.stderr)
@@ -85,7 +89,9 @@ if __name__ == '__main__':
                             log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), datum['rec']))
                             log_file.flush()
 
-                        success = client.publish(publication.topic, publication.payload, ClientAuth.MQTT_TIMEOUT)
+                        payload = JSONify.dumps(publication.payload)
+
+                        success = client.publish(publication.topic, payload, ClientAuth.MQTT_TIMEOUT)
 
                         if cmd.log and not success:
                             log_file.write("%s: abandoned")
@@ -99,7 +105,7 @@ if __name__ == '__main__':
                             log_file.write("%s\n" % report)
                             log_file.flush()
 
-                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the MQTT client!
+                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
 
                 if cmd.log:
                     log_file.write("%s: done\n" % LocalizedDatetime.now().as_iso8601())
@@ -116,7 +122,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt as ex:
         if cmd.verbose:
-            print("mqtt_publisher: KeyboardInterrupt", file=sys.stderr)
+            print("mqtt_client: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         if cmd.log:
