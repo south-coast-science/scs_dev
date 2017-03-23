@@ -5,7 +5,7 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Mey require Publication document.
+Mey require Project document.
 
 command line example:
 ./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
@@ -22,7 +22,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.client.topic_client import TopicClient
-from scs_core.osio.config.publication import Publication
+from scs_core.osio.config.project import Project
 from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -75,10 +75,10 @@ if __name__ == '__main__':
 
 
         if cmd.channel:
-            publication = Publication.load_from_host(Host)
+            publication = Project.load_from_host(Host)
 
             if publication is None:
-                print("Publication not available.", file=sys.stderr)
+                print("Project not available.", file=sys.stderr)
                 exit()
 
             if cmd.channel == 'C':
