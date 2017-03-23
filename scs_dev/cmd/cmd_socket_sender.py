@@ -23,7 +23,7 @@ class CmdSocketSender(object):
                                  help="socket port [default 2000]")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="report samples to stdout")
+                                 help="echo stdin to stdout")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
