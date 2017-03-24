@@ -17,6 +17,8 @@ from scs_dfe.gps.pam7q import PAM7Q
 from scs_host.sys.host import Host
 
 
+# TODO: why is loc sometimes null and sometimes has null fields?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
