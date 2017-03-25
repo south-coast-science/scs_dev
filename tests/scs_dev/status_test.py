@@ -6,6 +6,8 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
+
 from scs_core.data.json import JSONify
 from scs_core.sys.device_id import DeviceID
 
@@ -24,7 +26,7 @@ try:
     device_id = DeviceID.load_from_host(Host)
 
     if device_id is None:
-        print("DeviceID not available.")
+        print("DeviceID not available.", file=sys.stderr)
         exit()
 
     sampler = StatusSampler(device_id, 1.0)

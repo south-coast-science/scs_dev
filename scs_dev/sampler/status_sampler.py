@@ -17,6 +17,8 @@ from scs_dfe.gps.pam7q import PAM7Q
 from scs_host.sys.host import Host
 
 
+# TODO: why is loc sometimes null and sometimes has null fields?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
@@ -44,8 +46,6 @@ class StatusSampler(Sampler):
 
 
     def sample(self):
-        recorded = LocalizedDatetime.now()
-
         tag = self.__device_id.message_tag()
 
         # location...
@@ -67,6 +67,8 @@ class StatusSampler(Sampler):
 
         # exception...
         exception = None    # TODO: handle exception sending
+
+        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
         return StatusDatum(tag, recorded, location, temperature, exception)
 

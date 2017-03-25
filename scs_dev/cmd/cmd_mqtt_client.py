@@ -1,5 +1,5 @@
 """
-Created on 13 Jul 2016
+Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,21 +9,27 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdSocketSender(object):
+class CmdMQTTClient(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -p [-e] | -s TOPIC } [-l LOG] [-v]", version="%prog 1.0")
 
-        # optional
-        self.__parser.add_option("--port", "-p", type="int", nargs=1, action="store", default=2000, dest="port",
-                                 help="socket port [default 2000]")
+        # optional...
+        self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
+                                 help="publish documents from stdin")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
+
+        self.__parser.add_option("--sub", "-s", type="string", nargs=1, dest="topic", default=False,
+                                 help="subscribe to TOPIC")
+
+        self.__parser.add_option("--log", "-l", type="string", nargs=1, dest="log", default=False,
+                                 help="append exceptions to log")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -34,7 +40,10 @@ class CmdSocketSender(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.hostname is None:
+        if not self.publish and not self.subscribe():
+            return False
+
+        if self.echo and not self.publish:
             return False
 
         return True
@@ -42,14 +51,25 @@ class CmdSocketSender(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def subscribe(self):
+        return self.topic is not None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     @property
-    def hostname(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+    def publish(self):
+        return self.__opts.publish
 
 
     @property
-    def port(self):
-        return self.__opts.port
+    def topic(self):
+        return self.__opts.topic
+
+
+    @property
+    def log(self):
+        return self.__opts.log
 
 
     @property
@@ -74,5 +94,5 @@ class CmdSocketSender(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdSocketSender:{hostname:%s, port:%d, echo:%s, verbose:%s, args:%s}" % \
-                    (self.hostname, self.port, self.echo, self.verbose, self.args)
+        return "CmdMQTTClient:{publish:%s, topic:%s, log:%s, echo:%s, verbose:%s, args:%s}" % \
+                    (self.publish, self.topic, self.log, self.echo, self.verbose, self.args)

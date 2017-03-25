@@ -26,6 +26,9 @@ class CmdSampler(object):
         self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", default=0, dest="samples",
                                  help="number of samples (default for-ever = 0)")
 
+        self.__parser.add_option("--log", "-l", type="string", nargs=1, dest="log", default=False,
+                                 help="append exceptions to log")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -45,6 +48,11 @@ class CmdSampler(object):
 
 
     @property
+    def log(self):
+        return self.__opts.log
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -57,5 +65,5 @@ class CmdSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdSampler:{interval:%0.1f, samples:%d, verbose:%s, args:%s}" % \
-                    (self.interval, self.samples, self.verbose, self.args)
+        return "CmdSampler:{interval:%0.1f, samples:%d, log:%s, verbose:%s, args:%s}" % \
+                    (self.interval, self.samples, self.log, self.verbose, self.args)

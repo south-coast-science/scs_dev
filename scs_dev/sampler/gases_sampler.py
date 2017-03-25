@@ -38,12 +38,12 @@ class GasesSampler(Sampler):
 
 
     def sample(self):
-        recorded = LocalizedDatetime.now()
-
         tag = self.__device_id.message_tag()
 
         sht_datum = self.__sht.sample()
         afe_datum = self.__afe.sample(sht_datum)
+
+        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
         return GasesDatum(tag, recorded, afe_datum, sht_datum)
 

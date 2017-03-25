@@ -14,6 +14,7 @@ command line example:
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.device_id import DeviceID
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -35,6 +36,8 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
+    log_file = open(cmd.log, 'a') if cmd.log else None
+
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
@@ -48,7 +51,7 @@ if __name__ == '__main__':
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
-            print("DeviceID not available.")
+            print("DeviceID not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
@@ -67,6 +70,10 @@ if __name__ == '__main__':
         # run...
 
         for sample in sampler.samples():
+            if cmd.log:
+                log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), sample.rec.as_iso8601()))
+                log_file.flush()
+
             print(JSONify.dumps(sample))
             sys.stdout.flush()
 
@@ -79,7 +86,15 @@ if __name__ == '__main__':
             print("climate_sampler: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
+        if cmd.log:
+            report = JSONify.dumps(ExceptionReport.construct(ex))
+            log_file.write("%s: %s\n" % (LocalizedDatetime.now().as_iso8601(), report))
+            log_file.flush()
+
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         I2C.close()
+
+        if cmd.log:
+            log_file.close()

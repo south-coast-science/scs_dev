@@ -6,6 +6,7 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import sys
 import time
 
 from scs_core.data.json import JSONify
@@ -24,7 +25,7 @@ try:
     device_id = DeviceID.load_from_host(Host)
 
     if device_id is None:
-        print("DeviceID not available.")
+        print("DeviceID not available.", file=sys.stderr)
         exit()
 
     sampler = ParticulatesSampler(device_id, 10)
