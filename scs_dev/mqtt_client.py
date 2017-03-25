@@ -95,7 +95,7 @@ if __name__ == '__main__':
                         success = client.publish(publication.topic, payload, ClientAuth.MQTT_TIMEOUT)
 
                         if cmd.log and not success:
-                            log_file.write("%s: abandoned")
+                            log_file.write("%s: abandoned\n" % LocalizedDatetime.now().as_iso8601())
                             log_file.flush()
 
                         break
