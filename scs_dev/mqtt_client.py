@@ -86,7 +86,8 @@ if __name__ == '__main__':
 
                     try:
                         if cmd.log:
-                            log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), datum['rec']))
+                            log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(),
+                                                              datum['payload']['rec']))
                             log_file.flush()
 
                         payload = JSONify.dumps(publication.payload)
