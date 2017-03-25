@@ -10,7 +10,7 @@ WARNING: only one MQTT client can run at any one time on one TCP/IP host.
 Requires ClientAuth document.
 
 command line example:
-./scs_dev/status_sampler.py | ./scs_dev/mqtt_client.py -p -e
+./scs_dev/status_sampler.py | ./scs_dev/osio_mqtt_client.py -p -e
 """
 
 import json
@@ -32,8 +32,6 @@ from scs_host.client.mqtt_client import MQTTClient
 from scs_host.sys.host import Host
 
 
-# TODO: host and client auth should be generalised - point to file as command line param
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -47,8 +45,6 @@ if __name__ == '__main__':
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit()
-
-    log_file = open(cmd.log, 'a') if cmd.log else None
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -85,33 +81,34 @@ if __name__ == '__main__':
                     publication = Publication.construct_from_jdict(datum)
 
                     try:
-                        if cmd.log:
-                            log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(),
-                                                              datum['payload']['rec']))
-                            log_file.flush()
+                        if cmd.verbose:
+                            now = LocalizedDatetime.now()
+                            print("%s:         mqtt: %s" % (now.as_iso8601(), datum['payload']['rec']), file=sys.stderr)
+                            sys.stderr.flush()
 
                         payload = JSONify.dumps(publication.payload)
 
                         success = client.publish(publication.topic, payload, ClientAuth.MQTT_TIMEOUT)
 
-                        if cmd.log and not success:
-                            log_file.write("%s: abandoned\n" % LocalizedDatetime.now().as_iso8601())
-                            log_file.flush()
+                        if cmd.verbose and not success:
+                            now = LocalizedDatetime.now()
+                            print("%s:         mqtt: abandoned" % now.as_iso8601(), file=sys.stderr)
+                            sys.stderr.flush()
 
                         break
 
                     except Exception as ex:
-                        if cmd.log:
-                            report = JSONify.dumps(ExceptionReport.construct(ex))
-                            log_file.write("%s\n" % report)
-                            log_file.flush()
+                        if cmd.verbose:
+                            print("%s" % JSONify.dumps(ExceptionReport.construct(ex)))
+                            sys.stderr.flush()
 
                     time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
 
-                if cmd.log:
-                    log_file.write("%s: done\n" % LocalizedDatetime.now().as_iso8601())
-                    log_file.write("-\n")
-                    log_file.flush()
+                if cmd.verbose:
+                    now = LocalizedDatetime.now()
+                    print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
+                    print("-", file=sys.stderr)
+                    sys.stderr.flush()
 
                 if cmd.echo:
                     print(line, end="")
@@ -126,16 +123,8 @@ if __name__ == '__main__':
             print("mqtt_client: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
-        if cmd.log:
-            report = JSONify.dumps(ExceptionReport.construct(ex))
-            log_file.write("%s: %s\n" % (LocalizedDatetime.now().as_iso8601(), report))
-            log_file.flush()
-
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if client:
             client.disconnect()
-
-        if cmd.log:
-            log_file.close()

@@ -36,8 +36,6 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
-    log_file = open(cmd.log, 'a') if cmd.log else None
-
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
@@ -70,9 +68,10 @@ if __name__ == '__main__':
         # run...
 
         for sample in sampler.samples():
-            if cmd.log:
-                log_file.write("%s: rec: %s\n" % (LocalizedDatetime.now().as_iso8601(), sample.rec.as_iso8601()))
-                log_file.flush()
+            if cmd.verbose:
+                now = LocalizedDatetime.now()
+                print("%s:      climate: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
+                sys.stderr.flush()
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
@@ -86,15 +85,7 @@ if __name__ == '__main__':
             print("climate_sampler: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
-        if cmd.log:
-            report = JSONify.dumps(ExceptionReport.construct(ex))
-            log_file.write("%s: %s\n" % (LocalizedDatetime.now().as_iso8601(), report))
-            log_file.flush()
-
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         I2C.close()
-
-        if cmd.log:
-            log_file.close()
