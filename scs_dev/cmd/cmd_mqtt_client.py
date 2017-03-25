@@ -16,7 +16,7 @@ class CmdMQTTClient(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -p [-e] | -s TOPIC } [-l LOG] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -p [-e] | -s TOPIC } [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
@@ -27,9 +27,6 @@ class CmdMQTTClient(object):
 
         self.__parser.add_option("--sub", "-s", type="string", nargs=1, dest="topic", default=False,
                                  help="subscribe to TOPIC")
-
-        self.__parser.add_option("--log", "-l", type="string", nargs=1, dest="log", default=False,
-                                 help="append exceptions to log")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -68,11 +65,6 @@ class CmdMQTTClient(object):
 
 
     @property
-    def log(self):
-        return self.__opts.log
-
-
-    @property
     def echo(self):
         return self.__opts.echo
 
@@ -94,5 +86,5 @@ class CmdMQTTClient(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdMQTTClient:{publish:%s, topic:%s, log:%s, echo:%s, verbose:%s, args:%s}" % \
-                    (self.publish, self.topic, self.log, self.echo, self.verbose, self.args)
+        return "CmdMQTTClient:{publish:%s, topic:%s, echo:%s, verbose:%s, args:%s}" % \
+                    (self.publish, self.topic, self.echo, self.verbose, self.args)
