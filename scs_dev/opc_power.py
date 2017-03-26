@@ -18,6 +18,9 @@ from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.particulate.opc_n2 import OPCN2
 
+from scs_host.bus.i2c import I2C
+from scs_host.sys.host import Host
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -38,6 +41,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resource...
+
+        I2C.open(Host.I2C_SENSORS)
+
 
         opc = OPCN2()
 
@@ -64,3 +70,6 @@ if __name__ == '__main__':
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
+    finally:
+        I2C.close()

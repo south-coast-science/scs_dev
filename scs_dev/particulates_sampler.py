@@ -22,6 +22,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
@@ -43,6 +44,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resource...
+
+        I2C.open(Host.I2C_SENSORS)
+
 
         device_id = DeviceID.load_from_host(Host)
 
@@ -91,3 +95,5 @@ if __name__ == '__main__':
     finally:
         if sampler:
             sampler.off()
+
+        I2C.close()
