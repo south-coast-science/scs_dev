@@ -63,6 +63,8 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(sampler, file=sys.stderr)
 
+        sampler.off()       # in case it had been left on after the last run
+
         sampler.on()
         sampler.reset_timer()
 

@@ -43,6 +43,7 @@ class ParticulatesSampler(Sampler):
     def off(self):
         self.__opc.operations_off()
         self.__opc.power_off()
+        time.sleep(1)
 
 
     def reset(self):
