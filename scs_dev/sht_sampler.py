@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
 """
-Created on 2 Oct 2016
+Created on 3 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 Requires DeviceID document.
 
 command line example:
-./scs_dev/temp_sampler.py -i 2 -n 10
+./scs_dev/sht_sampler.py -i 0.1 -n 10
 """
 
 import sys
@@ -24,7 +24,6 @@ from scs_dev.cmd.cmd_sampler import CmdSampler
 
 from scs_dfe.board.mcp9808 import MCP9808
 from scs_dfe.climate.sht_conf import SHTConf
-from scs_dfe.climate.sht_datum import SHTDatum
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -54,7 +53,6 @@ class SHTSampler(Sampler):
 
     def sample(self):
         return 'sht', self.__climate.sample()
-        # return 'sht', SHTDatum(0.1, 0.1)
 
 
     # ----------------------------------------------------------------------------------------------------------------
