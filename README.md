@@ -1,7 +1,7 @@
 # scs-dev
 High-level scripts and command-line applications for South Coast Science data producer developers.
 
-Required libraries: 
+**Required libraries:** 
 
 * Third party: -
 * SCS root:  scs_core
@@ -9,7 +9,7 @@ Required libraries:
 * SCS dfe:   scs_dfe_eng
 
 
-Typical PYTHONPATH:
+**Typical PYTHONPATH:**
 
 Raspberry Pi, in /home/pi/.profile:
 
