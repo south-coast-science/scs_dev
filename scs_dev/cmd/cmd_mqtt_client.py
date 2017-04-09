@@ -16,12 +16,9 @@ class CmdMQTTClient(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-s TOPIC] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [TOPIC] [-e] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--sub", "-s", type="string", nargs=1, dest="topic", default=None,
-                                 help="subscribe to TOPIC")
-
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 
@@ -35,7 +32,7 @@ class CmdMQTTClient(object):
 
     @property
     def topic(self):
-        return self.__opts.topic
+        return self.__args[0] if len(self.__args) > 0 else None
 
 
     @property
