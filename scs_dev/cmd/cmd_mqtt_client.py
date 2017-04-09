@@ -7,6 +7,8 @@ Created on 23 Mar 2017
 import optparse
 
 
+# TODO: remove --pub flag
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdMQTTClient(object):
