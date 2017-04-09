@@ -29,7 +29,24 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 
 from scs_host.client.mqtt_client import MQTTClient
+from scs_host.client.mqtt_client import MQTTSubscriber
 from scs_host.sys.host import Host
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# subscription handler...
+
+class OSIOMQTTClient(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @classmethod
+    def print_publication(cls, pub):
+        print(JSONify.dumps(pub))
+        sys.stdout.flush()
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -42,9 +59,6 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdMQTTClient()
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit()
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -63,7 +77,9 @@ if __name__ == '__main__':
             print(auth, file=sys.stderr)
 
 
-        client = MQTTClient()
+        subscriber = None if cmd.topic is None else MQTTSubscriber(cmd.topic, OSIOMQTTClient.print_publication)
+
+        client = MQTTClient(subscriber)
         client.connect(ClientAuth.MQTT_HOST, auth.client_id, auth.user_id, auth.client_password)
 
         if cmd.verbose:
@@ -73,46 +89,43 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if cmd.publish:
-            for line in sys.stdin:
-                datum = json.loads(line, object_pairs_hook=OrderedDict)
+        for line in sys.stdin:
+            datum = json.loads(line, object_pairs_hook=OrderedDict)
 
-                while True:
-                    publication = Publication.construct_from_jdict(datum)
+            while True:
+                publication = Publication.construct_from_jdict(datum)
 
-                    try:
-                        if cmd.verbose:
-                            now = LocalizedDatetime.now()
-                            print("%s:         mqtt: %s" % (now.as_iso8601(), datum['payload']['rec']), file=sys.stderr)
-                            sys.stderr.flush()
+                try:
+                    if cmd.verbose:
+                        now = LocalizedDatetime.now()
+                        print("%s:         mqtt: %s" % (now.as_iso8601(), datum['payload']['rec']), file=sys.stderr)
+                        sys.stderr.flush()
 
-                        payload = JSONify.dumps(publication.payload)
+                    success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
-                        success = client.publish(publication.topic, payload, ClientAuth.MQTT_TIMEOUT)
+                    if cmd.verbose and not success:
+                        now = LocalizedDatetime.now()
+                        print("%s:         mqtt: abandoned" % now.as_iso8601(), file=sys.stderr)
+                        sys.stderr.flush()
 
-                        if cmd.verbose and not success:
-                            now = LocalizedDatetime.now()
-                            print("%s:         mqtt: abandoned" % now.as_iso8601(), file=sys.stderr)
-                            sys.stderr.flush()
+                    break
 
-                        break
+                except Exception as ex:
+                    if cmd.verbose:
+                        print("%s" % JSONify.dumps(ExceptionReport.construct(ex)))
+                        sys.stderr.flush()
 
-                    except Exception as ex:
-                        if cmd.verbose:
-                            print("%s" % JSONify.dumps(ExceptionReport.construct(ex)))
-                            sys.stderr.flush()
+                time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
 
-                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
+            if cmd.verbose:
+                now = LocalizedDatetime.now()
+                print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
+                print("-", file=sys.stderr)
+                sys.stderr.flush()
 
-                if cmd.verbose:
-                    now = LocalizedDatetime.now()
-                    print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
-                    print("-", file=sys.stderr)
-                    sys.stderr.flush()
-
-                if cmd.echo:
-                    print(line, end="")
-                    sys.stdout.flush()
+            if cmd.echo:
+                print(line, end="")
+                sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
