@@ -80,8 +80,9 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # DeviceID...
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
@@ -91,7 +92,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
-
+        # sampler...
         calib = Pt1000Calib.load_from_host(Host)
         pt1000 = calib.pt1000()
 

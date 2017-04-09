@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
         csv = CSVWriter(cmd.filename, cmd.cache, cmd.append)
 

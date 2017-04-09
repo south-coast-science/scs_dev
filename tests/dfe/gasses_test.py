@@ -24,6 +24,7 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# DeviceID...
 device_id = DeviceID.load_from_host(Host)
 
 if device_id is None:

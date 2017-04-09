@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
         sckt = SocketSender(cmd.hostname, cmd.port, cmd.verbose)
 

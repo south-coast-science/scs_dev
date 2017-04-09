@@ -65,8 +65,9 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # ClientAuth...
         auth = ClientAuth.load_from_host(Host)
 
         if auth is None:
@@ -76,7 +77,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(auth, file=sys.stderr)
 
-
+        # client...
         subscriber = None if cmd.topic is None else MQTTSubscriber(cmd.topic, OSIOMQTTClient.print_publication)
 
         client = MQTTClient(subscriber)
