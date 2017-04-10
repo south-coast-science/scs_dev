@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
                 except Exception as ex:
                     if cmd.verbose:
-                        print("%s" % JSONify.dumps(ExceptionReport.construct(ex)))
+                        print(JSONify.dumps(ExceptionReport.construct(ex)))
                         sys.stderr.flush()
 
                 time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
