@@ -3,7 +3,7 @@ High-level scripts and command-line applications for South Coast Science data pr
 
 **Required libraries:** 
 
-* Third party: -
+* Third party: paho-mqtt
 * SCS root:  scs_core
 * SCS host:  scs_host_bbe or scs_host_rpi
 * SCS dfe:   scs_dfe_eng
