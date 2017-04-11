@@ -43,11 +43,11 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
         I2C.open(Host.I2C_SENSORS)
 
-
+        # DeviceID...
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
-
+        # sampler...
         sampler = ParticulatesSampler(device_id, cmd.interval, cmd.samples)
 
         if cmd.verbose:

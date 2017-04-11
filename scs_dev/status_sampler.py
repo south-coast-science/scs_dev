@@ -43,8 +43,9 @@ if __name__ == '__main__':
         I2C.open(Host.I2C_SENSORS)
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # DeviceID...
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
@@ -55,6 +56,7 @@ if __name__ == '__main__':
             print(device_id, file=sys.stderr)
 
 
+        # sampler...
         gps = PAM7Q()
         gps.power_on()
 

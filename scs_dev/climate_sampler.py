@@ -44,8 +44,9 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # DeviceID...
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:
@@ -55,6 +56,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(device_id, file=sys.stderr)
 
+        # sampler...
         sht_conf = SHTConf.load_from_host(Host)
         sht = sht_conf.ext_sht()
 

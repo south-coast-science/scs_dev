@@ -49,8 +49,9 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # DeviceID...
         device_id = DeviceID.load_from_host(Host)
 
         if device_id is None:

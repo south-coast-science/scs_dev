@@ -9,24 +9,21 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdMQTTClient(object):
+class CmdOSIOMQTTClient(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -p [-e] | -s TOPIC } [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [TOPIC] [-p [-e]] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
-                                 help="publish documents from stdin")
+                                 help="publish stdin publications")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="echo stdin to stdout")
-
-        self.__parser.add_option("--sub", "-s", type="string", nargs=1, dest="topic", default=False,
-                                 help="subscribe to TOPIC")
+                                 help="echo stdin to stdout (if publishing)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -37,9 +34,6 @@ class CmdMQTTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if not self.publish and not self.subscribe():
-            return False
-
         if self.echo and not self.publish:
             return False
 
@@ -48,20 +42,14 @@ class CmdMQTTClient(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def subscribe(self):
-        return self.topic is not None
+    @property
+    def topic(self):
+        return self.__args[0] if len(self.__args) > 0 else None
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def publish(self):
         return self.__opts.publish
-
-
-    @property
-    def topic(self):
-        return self.__opts.topic
 
 
     @property
@@ -86,5 +74,5 @@ class CmdMQTTClient(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdMQTTClient:{publish:%s, topic:%s, echo:%s, verbose:%s, args:%s}" % \
-                    (self.publish, self.topic, self.echo, self.verbose, self.args)
+        return "CmdOSIOMQTTClient:{topic:%s, publish:%s, echo:%s, verbose:%s, args:%s}" % \
+               (self.topic, self.publish, self.echo, self.verbose, self.args)
