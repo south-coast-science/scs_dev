@@ -51,5 +51,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{device_id:%s, afe:%s, sht:%s, timer:%s, sample_count:%d}" % \
+        return "GasesSampler:{device_id:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
                     (self.__device_id, self.__afe, self.__sht, self.timer, self.sample_count)

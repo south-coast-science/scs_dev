@@ -76,5 +76,5 @@ class StatusSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{device_id:%s, board:%s, timer:%s, sample_count:%d}" % \
+        return "StatusSampler:{device_id:%s, board:%s, timer:%s, sample_count:%s}" % \
                     (self.__device_id, self.__board, self.timer, self.sample_count)

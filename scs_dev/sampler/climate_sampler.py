@@ -47,5 +47,5 @@ class ClimateSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClimateSampler:{device_id:%s, sht:%s, timer:%s, sample_count:%d}" % \
+        return "ClimateSampler:{device_id:%s, sht:%s, timer:%s, sample_count:%s}" % \
                (self.__device_id, self.__sht, self.timer, self.sample_count)
