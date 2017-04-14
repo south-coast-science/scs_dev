@@ -5,6 +5,8 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
+
 Requires DeviceID and Project documents.
 
 command line example:
@@ -13,6 +15,7 @@ command line example:
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -88,7 +91,17 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             datum = json.loads(line, object_pairs_hook=OrderedDict)
-            publication = Publication(topic, datum)
+
+            if cmd.override:
+                payload = OrderedDict({'__timestamp': datum['rec']})
+                payload.update(datum)
+
+            else:
+                payload = datum
+
+            # time.sleep(1)
+
+            publication = Publication(topic, payload)
 
             print(JSONify.dumps(publication))
             sys.stdout.flush()
