@@ -63,5 +63,5 @@ class ParticulatesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParticulatesSampler:{device_id:%s, opc:%s, timer:%s, sample_count:%d}" % \
+        return "ParticulatesSampler:{device_id:%s, opc:%s, timer:%s, sample_count:%s}" % \
                     (self.__device_id, self.__opc, self.timer, self.sample_count)
