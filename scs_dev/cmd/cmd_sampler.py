@@ -57,5 +57,5 @@ class CmdSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdSampler:{interval:%0.1f, samples:%d, verbose:%s, args:%s}" % \
+        return "CmdSampler:{interval:%0.1f, samples:%s, verbose:%s, args:%s}" % \
                     (self.interval, self.samples, self.verbose, self.args)
