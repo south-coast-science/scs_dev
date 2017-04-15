@@ -2,6 +2,8 @@
 Created on 19 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
 """
 
 import optparse
@@ -16,7 +18,7 @@ class CmdTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S } } [-e] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S } } [-f] [-e] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -27,6 +29,9 @@ class CmdTopicPublisher(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--override", "-o", action="store_true", dest="override", default=False,
+                                 help="override OSIO reception datetime")
+
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 
@@ -62,6 +67,11 @@ class CmdTopicPublisher(object):
 
 
     @property
+    def override(self):
+        return self.__opts.override
+
+
+    @property
     def echo(self):
         return self.__opts.echo
 
@@ -83,5 +93,5 @@ class CmdTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdTopicPublisher:{topic:%s, channel:%s, echo:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.channel, self.echo, self.verbose, self.args)
+        return "CmdTopicPublisher:{topic:%s, channel:%s, override:%s, echo:%s, verbose:%s, args:%s}" % \
+                    (self.topic, self.channel, self.override, self.echo, self.verbose, self.args)

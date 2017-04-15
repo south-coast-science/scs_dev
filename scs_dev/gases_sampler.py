@@ -82,7 +82,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        for sample in sampler.samples():        # TODO: why does this free-run?
+        for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now()
                 print("%s:        gases: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
