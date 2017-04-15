@@ -7,7 +7,7 @@ Created on 23 Mar 2017
 
 WARNING: only one MQTT client can run at any one time on a TCP/IP host.
 
-Requires ClientAuth document.
+Requires APIAuth and ClientAuth documents.
 
 command line example:
 ./scs_dev/status_sampler.py | ./scs_dev/osio_mqtt_client.py -e
@@ -25,9 +25,12 @@ from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
+from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
+from scs_core.osio.manager.topic_manager import TopicManager
 from scs_core.sys.exception_report import ExceptionReport
 
+from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient
 from scs_host.client.mqtt_client import MQTTSubscriber
 from scs_host.sys.host import Host
@@ -77,21 +80,40 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # ClientAuth...
-        auth = ClientAuth.load_from_host(Host)
+        # APIAuth...
+        api_auth = APIAuth.load_from_host(Host)
 
-        if auth is None:
+        if api_auth is None:
+            print("APIAuth not available.", file=sys.stderr)
+            exit()
+
+        if cmd.verbose:
+            print(api_auth, file=sys.stderr)
+
+
+        # ClientAuth...
+        client_auth = ClientAuth.load_from_host(Host)
+
+        if client_auth is None:
             print("ClientAuth not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
-            print(auth, file=sys.stderr)
+            print(client_auth, file=sys.stderr)
+
+
+        # manager...
+        manager = TopicManager(HTTPClient(), api_auth.api_key)
+
+        if cmd.verbose:
+            print(manager, file=sys.stderr)
+
 
         # client...
         subscriber = None if cmd.topic is None else MQTTSubscriber(cmd.topic, OSIOMQTTClient.print_publication)
 
         client = MQTTClient(subscriber)
-        client.connect(ClientAuth.MQTT_HOST, auth.client_id, auth.user_id, auth.client_password)
+        client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         if cmd.verbose:
             print(client, file=sys.stderr)
@@ -99,6 +121,15 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # check topic...
+        if cmd.topic:
+            topic = manager.find(cmd.topic)
+
+            if topic is None:
+                print("Topic not available.", file=sys.stderr)
+                exit()
+
 
         # publish loop...
         if cmd.publish:
@@ -138,6 +169,7 @@ if __name__ == '__main__':
                 if cmd.echo:
                     print(line, end="")
                     sys.stdout.flush()
+
 
         # subscribe loop...
         if cmd.topic:
