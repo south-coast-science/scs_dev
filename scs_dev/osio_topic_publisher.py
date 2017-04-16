@@ -15,7 +15,6 @@ command line example:
 
 import json
 import sys
-import time
 
 from collections import OrderedDict
 
