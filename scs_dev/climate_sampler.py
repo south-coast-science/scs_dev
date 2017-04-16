@@ -5,7 +5,7 @@ Created on 18 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Requires DeviceID document.
+Requires SystemID document.
 
 command line example:
 ./scs_dev/climate_sampler.py -i 5 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/climate
@@ -15,7 +15,7 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -46,21 +46,21 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # DeviceID...
-        device_id = DeviceID.load_from_host(Host)
+        # SystemID...
+        system_id = SystemID.load_from_host(Host)
 
-        if device_id is None:
-            print("DeviceID not available.", file=sys.stderr)
+        if system_id is None:
+            print("SystemID not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
-            print(device_id, file=sys.stderr)
+            print(system_id, file=sys.stderr)
 
         # sampler...
         sht_conf = SHTConf.load_from_host(Host)
         sht = sht_conf.ext_sht()
 
-        sampler = ClimateSampler(device_id, sht, cmd.interval, cmd.samples)
+        sampler = ClimateSampler(system_id, sht, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

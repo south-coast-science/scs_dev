@@ -18,13 +18,13 @@ class ClimateSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_id, sht, interval, sample_count=0):
+    def __init__(self, system_id, sht, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__device_id = device_id
+        self.__system_id = system_id
         self.__sht = sht
 
 
@@ -35,7 +35,7 @@ class ClimateSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__device_id.message_tag()
+        tag = self.__system_id.message_tag()
 
         sht_sample = self.__sht.sample()
 
@@ -47,5 +47,5 @@ class ClimateSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClimateSampler:{device_id:%s, sht:%s, timer:%s, sample_count:%s}" % \
-               (self.__device_id, self.__sht, self.timer, self.sample_count)
+        return "ClimateSampler:{system_id:%s, sht:%s, timer:%s, sample_count:%s}" % \
+               (self.__system_id, self.__sht, self.timer, self.sample_count)

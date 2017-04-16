@@ -9,7 +9,7 @@ Created on 20 Oct 2016
 import sys
 
 from scs_core.data.json import JSONify
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.gases_sampler import GasesSampler
 
@@ -24,11 +24,11 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# DeviceID...
-device_id = DeviceID.load_from_host(Host)
+# SystemID...
+system_id = SystemID.load_from_host(Host)
 
-if device_id is None:
-    print("DeviceID not available.", file=sys.stderr)
+if system_id is None:
+    print("SystemID not available.", file=sys.stderr)
     exit()
 
 sht_conf = SHTConf.load_from_host(Host)
@@ -46,7 +46,7 @@ sensors = calib.sensors(afe_baseline)
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = GasesSampler(device_id, sht, pt1000, sensors, 1)
+    sampler = GasesSampler(system_id, sht, pt1000, sensors, 1)
     print(sampler)
     print("-")
 

@@ -22,13 +22,13 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_id, interval, sample_count=0):
+    def __init__(self, system_id, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__device_id = device_id
+        self.__system_id = system_id
         self.__opc = OPCN2()
 
 
@@ -51,7 +51,7 @@ class ParticulatesSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__device_id.message_tag()
+        tag = self.__system_id.message_tag()
 
         opc_sample = self.__opc.sample()
 
@@ -63,5 +63,5 @@ class ParticulatesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParticulatesSampler:{device_id:%s, opc:%s, timer:%s, sample_count:%s}" % \
-                    (self.__device_id, self.__opc, self.timer, self.sample_count)
+        return "ParticulatesSampler:{system_id:%s, opc:%s, timer:%s, sample_count:%s}" % \
+                    (self.__system_id, self.__opc, self.timer, self.sample_count)
