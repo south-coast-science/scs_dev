@@ -10,7 +10,7 @@ import sys
 import time
 
 from scs_core.data.json import JSONify
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
@@ -22,13 +22,13 @@ from scs_host.sys.host import Host
 sampler = None
 
 try:
-    device_id = DeviceID.load_from_host(Host)
+    system_id = SystemID.load_from_host(Host)
 
-    if device_id is None:
-        print("DeviceID not available.", file=sys.stderr)
+    if system_id is None:
+        print("SystemID not available.", file=sys.stderr)
         exit()
 
-    sampler = ParticulatesSampler(device_id, 10)
+    sampler = ParticulatesSampler(system_id, 10)
     print(sampler)
     print("-")
 

@@ -20,13 +20,13 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_id, sht, pt1000, sensors, interval, sample_count=0):
+    def __init__(self, system_id, sht, pt1000, sensors, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__device_id = device_id
+        self.__system_id = system_id
         self.__afe = AFE(pt1000, sensors)
         self.__sht = sht
 
@@ -38,7 +38,7 @@ class GasesSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__device_id.message_tag()
+        tag = self.__system_id.message_tag()
 
         sht_datum = self.__sht.sample()
         afe_datum = self.__afe.sample(sht_datum)
@@ -51,5 +51,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{device_id:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
-                    (self.__device_id, self.__afe, self.__sht, self.timer, self.sample_count)
+        return "GasesSampler:{system_id:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
+                    (self.__system_id, self.__afe, self.__sht, self.timer, self.sample_count)

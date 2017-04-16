@@ -28,13 +28,13 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, device_id, interval, sample_count=0):
+    def __init__(self, system_id, interval, sample_count=0):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__device_id = device_id
+        self.__system_id = system_id
         self.__board = MCP9808(True)
         self.__gps = PAM7Q()
 
@@ -46,7 +46,7 @@ class StatusSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__device_id.message_tag()
+        tag = self.__system_id.message_tag()
 
         # location...
         try:
@@ -76,5 +76,5 @@ class StatusSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{device_id:%s, board:%s, timer:%s, sample_count:%s}" % \
-                    (self.__device_id, self.__board, self.timer, self.sample_count)
+        return "StatusSampler:{system_id:%s, board:%s, timer:%s, sample_count:%s}" % \
+                    (self.__system_id, self.__board, self.timer, self.sample_count)

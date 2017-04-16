@@ -5,7 +5,7 @@ Created on 2 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Requires DeviceID document.
+Requires SystemID document.
 
 command line example:
 ./scs_dev/temp_sampler.py -i 2 -n 10
@@ -17,7 +17,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.sample_datum import SampleDatum
 from scs_core.sync.sampler import Sampler
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -89,15 +89,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # DeviceID...
-        device_id = DeviceID.load_from_host(Host)
+        # SystemID...
+        system_id = SystemID.load_from_host(Host)
 
-        if device_id is None:
-            print("DeviceID not available.", file=sys.stderr)
+        if system_id is None:
+            print("SystemID not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
-            print(device_id, file=sys.stderr)
+            print(system_id, file=sys.stderr)
 
         # sampler...
         sht_conf = SHTConf.load_from_host(Host)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
         for int_datum, ext_datum, pt1000_datum, board_datum, mcu_datum in sampler.samples():
             recorded = LocalizedDatetime.now()
-            datum = SampleDatum(device_id.message_tag(), recorded, int_datum, ext_datum, pt1000_datum, board_datum,
+            datum = SampleDatum(system_id.message_tag(), recorded, int_datum, ext_datum, pt1000_datum, board_datum,
                                 mcu_datum)
 
             print(JSONify.dumps(datum))

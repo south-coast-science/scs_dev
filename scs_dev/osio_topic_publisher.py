@@ -7,7 +7,7 @@ Created on 18 Nov 2016
 
 https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
 
-Requires DeviceID and Project documents.
+Requires SystemID and Project documents.
 
 command line example:
 ./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
@@ -22,7 +22,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 from scs_core.osio.config.project import Project
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
@@ -49,15 +49,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # DeviceID...
-        device_id = DeviceID.load_from_host(Host)
+        # SystemID...
+        system_id = SystemID.load_from_host(Host)
 
-        if device_id is None:
-            print("DeviceID not available.", file=sys.stderr)
+        if system_id is None:
+            print("SystemID not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
-            print(device_id, file=sys.stderr)
+            print(system_id, file=sys.stderr)
 
 
         if cmd.channel:
@@ -77,7 +77,7 @@ if __name__ == '__main__':
                 topic = project.particulates_topic_path()
 
             else:
-                topic = project.status_topic_path(device_id)
+                topic = project.status_topic_path(system_id)
 
         else:
             topic = cmd.topic

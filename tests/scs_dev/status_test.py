@@ -9,7 +9,7 @@ Created on 20 Oct 2016
 import sys
 
 from scs_core.data.json import JSONify
-from scs_core.sys.device_id import DeviceID
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.status_sampler import StatusSampler
 
@@ -23,13 +23,13 @@ from scs_host.sys.host import Host
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    device_id = DeviceID.load_from_host(Host)
+    system_id = SystemID.load_from_host(Host)
 
-    if device_id is None:
-        print("DeviceID not available.", file=sys.stderr)
+    if system_id is None:
+        print("SystemID not available.", file=sys.stderr)
         exit()
 
-    sampler = StatusSampler(device_id, 1.0)
+    sampler = StatusSampler(system_id, 1.0)
     print(sampler)
     print("-")
 
