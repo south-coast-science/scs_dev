@@ -6,7 +6,7 @@ Created on 18 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_analysis/socket_receiver.py -v
+./socket_receiver.py -v
 """
 
 import socket

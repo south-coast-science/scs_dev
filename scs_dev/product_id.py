@@ -6,7 +6,7 @@ Created on 26 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/product_id.py
+./product_id.py
 """
 
 import sys

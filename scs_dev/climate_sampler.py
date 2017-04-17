@@ -8,7 +8,7 @@ Created on 18 Feb 2017
 Requires SystemID document.
 
 command line example:
-./scs_dev/climate_sampler.py -i 5 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/climate
+./climate_sampler.py -i 5 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/climate
 """
 
 import sys

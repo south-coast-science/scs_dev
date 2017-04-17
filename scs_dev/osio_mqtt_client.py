@@ -10,7 +10,7 @@ WARNING: only one MQTT client can run at any one time on a TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-./scs_dev/status_sampler.py | ./scs_dev/osio_mqtt_client.py -e
+./status_sampler.py | ./osio_mqtt_client.py -e
 """
 
 import json

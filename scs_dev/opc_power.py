@@ -6,7 +6,7 @@ Created on 26 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/opc_power.py -v 0
+./opc_power.py -v 0
 """
 
 import sys
