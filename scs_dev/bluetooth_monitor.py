@@ -6,7 +6,7 @@ Created on 2 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/bluetooth_monitor.py > /dev/null &
+./bluetooth_monitor.py > /dev/null &
 """
 
 import sys

@@ -6,7 +6,7 @@ Created on 19 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/temp_sampler.py | ./scs_dev/csv_writer.py temp.csv -e
+./temp_sampler.py | ./csv_writer.py temp.csv -e
 """
 
 import sys

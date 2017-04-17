@@ -1,25 +1,24 @@
 #!/usr/bin/env python3
 
 """
-Created on 26 Mar 2017
+Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./opc_power.py -v 0
+./control_sender.py scs-be2-3 5016BBBK202F shutdown now -v | \
+./osio_topic_publisher.py -t /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
+./osio_mqtt_client.py -p -e
 """
 
 import sys
 
+from scs_core.control.control_datum import ControlDatum
 from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_power import CmdPower
-
-from scs_dfe.particulate.opc_n2 import OPCN2
-
-from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
+from scs_dev.cmd.cmd_control_sender import CmdControlSender
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -29,7 +28,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdPower()
+    cmd = CmdControlSender()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -39,30 +38,16 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
 
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
-        I2C.open(Host.I2C_SENSORS)
-
-
-        opc = OPCN2()
-
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if cmd.power:
-            # OPC...
-            opc.power_on()
-            opc.operations_on()
+        now = LocalizedDatetime.now()
 
-        else:
-            # OPC...
-            opc.operations_off()
-            opc.power_off()
+        datum = ControlDatum.construct(cmd.tag, now, cmd.command, cmd.params, cmd.serial_number)
 
-        if cmd.verbose:
-            print(opc, file=sys.stderr)
+        print(JSONify.dumps(datum))
+        sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -70,6 +55,3 @@ if __name__ == '__main__':
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
-
-    finally:
-        I2C.close()

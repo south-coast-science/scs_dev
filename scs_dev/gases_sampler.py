@@ -10,7 +10,7 @@ Requires SystemID document.
 Note: this script uses the internal SHT temp sensor for temperature compensation.
 
 command line example:
-./scs_dev/gases_sampler.py -i 5 | ./scs_dev/osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
+./gases_sampler.py -i 5 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
 """
 
 import sys

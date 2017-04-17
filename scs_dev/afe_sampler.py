@@ -10,7 +10,7 @@ Requires SystemID document.
 Note: this script uses the Pt1000 temp sensor for temperature compensation.
 
 command line example:
-./scs_dev/afe_sampler.py -i 2 -n 10
+./afe_sampler.py -i 2 -n 10
 """
 
 import sys

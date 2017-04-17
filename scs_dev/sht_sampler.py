@@ -8,7 +8,7 @@ Created on 3 Apr 2017
 Requires SystemID document.
 
 command line example:
-./scs_dev/sht_sampler.py -i 0.1 -n 10
+./sht_sampler.py -i 0.1 -n 10
 """
 
 import sys

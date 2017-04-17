@@ -6,7 +6,7 @@ Created on 20 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/led.py -s G
+./led.py -s G
 """
 
 import sys
