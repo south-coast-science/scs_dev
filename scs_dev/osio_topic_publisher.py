@@ -58,7 +58,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
-
+        # topic...
         if cmd.channel:
             project = Project.load_from_host(Host)
 

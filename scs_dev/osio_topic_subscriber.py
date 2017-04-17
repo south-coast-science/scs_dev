@@ -10,7 +10,8 @@ https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-informat
 Requires SystemID and Project documents.
 
 command line example:
-./scs_dev/status_sampler.py | ./scs_dev/osio_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
+./osio_mqtt_client.py /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
+./osio_topic_subscriber.py -cX
 """
 
 import json
@@ -24,7 +25,7 @@ from scs_core.osio.config.project import Project
 from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
+from scs_dev.cmd.cmd_topic_subscriber import CmdTopicSubscriber
 
 from scs_host.sys.host import Host
 
@@ -36,7 +37,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdTopicPublisher()
+    cmd = CmdTopicSubscriber()
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit()
@@ -58,7 +59,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
-
+        # topic...
         if cmd.channel:
             project = Project.load_from_host(Host)
 
@@ -87,8 +88,6 @@ if __name__ == '__main__':
         else:
             topic = cmd.topic
 
-        # TODO: check if topic exists
-
         if cmd.verbose:
             print(topic, file=sys.stderr)
 
@@ -102,7 +101,6 @@ if __name__ == '__main__':
             publication = Publication.construct_from_jdict(jdict)
 
             if publication.topic == topic:
-                # if my tag...
                 print(JSONify.dumps(publication.payload))
                 sys.stdout.flush()
 
