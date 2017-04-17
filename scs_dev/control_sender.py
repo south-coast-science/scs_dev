@@ -6,7 +6,9 @@ Created on 17 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./scs_dev/control_sender.py scs-ap1-6 00000000cda1f8b9 shutdown now -v
+./control_sender.py scs-be2-3 5016BBBK202F shutdown now -v | \
+./osio_topic_publisher.py -t /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
+./osio_mqtt_client.py -p -e
 """
 
 import sys

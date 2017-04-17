@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 topic = project.control_topic_path(system_id)
 
             else:
-                raise ValueError("osio_topic_publisher: unrecognised channel: %s" % cmd.channel)
+                raise ValueError("osio_topic_subscriber: unrecognised channel: %s" % cmd.channel)
 
         else:
             topic = cmd.topic
@@ -97,21 +97,14 @@ if __name__ == '__main__':
         # run...
 
         for line in sys.stdin:
-            datum = json.loads(line, object_pairs_hook=OrderedDict)
+            jdict = json.loads(line, object_pairs_hook=OrderedDict)
 
-            if cmd.override:
-                payload = OrderedDict({'__timestamp': datum['rec']})
-                payload.update(datum)
+            publication = Publication.construct_from_jdict(jdict)
 
-            else:
-                payload = datum
-
-            # time.sleep(1)
-
-            publication = Publication(topic, payload)
-
-            print(JSONify.dumps(publication))
-            sys.stdout.flush()
+            if publication.topic == topic:
+                # if my tag...
+                print(JSONify.dumps(publication.payload))
+                sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -119,7 +112,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt as ex:
         if cmd.verbose:
-            print("osio_topic_publisher: KeyboardInterrupt", file=sys.stderr)
+            print("osio_topic_subscriber: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
