@@ -15,17 +15,22 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
+
+from scs_core.gas.pt1000_calib import Pt1000Calib
+
 from scs_core.sample.sample_datum import SampleDatum
+
 from scs_core.sync.sampler import Sampler
-from scs_core.sys.system_id import SystemID
+
 from scs_core.sys.exception_report import ExceptionReport
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 
 from scs_dfe.board.mcp9808 import MCP9808
 from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.afe import AFE
-from scs_dfe.gas.pt1000_calib import Pt1000Calib
+from scs_dfe.gas.pt1000 import Pt1000
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -106,7 +111,7 @@ if __name__ == '__main__':
         ext_climate = sht_conf.ext_sht()
 
         calib = Pt1000Calib.load_from_host(Host)
-        pt1000 = calib.pt1000()
+        pt1000 = Pt1000(calib)
 
         board = MCP9808(True)
 
