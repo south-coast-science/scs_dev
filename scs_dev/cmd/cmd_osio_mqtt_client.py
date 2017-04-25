@@ -16,11 +16,11 @@ class CmdOSIOMQTTClient(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [TOPIC] [-p [-e]] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [TOPIC_1 .. TOPIC_N] [-p [-e]] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
-                                 help="publish stdin publications")
+                                 help="publish stdin publication documents")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout (if publishing)")
@@ -43,8 +43,8 @@ class CmdOSIOMQTTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def topic(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+    def topics(self):
+        return self.__args
 
 
     @property
@@ -74,5 +74,5 @@ class CmdOSIOMQTTClient(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOMQTTClient:{topic:%s, publish:%s, echo:%s, verbose:%s, args:%s}" % \
-               (self.topic, self.publish, self.echo, self.verbose, self.args)
+        return "CmdOSIOMQTTClient:{topics:%s, publish:%s, echo:%s, verbose:%s, args:%s}" % \
+               (self.topics, self.publish, self.echo, self.verbose, self.args)
