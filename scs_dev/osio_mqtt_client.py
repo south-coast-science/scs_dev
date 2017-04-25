@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
                     try:
                         if cmd.verbose:
-                            OSIOMQTTClient.print_status(datum['payload']['rec'])
+                            OSIOMQTTClient.print_status(publication.payload['rec'])
 
                         success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
