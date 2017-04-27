@@ -24,7 +24,7 @@ class CmdSampler(object):
                                  help="sampling interval in seconds (default %0.1f)" % default_interval)
 
         self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
-                                 help="number of samples (default for-ever = 0)")
+                                 help="number of samples (default for-ever)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")

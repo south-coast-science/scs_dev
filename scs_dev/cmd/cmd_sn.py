@@ -28,8 +28,8 @@ class CmdSN(object):
                                  default=1.0,
                                  help="sampling interval in seconds (default 1.0)")
 
-        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", default=0, dest="samples",
-                                 help="number of samples (default for-ever = 0)")
+        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
+                                 help="number of samples (default for-ever)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
