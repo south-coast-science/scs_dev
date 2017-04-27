@@ -10,7 +10,8 @@ WARNING: only one MQTT client can run at any one time on a TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-./status_sampler.py | ./osio_mqtt_client.py -e
+osio_mqtt_client.py -v /orgs/south-coast-science-dev/development/loc/3/gases \
+/orgs/south-coast-science-dev/development/loc/3/particulates
 """
 
 import json
@@ -20,19 +21,22 @@ import time
 
 from collections import OrderedDict
 
-from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
-
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
+
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
 from scs_core.osio.manager.topic_manager import TopicManager
+
 from scs_core.sys.exception_report import ExceptionReport
+
+from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient
 from scs_host.client.mqtt_client import MQTTSubscriber
+
 from scs_host.sys.host import Host
 
 
@@ -90,7 +94,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(api_auth, file=sys.stderr)
 
-
         # ClientAuth...
         client_auth = ClientAuth.load_from_host(Host)
 
@@ -101,18 +104,16 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(client_auth, file=sys.stderr)
 
-
         # manager...
         manager = TopicManager(HTTPClient(), api_auth.api_key)
 
         if cmd.verbose:
             print(manager, file=sys.stderr)
 
-
         # client...
-        subscriber = None if cmd.topic is None else MQTTSubscriber(cmd.topic, OSIOMQTTClient.print_publication)
+        subscribers = [MQTTSubscriber(topic, OSIOMQTTClient.print_publication) for topic in cmd.topics]
 
-        client = MQTTClient(subscriber)
+        client = MQTTClient(*subscribers)
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         if cmd.verbose:
@@ -122,14 +123,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # check topic...
-        if cmd.topic:
-            topic = manager.find(cmd.topic)
+        # check topics...
+        unavailable = False
+        for topic in cmd.topics:
+            if not manager.find(topic):
+                print("Topic not available: %s" % topic, file=sys.stderr)
+                unavailable = True
 
-            if topic is None:
-                print("Topic not available.", file=sys.stderr)
-                exit()
-
+        if unavailable:
+            exit()
 
         # publish loop...
         if cmd.publish:
@@ -147,7 +149,7 @@ if __name__ == '__main__':
 
                     try:
                         if cmd.verbose:
-                            OSIOMQTTClient.print_status(datum['payload']['rec'])
+                            OSIOMQTTClient.print_status(publication.payload['rec'])
 
                         success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
@@ -170,9 +172,8 @@ if __name__ == '__main__':
                     print(line, end="")
                     sys.stdout.flush()
 
-
         # subscribe loop...
-        if cmd.topic:
+        if cmd.topics:
             while True:
                 time.sleep(0.1)
 
