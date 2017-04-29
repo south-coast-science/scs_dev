@@ -46,6 +46,7 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(sckt, file=sys.stderr)
+            sys.stderr.flush()
 
         sender = sckt.sender()
         sender.__next__()

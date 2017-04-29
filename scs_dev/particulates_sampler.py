@@ -62,6 +62,7 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
+            sys.stderr.flush()
 
         sampler.off()       # in case it had been left on after the last run
 
