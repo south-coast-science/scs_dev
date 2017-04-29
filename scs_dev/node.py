@@ -6,7 +6,7 @@ Created on 11 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./socket_receiver.py | ./node.py -s val.afe.sns.CO
+./climate_sampler.py -i2 | ./node.py val
 """
 
 import sys
