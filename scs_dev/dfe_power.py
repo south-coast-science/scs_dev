@@ -49,6 +49,7 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(io, file=sys.stderr)
+            sys.stderr.flush()
 
         opc = OPCN2()
 

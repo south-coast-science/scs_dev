@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(system_id, file=sys.stderr)
+            sys.stderr.flush()
 
         tag = system_id.message_tag()
         subscriber_sn = Host.serial_number()

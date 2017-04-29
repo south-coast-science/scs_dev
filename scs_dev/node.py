@@ -1,24 +1,21 @@
 #!/usr/bin/env python3
 
 """
-Created on 17 Apr 2017
+Created on 11 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./control_sender.py scs-be2-3 5016BBBK202F shutdown now -v | \
-./osio_topic_publisher.py -t /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
-./osio_mqtt_client.py -p -e
+./climate_sampler.py -i2 | ./node.py val
 """
 
 import sys
 
-from scs_core.control.control_datum import ControlDatum
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.path_dict import PathDict
 from scs_core.sys.exception_report import ExceptionReport
 
-from scs_dev.cmd.cmd_control_sender import CmdControlSender
+from scs_dev.cmd.cmd_node import CmdNode
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -28,7 +25,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdControlSender()
+    cmd = CmdNode()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -38,21 +35,29 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
         sys.stderr.flush()
 
-    try:
 
+    try:
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        now = LocalizedDatetime.now()
+        for line in sys.stdin:
+            datum = PathDict.construct_from_jstr(line)
 
-        datum = ControlDatum.construct(cmd.tag, now, cmd.command, cmd.params, cmd.serial_number)
+            if cmd.ignore and not datum.has_path(cmd.path):
+                continue
 
-        print(JSONify.dumps(datum))
-        sys.stdout.flush()
+            node = datum.node(cmd.path)
+
+            print(JSONify.dumps(node))
+            sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
+
+    except KeyboardInterrupt as ex:
+        if cmd.verbose:
+            print("node: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)

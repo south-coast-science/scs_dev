@@ -6,7 +6,7 @@ Created on 26 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 command line example:
-./product_id.py
+./dfe_product_id.py
 """
 
 import sys
