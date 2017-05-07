@@ -90,12 +90,20 @@ if __name__ == '__main__':
                 print(JSONify.dumps(datum))
                 sys.stdout.flush()
 
+            if cmd.verbose:
+                print(datum, file=sys.stderr)
+                sys.stderr.flush()
+
             if cmd.receipt:
                 now = LocalizedDatetime.now()
                 receipt = ControlReceipt.construct_from_datum(datum, now, subscriber_sn)
 
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()
+
+                if cmd.verbose:
+                    print(receipt, file=sys.stderr)
+                    sys.stderr.flush()
 
             # TODO: perform command here
 
