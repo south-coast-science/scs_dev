@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdControlReceiver(object):
+class CmdControlResponder(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -76,5 +76,5 @@ class CmdControlReceiver(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdControlReceiver:{tag:%s, serial_number:%s, receipt:%s, verbose:%s, args:%s}" % \
+        return "CmdControlResponder:{tag:%s, serial_number:%s, receipt:%s, verbose:%s, args:%s}" % \
                     (self.tag, self.serial_number, self.receipt, self.verbose, self.args)
