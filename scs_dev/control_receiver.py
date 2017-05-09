@@ -5,9 +5,11 @@ Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Warning: osio_mqtt_client should be started before control_receiver.
+
 command line example:
-./osio_mqtt_client.py /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
-./osio_topic_subscriber.py -cX | ./control_receiver.py -r
+cat ~/SCS/pipes/control_subscription_pipe | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v | \
+./osio_topic_publisher.py -cX > ~/SCS/pipes/control_publication_pipe 
 """
 
 import json
@@ -17,8 +19,10 @@ from collections import OrderedDict
 
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
+
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
+
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
@@ -67,7 +71,6 @@ if __name__ == '__main__':
 
 
     try:
-
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
@@ -79,8 +82,12 @@ if __name__ == '__main__':
             except TypeError:
                 continue
 
-            if datum.tag != tag:
+            if datum.attn != tag:
                 continue
+
+            if cmd.verbose:
+                print(datum, file=sys.stderr)
+                sys.stderr.flush()
 
             if not datum.is_valid(subscriber_sn):
                 print("control_receiver: invalid digest: %s" % datum, file=sys.stderr)
@@ -96,6 +103,10 @@ if __name__ == '__main__':
 
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()
+
+                if cmd.verbose:
+                    print(receipt, file=sys.stderr)
+                    sys.stderr.flush()
 
             # TODO: perform command here
 
