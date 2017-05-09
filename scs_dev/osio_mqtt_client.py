@@ -10,9 +10,9 @@ WARNING: only one MQTT client can run at any one time on a TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-osio_mqtt_client.py -v /orgs/south-coast-science-dev/development/loc/3/gases \
-/orgs/south-coast-science-dev/development/loc/3/particulates
-"""
+cat ~/SCS/pipes/control_publication_pipe | \
+./osio_mqtt_client.py -v -p /orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control > \
+~/SCS/pipes/control_subscription_pipe"""
 
 import json
 import random
@@ -20,8 +20,6 @@ import sys
 import time
 
 from collections import OrderedDict
-
-from scs_analysis.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -33,6 +31,8 @@ from scs_core.osio.manager.topic_manager import TopicManager
 
 from scs_core.sys.exception_report import ExceptionReport
 
+from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
+
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient
 from scs_host.client.mqtt_client import MQTTSubscriber
@@ -43,7 +43,7 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
-class OSIOMQTTResponder(object):
+class OSIOMQTTHandler(object):
     """
     classdocs
     """
@@ -82,7 +82,7 @@ class OSIOMQTTResponder(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTResponder:{verbose:%s}" % self.__verbose
+        return "OSIOMQTTControlHandler:{verbose:%s}" % self.__verbose
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -126,28 +126,19 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(client_auth, file=sys.stderr)
+            sys.stderr.flush()
 
         # manager...
         manager = TopicManager(HTTPClient(), api_auth.api_key)
 
-        if cmd.verbose:
-            print(manager, file=sys.stderr)
-
         # responder...
-        responder = OSIOMQTTResponder(cmd.verbose)
-
-        if cmd.verbose:
-            print(responder, file=sys.stderr)
+        handler = OSIOMQTTHandler(cmd.verbose)
 
         # client...
-        subscribers = [MQTTSubscriber(topic, responder.print_publication) for topic in cmd.topics]
+        subscribers = [MQTTSubscriber(topic, handler.print_publication) for topic in cmd.topics]
 
         client = MQTTClient(*subscribers)
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
-
-        if cmd.verbose:
-            print(client, file=sys.stderr)
-            sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -169,7 +160,7 @@ if __name__ == '__main__':
                 try:
                     datum = json.loads(line, object_pairs_hook=OrderedDict)
                 except ValueError:
-                    responder.print_status("bad datum: %s" % line.strip())
+                    handler.print_status("bad datum: %s" % line.strip())
                     continue
 
                 while True:
@@ -177,12 +168,12 @@ if __name__ == '__main__':
 
                     try:
                         if 'rec' in publication.payload:
-                            responder.print_status(publication.payload['rec'])
+                            handler.print_status(publication.payload['rec'])
 
                         success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
                         if not success:
-                            responder.print_status("abandoned")
+                            handler.print_status("abandoned")
 
                         break
 
@@ -193,7 +184,7 @@ if __name__ == '__main__':
 
                     time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
 
-                responder.print_status("done")
+                handler.print_status("done")
 
                 if cmd.echo:
                     print(line, end="")
