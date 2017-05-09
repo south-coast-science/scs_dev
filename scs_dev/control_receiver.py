@@ -5,6 +5,8 @@ Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+Warning: osio_mqtt_client should be started before control_receiver.
+
 command line example:
 cat ~/SCS/pipes/control_subscription_pipe | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v | \
 ./osio_topic_publisher.py -cX > ~/SCS/pipes/control_publication_pipe 
