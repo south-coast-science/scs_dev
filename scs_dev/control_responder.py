@@ -82,7 +82,7 @@ if __name__ == '__main__':
                 print(datum, file=sys.stderr)
                 sys.stderr.flush()
 
-            if datum.tag != tag:
+            if datum.attn != tag:
                 continue
 
             if not datum.is_valid(subscriber_sn):
