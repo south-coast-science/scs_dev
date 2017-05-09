@@ -7,7 +7,7 @@ Created on 17 Apr 2017
 
 command line example:
 ./osio_mqtt_client.py /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
-./osio_topic_subscriber.py -cX | ./control_responder.py -r
+./osio_topic_subscriber.py -cX | ./control_receiver.py -r
 """
 
 import json
@@ -22,7 +22,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.cmd.cmd_control_responder import CmdControlResponder
+from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 
 from scs_host.sys.host import Host
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdControlResponder()
+    cmd = CmdControlReceiver()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
