@@ -66,23 +66,7 @@ if __name__ == '__main__':
                 print("Project not available.", file=sys.stderr)
                 exit()
 
-            if cmd.channel == 'C':
-                topic = project.climate_topic_path()
-
-            elif cmd.channel == 'G':
-                topic = project.gases_topic_path()
-
-            elif cmd.channel == 'P':
-                topic = project.particulates_topic_path()
-
-            elif cmd.channel == 'S':
-                topic = project.status_topic_path(system_id)
-
-            elif cmd.channel == 'X':
-                topic = project.control_topic_path(system_id)
-
-            else:
-                raise ValueError("osio_topic_publisher: unrecognised channel: %s" % cmd.channel)
+            topic = project.channel_path(cmd.channel, system_id)
 
         else:
             topic = cmd.topic
