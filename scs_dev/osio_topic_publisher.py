@@ -60,6 +60,7 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print(system_id, file=sys.stderr)
 
+            # Project...
             project = Project.load_from_host(Host)
 
             if project is None:

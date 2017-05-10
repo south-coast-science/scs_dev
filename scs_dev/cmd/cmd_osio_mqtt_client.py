@@ -6,8 +6,8 @@ Created on 23 Mar 2017
 
 import optparse
 
+from scs_core.osio.config.project import Project
 
-# TODO: enable topic names from channels
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,9 +18,13 @@ class CmdOSIOMQTTClient(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [TOPIC_1 .. TOPIC_N] [-p [-e]] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [TOPIC_1 .. TOPIC_N] [-c { C | G | P | S | X }] [-p [-e]] "
+                                                    "[-v]", version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="subscribe to channel")
+
         self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
                                  help="publish publication documents from stdin")
 
@@ -39,6 +43,9 @@ class CmdOSIOMQTTClient(object):
         if self.echo and not self.publish:
             return False
 
+        if self.channel and not Project.is_valid_channel(self.channel):
+            return False
+
         return True
 
 
@@ -47,6 +54,11 @@ class CmdOSIOMQTTClient(object):
     @property
     def topics(self):
         return self.__args
+
+
+    @property
+    def channel(self):
+        return self.__opts.channel
 
 
     @property
@@ -76,5 +88,5 @@ class CmdOSIOMQTTClient(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOMQTTClient:{topics:%s, publish:%s, echo:%s, verbose:%s, args:%s}" % \
-               (self.topics, self.publish, self.echo, self.verbose, self.args)
+        return "CmdOSIOMQTTClient:{topics:%s, channel:%s, publish:%s, echo:%s, verbose:%s, args:%s}" % \
+               (self.topics, self.channel, self.publish, self.echo, self.verbose, self.args)

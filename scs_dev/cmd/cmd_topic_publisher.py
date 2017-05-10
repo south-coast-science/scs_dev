@@ -8,6 +8,8 @@ https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-informat
 
 import optparse
 
+from scs_core.osio.config.project import Project
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -44,10 +46,11 @@ class CmdTopicPublisher(object):
         if bool(self.topic) == bool(self.channel):
             return False
 
-        if self.channel:
-            if self.channel != 'C' and self.channel != 'G' and self.channel != 'P' and self.channel != 'S' \
-                    and self.channel != 'X':
-                return False
+        if not bool(self.topic) and not bool(self.channel):
+            return False
+
+        if self.channel and not Project.is_valid_channel(self.channel):
+            return False
 
         return True
 
