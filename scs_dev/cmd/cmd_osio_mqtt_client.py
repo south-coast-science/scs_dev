@@ -7,6 +7,8 @@ Created on 23 Mar 2017
 import optparse
 
 
+# TODO: enable topic names from channels
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class CmdOSIOMQTTClient(object):
@@ -20,7 +22,7 @@ class CmdOSIOMQTTClient(object):
 
         # optional...
         self.__parser.add_option("--pub", "-p", action="store_true", dest="publish", default=False,
-                                 help="publish stdin publication documents")
+                                 help="publish publication documents from stdin")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout (if publishing)")

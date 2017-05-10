@@ -97,9 +97,11 @@ if __name__ == '__main__':
                 print(JSONify.dumps(datum))
                 sys.stdout.flush()
 
+            # TODO: check command tokens here
+
             if cmd.receipt:
                 now = LocalizedDatetime.now()
-                receipt = ControlReceipt.construct_from_datum(datum, now, subscriber_sn)
+                receipt = ControlReceipt.construct_from_datum(datum, now, 'OK', subscriber_sn)
 
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()
