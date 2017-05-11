@@ -98,6 +98,7 @@ if __name__ == '__main__':
                 print(JSONify.dumps(datum))
                 sys.stdout.flush()
 
+            # execute command...
             command = Command.construct_from_tokens(datum.cmd_tokens)
             command.execute(Host)
 
