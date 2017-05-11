@@ -75,7 +75,7 @@ if __name__ == '__main__':
         # TODO: check if topic exists
 
         if cmd.verbose:
-            print(topic, file=sys.stderr)
+            print("topic: %s" % topic, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -91,8 +91,6 @@ if __name__ == '__main__':
 
             else:
                 payload = datum
-
-            # time.sleep(1)
 
             publication = Publication(topic, payload)
 
