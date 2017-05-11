@@ -76,6 +76,7 @@ if __name__ == '__main__':
         # run...
 
         for line in sys.stdin:
+            # control...
             jdict = json.loads(line, object_pairs_hook=OrderedDict)
 
             try:
@@ -98,10 +99,11 @@ if __name__ == '__main__':
                 print(JSONify.dumps(datum))
                 sys.stdout.flush()
 
-            # execute command...
+            # command...
             command = Command.construct_from_tokens(datum.cmd_tokens)
             command.execute(Host)
 
+            # receipt...
             if cmd.receipt:
                 now = LocalizedDatetime.now()
                 receipt = ControlReceipt.construct_from_datum(datum, now, command, subscriber_sn)
