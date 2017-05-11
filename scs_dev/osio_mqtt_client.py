@@ -176,10 +176,12 @@ if __name__ == '__main__':
                 print("Topic not available: %s" % topic, file=sys.stderr)
                 unavailable = True
 
+        # TODO: also check if channel topic is available
+
         if unavailable:
             exit()
 
-        # publish loop...
+        # publish...
         if cmd.publish:
             for line in sys.stdin:
                 try:
@@ -215,7 +217,7 @@ if __name__ == '__main__':
                     print(line, end="")
                     sys.stdout.flush()
 
-        # subscribe loop...
+        # subscribe...
         if cmd.topics:
             while True:
                 time.sleep(0.1)
