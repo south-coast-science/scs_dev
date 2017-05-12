@@ -16,7 +16,7 @@ from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
 
-from scs_dfe.network.socket_sender import SocketSender
+from scs_host.network.socket_sender import SocketSender
 
 
 # --------------------------------------------------------------------------------------------------------------------
