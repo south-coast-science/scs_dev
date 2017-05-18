@@ -20,14 +20,14 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, system_id, sht, pt1000, sensors, interval, sample_count=0):
+    def __init__(self, system_id, sht, pt1000_conf, pt1000, sensors, interval, sample_count=None):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
         self.__system_id = system_id
-        self.__afe = AFE(pt1000, sensors)
+        self.__afe = AFE(pt1000_conf, pt1000, sensors)
         self.__sht = sht
 
 

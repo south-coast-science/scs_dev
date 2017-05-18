@@ -20,6 +20,7 @@ from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.pt1000 import Pt1000
+from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -37,8 +38,9 @@ if system_id is None:
 sht_conf = SHTConf.load_from_host(Host)
 sht = sht_conf.int_sht()
 
-calib = Pt1000Calib.load_from_host(Host)
-pt1000 = Pt1000(calib)
+pt1000_conf = Pt1000Conf.load_from_host(Host)
+pt1000_calib = Pt1000Calib.load_from_host(Host)
+pt1000 = Pt1000(pt1000_calib)
 
 afe_baseline = AFEBaseline.load_from_host(Host)
 
@@ -49,7 +51,7 @@ sensors = calib.sensors(afe_baseline)
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = GasesSampler(system_id, sht, pt1000, sensors, 1)
+    sampler = GasesSampler(system_id, sht, pt1000_calib, pt1000, sensors, 1)
     print(sampler)
     print("-")
 

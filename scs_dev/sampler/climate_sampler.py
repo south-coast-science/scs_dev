@@ -18,7 +18,7 @@ class ClimateSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, system_id, sht, interval, sample_count=0):
+    def __init__(self, system_id, sht, interval, sample_count=None):
         """
         Constructor
         """

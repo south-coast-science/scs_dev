@@ -22,7 +22,7 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, system_id, interval, sample_count=0):
+    def __init__(self, system_id, interval, sample_count=None):
         """
         Constructor
         """

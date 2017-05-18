@@ -33,6 +33,7 @@ from scs_dev.cmd.cmd_sampler import CmdSampler
 
 from scs_dfe.gas.afe import AFE
 from scs_dfe.gas.pt1000 import Pt1000
+from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -46,13 +47,14 @@ class AFESampler(Sampler):
     """
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, pt1000, sensors, interval, sample_count=0):
+    # noinspection PyShadowingNames
+    def __init__(self, pt1000_conf, pt1000, sensors, interval, sample_count=None):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__afe = AFE(pt1000, sensors)
+        self.__afe = AFE(pt1000_conf, pt1000, sensors)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -97,20 +99,24 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
-        # sampler...
-        calib = Pt1000Calib.load_from_host(Host)
-        pt1000 = Pt1000(calib)
+        # Pt1000...
+        pt1000_conf = Pt1000Conf.load_from_host(Host)
+        pt1000_calib = Pt1000Calib.load_from_host(Host)
+        pt1000 = Pt1000(pt1000_calib)
 
+        # AFE...
         afe_baseline = AFEBaseline.load_from_host(Host)
 
-        calib = AFECalib.load_from_host(Host)
-        sensors = calib.sensors(afe_baseline)
+        afe_calib = AFECalib.load_from_host(Host)
+        sensors = afe_calib.sensors(afe_baseline)
 
-        afe = AFESampler(pt1000, sensors, cmd.interval, cmd.samples)
+        # Sampler...
+        afe = AFESampler(pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(afe, file=sys.stderr)
             sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
