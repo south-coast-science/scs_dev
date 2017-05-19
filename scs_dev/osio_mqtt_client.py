@@ -27,9 +27,11 @@ from scs_core.data.publication import Publication
 
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
+from scs_core.osio.config.project import Project
 from scs_core.osio.manager.topic_manager import TopicManager
 
 from scs_core.sys.exception_report import ExceptionReport
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
 
@@ -134,9 +136,32 @@ if __name__ == '__main__':
         # responder...
         handler = OSIOMQTTHandler(cmd.verbose)
 
-        # client...
+        # subscribers...
         subscribers = [MQTTSubscriber(topic, handler.print_publication) for topic in cmd.topics]
 
+        if cmd.channel:
+            # SystemID...
+            system_id = SystemID.load_from_host(Host)
+
+            if system_id is None:
+                print("SystemID not available.", file=sys.stderr)
+                exit()
+
+            if cmd.verbose:
+                print(system_id, file=sys.stderr)
+
+            # Project...
+            project = Project.load_from_host(Host)
+
+            if project is None:
+                print("Project not available.", file=sys.stderr)
+                exit()
+
+            topic = project.channel_path(cmd.channel, system_id)
+
+            subscribers.append(MQTTSubscriber(topic, handler.print_publication))
+
+        # client...
         client = MQTTClient(*subscribers)
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
@@ -151,10 +176,12 @@ if __name__ == '__main__':
                 print("Topic not available: %s" % topic, file=sys.stderr)
                 unavailable = True
 
+        # TODO: also check if channel topic is available
+
         if unavailable:
             exit()
 
-        # publish loop...
+        # publish...
         if cmd.publish:
             for line in sys.stdin:
                 try:
@@ -190,7 +217,7 @@ if __name__ == '__main__':
                     print(line, end="")
                     sys.stdout.flush()
 
-        # subscribe loop...
+        # subscribe...
         if cmd.topics:
             while True:
                 time.sleep(0.1)

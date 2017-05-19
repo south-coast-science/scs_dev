@@ -30,6 +30,7 @@ from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.pt1000 import Pt1000
+from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -64,27 +65,28 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
-
         # SHT...
         sht_conf = SHTConf.load_from_host(Host)
         sht = sht_conf.int_sht()
 
         # Pt1000...
-        calib = Pt1000Calib.load_from_host(Host)
-        pt1000 = Pt1000(calib)
+        pt1000_conf = Pt1000Conf.load_from_host(Host)
+        pt1000_calib = Pt1000Calib.load_from_host(Host)
+        pt1000 = Pt1000(pt1000_calib)
 
         # AFE...
         afe_baseline = AFEBaseline.load_from_host(Host)
 
-        calib = AFECalib.load_from_host(Host)
-        sensors = calib.sensors(afe_baseline)
+        afe_calib = AFECalib.load_from_host(Host)
+        sensors = afe_calib.sensors(afe_baseline)
 
-        # GasesSampler...
-        sampler = GasesSampler(system_id, sht, pt1000, sensors, cmd.interval, cmd.samples)
+        # Sampler...
+        sampler = GasesSampler(system_id, sht, pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
             sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...

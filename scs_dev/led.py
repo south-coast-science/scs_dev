@@ -16,7 +16,7 @@ from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_led import CmdLED
 
-from scs_dfe.climate.led import LED
+from scs_dfe.display.led import LED
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host

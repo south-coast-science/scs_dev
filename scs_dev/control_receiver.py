@@ -17,6 +17,7 @@ import sys
 
 from collections import OrderedDict
 
+from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
 
@@ -75,6 +76,7 @@ if __name__ == '__main__':
         # run...
 
         for line in sys.stdin:
+            # control...
             jdict = json.loads(line, object_pairs_hook=OrderedDict)
 
             try:
@@ -97,9 +99,14 @@ if __name__ == '__main__':
                 print(JSONify.dumps(datum))
                 sys.stdout.flush()
 
+            # command...
+            command = Command.construct_from_tokens(datum.cmd_tokens)
+            command.execute(Host)
+
+            # receipt...
             if cmd.receipt:
                 now = LocalizedDatetime.now()
-                receipt = ControlReceipt.construct_from_datum(datum, now, subscriber_sn)
+                receipt = ControlReceipt.construct_from_datum(datum, now, command, subscriber_sn)
 
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()
@@ -108,7 +115,7 @@ if __name__ == '__main__':
                     print(receipt, file=sys.stderr)
                     sys.stderr.flush()
 
-            # TODO: perform command here
+            # TODO: perform reboot commands here
 
 
     # ----------------------------------------------------------------------------------------------------------------
