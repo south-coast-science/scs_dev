@@ -38,7 +38,7 @@ class SHTSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, climate, interval, sample_count=0):
+    def __init__(self, climate, interval, sample_count=None):
         """
         Constructor
         """
@@ -58,7 +58,7 @@ class SHTSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "SHTSampler:{timer:%s, sample_count:%d}" % (self.timer, self.sample_count)
+        return "SHTSampler:{timer:%s, sample_count:%s}" % (self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
