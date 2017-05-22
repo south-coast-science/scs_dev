@@ -93,6 +93,7 @@ if __name__ == '__main__':
 
             if not datum.is_valid(subscriber_sn):
                 print("control_receiver: invalid digest: %s" % datum, file=sys.stderr)
+                sys.stderr.flush()
                 continue
 
             if cmd.echo:
@@ -101,7 +102,15 @@ if __name__ == '__main__':
 
             # command...
             command = Command.construct_from_tokens(datum.cmd_tokens)
-            command.execute(Host)
+
+            if command.cmd is not None and not command.is_valid(Host):
+                print("control_receiver: invalid command: %s" % command, file=sys.stderr)
+                sys.stderr.flush()
+                continue
+
+            # immediate commands...
+            if command.cmd != 'reboot'and command.cmd != 'restart':
+                command.execute(Host)
 
             # receipt...
             if cmd.receipt:
@@ -115,7 +124,9 @@ if __name__ == '__main__':
                     print(receipt, file=sys.stderr)
                     sys.stderr.flush()
 
-            # TODO: perform reboot commands here
+            # deferred commands...
+            if command.cmd == 'reboot' or command.cmd == 'restart':
+                command.execute(Host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
