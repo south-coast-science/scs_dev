@@ -17,8 +17,6 @@ from scs_dfe.gps.pam7q import PAM7Q
 from scs_host.sys.host import Host
 
 
-# TODO: why is loc sometimes null and sometimes has null fields?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
@@ -49,15 +47,20 @@ class StatusSampler(Sampler):
         tag = self.__system_id.message_tag()
 
         # location...
+        location = None
+
         try:
             self.__gps.open()
             gga = self.__gps.report(GPGGA)
             location = GPSLocation.construct(gga)
         except RuntimeError:
-            location = None
+            pass
 
         finally:
-            self.__gps.close()
+            try:
+                self.__gps.close()
+            except RuntimeError:
+                pass
 
         # temperature...
         board_sample = self.__board.sample()
