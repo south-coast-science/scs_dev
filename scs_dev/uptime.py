@@ -10,21 +10,29 @@ command line example:
 """
 
 import subprocess
+import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.uptime_datum import UptimeDatum
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    now = LocalizedDatetime.now()
 
-    raw = subprocess.check_output('uptime')
-    report = raw.decode()
+    try:
+        now = LocalizedDatetime.now()
 
-    datum = UptimeDatum.construct_from_report(now, report)
+        raw = subprocess.check_output('uptime')
+        report = raw.decode()
 
-    print(JSONify.dumps(datum))
+        datum = UptimeDatum.construct_from_report(now, report)
+
+        print(JSONify.dumps(datum))
+
+
+    except Exception as ex:
+        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
