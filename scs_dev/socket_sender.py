@@ -16,14 +16,13 @@ from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
 
-from scs_host.network.socket_sender import SocketSender
+from scs_host.comms.network_socket import NetworkSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    sckt = None
     sender = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -42,24 +41,23 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        sckt = SocketSender(cmd.hostname, cmd.port, cmd.verbose)
+        sender = NetworkSocket(cmd.hostname, cmd.port)
 
         if cmd.verbose:
-            print(sckt, file=sys.stderr)
+            print(sender, file=sys.stderr)
             sys.stderr.flush()
-
-        sender = sckt.sender()
-        sender.__next__()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        sender.connect(True)
+
         for line in sys.stdin:
-            sender.send(line)
+            sender.write(line, True)
 
             if cmd.echo:
-                print(line, end="", file=sys.stderr)
+                print(line.strip())
                 sys.stderr.flush()
 
 
@@ -74,13 +72,5 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
-        if sckt is not None:
-            try:
-                sender.close()
-            except Exception as ex:
-                print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
-
-            try:
-                sckt.close()
-            except Exception as ex:
-                print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+        if sender:
+            sender.close()
