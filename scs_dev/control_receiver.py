@@ -37,6 +37,12 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     # ----------------------------------------------------------------------------------------------------------------
+    # config...
+
+    deferred_commands = ('reboot', 'restart')
+
+
+    # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
     cmd = CmdControlReceiver()
@@ -48,11 +54,12 @@ if __name__ == '__main__':
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
+
     # ------------------------------------------------------------------------------------------------------------
     # resources...
 
     if cmd.tag:
-        tag = cmd.tag
+        system_tag = cmd.tag
         subscriber_sn = cmd.serial_number
 
     else:
@@ -67,7 +74,7 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
             sys.stderr.flush()
 
-        tag = system_id.message_tag()
+        system_tag = system_id.message_tag()
         subscriber_sn = Host.serial_number()
 
 
@@ -84,7 +91,7 @@ if __name__ == '__main__':
             except TypeError:
                 continue
 
-            if datum.attn != tag:
+            if datum.attn != system_tag:
                 continue
 
             if cmd.verbose:
@@ -108,8 +115,8 @@ if __name__ == '__main__':
                 sys.stderr.flush()
                 continue
 
-            # immediate commands...
-            if command.cmd != 'reboot'and command.cmd != 'restart':
+            # execute immediate commands...
+            if command.cmd not in deferred_commands:
                 command.execute(Host)
 
             # receipt...
@@ -124,8 +131,8 @@ if __name__ == '__main__':
                     print(receipt, file=sys.stderr)
                     sys.stderr.flush()
 
-            # deferred commands...
-            if command.cmd == 'reboot' or command.cmd == 'restart':
+            # execute immediate commands...
+            if command.cmd in deferred_commands:
                 command.execute(Host)
 
 
