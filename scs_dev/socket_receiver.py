@@ -19,6 +19,8 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_socket_receiver import CmdSocketReceiver
 
 
+# TODO: re-write as ProcessComms implementation
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class SocketReceiver(object):
