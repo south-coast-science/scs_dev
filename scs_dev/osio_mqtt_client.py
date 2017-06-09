@@ -42,6 +42,8 @@ from scs_host.client.mqtt_client import MQTTSubscriber
 from scs_host.sys.host import Host
 
 
+# TODO: update to use UDS - like scs_analysis.osio_mqtt_client
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
