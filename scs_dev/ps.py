@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
             datum = PsDatum.construct_from_report(line)
 
-            if datum is None or 'ps.py' in datum.cmd or 'grep python' in datum.cmd:
+            if datum is None or 'ps.py' in datum.cmd or 'grep' in datum.cmd:
                 continue
 
             print(JSONify.dumps(datum))
