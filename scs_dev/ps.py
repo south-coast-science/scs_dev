@@ -45,9 +45,6 @@ if __name__ == '__main__':
 
             processes.append(datum)
 
-        for datum in processes:
-            print(datum)
-
         print(JSONify.dumps(processes))
 
     except Exception as ex:
