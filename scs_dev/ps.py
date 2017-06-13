@@ -32,8 +32,6 @@ if __name__ == '__main__':
         raw = p2.communicate()[0]
         report = raw.decode()
 
-        processes = []
-
         for line in [line.strip() for line in report.split('\n')]:
             if len(line) == 0:
                 continue
@@ -43,9 +41,7 @@ if __name__ == '__main__':
             if datum is None or 'ps.py' in datum.cmd or 'grep python' in datum.cmd:
                 continue
 
-            processes.append(datum)
-
-        print(JSONify.dumps(processes))
+            print(JSONify.dumps(datum))
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
