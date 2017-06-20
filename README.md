@@ -20,7 +20,7 @@ export PYTHONPATH=\~/SCS/scs_analysis:\~/SCS/scs_dev:\~/SCS/scs_osio:\~/SCS/scs_
 **Beaglebone, in /root/.bashrc:**
 
 export \\
-PYTHONPATH=\~debian/SCS/scs_dev:\~debian/SCS/scs_osio:\~debian/SCS/scs_mfr:\~debian/SCS/scs_psu:\~debian/SCS/scs_comms_ge910:\~debian/SCS/scs_dfe_eng:\~debian/SCS/scs_ndir_alphasense:\~debian/SCS/scs_host_bbe:\~debian/SCS/scs_core:$PYTHONPATH
+PYTHONPATH=/home/debian/SCS/scs_dev:/home/debian/SCS/scs_osio:/home/debian/SCS/scs_mfr:/home/debian/SCS/scs_psu:/home/debian/SCS/scs_comms_ge910:/home/debian/SCS/scs_dfe_eng:/home/debian/SCS/scs_ndir_alphasense:/home/debian/SCS/scs_host_bbe:/home/debian/SCS/scs_core:$PYTHONPATH
 
 
 **Beaglebone, in /home/debian/.bashrc:**
