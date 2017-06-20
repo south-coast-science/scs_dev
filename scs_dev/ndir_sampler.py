@@ -55,8 +55,7 @@ class NDIRSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NDIRSampler:{ndir:%s, timer:%s, sample_count:%d}" % \
-                    (self.__ndir, self.timer, self.sample_count)
+        return "NDIRSampler:{ndir:%s, timer:%s, sample_count:%d}" %  (self.__ndir, self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -86,7 +85,12 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # NDIR...
-        ndir = NDIR.find(Host.ndir_device())
+        device = Host.ndir_device()
+        ndir = NDIR.find(device)
+
+        if ndir is None:
+            print("NDIR not available at %s" % device, file=sys.stderr)
+            exit()
 
         if cmd.verbose:
             print(ndir, file=sys.stderr)
