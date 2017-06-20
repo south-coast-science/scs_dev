@@ -25,6 +25,8 @@ from scs_dfe.gas.pt1000_conf import Pt1000Conf
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
+from scs_ndir.gas.ndir import NDIR
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -35,13 +37,19 @@ if system_id is None:
     print("SystemID not available.", file=sys.stderr)
     exit()
 
+# NDIR...
+ndir = NDIR.find(Host.ndir_device())
+
+# SHT...
 sht_conf = SHTConf.load_from_host(Host)
 sht = sht_conf.int_sht()
 
+# Pt1000...
 pt1000_conf = Pt1000Conf.load_from_host(Host)
 pt1000_calib = Pt1000Calib.load_from_host(Host)
 pt1000 = Pt1000(pt1000_calib)
 
+# AFE...
 afe_baseline = AFEBaseline.load_from_host(Host)
 
 calib = AFECalib.load_from_host(Host)
@@ -51,7 +59,7 @@ sensors = calib.sensors(afe_baseline)
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    sampler = GasesSampler(system_id, sht, pt1000_calib, pt1000, sensors, 1)
+    sampler = GasesSampler(system_id, ndir, sht, pt1000_calib, pt1000, sensors, 1)
     print(sampler)
     print("-")
 

@@ -35,6 +35,8 @@ from scs_dfe.gas.pt1000_conf import Pt1000Conf
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
+from scs_ndir.gas.ndir import NDIR
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -65,6 +67,9 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
+        # NDIR...
+        ndir = NDIR.find(Host.ndir_device())
+
         # SHT...
         sht_conf = SHTConf.load_from_host(Host)
         sht = sht_conf.int_sht()
@@ -81,7 +86,7 @@ if __name__ == '__main__':
         sensors = afe_calib.sensors(afe_baseline)
 
         # Sampler...
-        sampler = GasesSampler(system_id, sht, pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
+        sampler = GasesSampler(system_id, ndir, sht, pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

@@ -20,13 +20,14 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, system_id, sht, pt1000_conf, pt1000, sensors, interval, sample_count=None):
+    def __init__(self, system_id, ndir, sht, pt1000_conf, pt1000, sensors, interval, sample_count=None):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
         self.__system_id = system_id
+        self.__ndir = ndir
         self.__afe = AFE(pt1000_conf, pt1000, sensors)
         self.__sht = sht
 
@@ -40,16 +41,18 @@ class GasesSampler(Sampler):
     def sample(self):
         tag = self.__system_id.message_tag()
 
+        co2_datum = self.__ndir.sample_co2(True) if self.__ndir else None
+
         sht_datum = self.__sht.sample()
         afe_datum = self.__afe.sample(sht_datum)
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return GasesDatum(tag, recorded, afe_datum, sht_datum)
+        return GasesDatum(tag, recorded, co2_datum, afe_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{system_id:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
-                    (self.__system_id, self.__afe, self.__sht, self.timer, self.sample_count)
+        return "GasesSampler:{system_id:%s, ndir:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
+                    (self.__system_id, self.__ndir, self.__afe, self.__sht, self.timer, self.sample_count)
