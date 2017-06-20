@@ -5,22 +5,14 @@ Created on 27 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Requires SystemID document.
-
-Note: this script uses the Pt1000 temp sensor for temperature compensation.
-
 command line example:
-./afe_sampler.py -i 2 -n 10
+./ndir_sampler.py -i 2 -n 10
 """
 
 import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-
-from scs_core.gas.afe_baseline import AFEBaseline
-from scs_core.gas.afe_calib import AFECalib
-from scs_core.gas.pt1000_calib import Pt1000Calib
 
 from scs_core.sample.sample_datum import SampleDatum
 
@@ -31,43 +23,40 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 
-from scs_dfe.gas.afe import AFE
-from scs_dfe.gas.pt1000 import Pt1000
-from scs_dfe.gas.pt1000_conf import Pt1000Conf
-
-from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
+
+from scs_ndir.gas.ndir import NDIR
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AFESampler(Sampler):
+class NDIRSampler(Sampler):
     """
     classdocs
     """
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyShadowingNames
-    def __init__(self, pt1000_conf, pt1000, sensors, interval, sample_count=None):
+    def __init__(self, ndir, interval, sample_count=None):
         """
         Constructor
         """
         Sampler.__init__(self, interval, sample_count)
 
-        self.__afe = AFE(pt1000_conf, pt1000, sensors)
+        self.__ndir = ndir
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def sample(self):
-        return 'afe', self.__afe.sample()
+        return 'ndir', self.__ndir.sample()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AFESampler:{afe:%s, timer:%s, sample_count:%d}" % \
-                    (self.__afe, self.timer, self.sample_count)
+        return "NDIRSampler:{ndir:%s, timer:%s, sample_count:%d}" % \
+                    (self.__ndir, self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -83,9 +72,6 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -99,22 +85,17 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
-        # Pt1000...
-        pt1000_conf = Pt1000Conf.load_from_host(Host)
-        pt1000_calib = Pt1000Calib.load_from_host(Host)
-        pt1000 = Pt1000(pt1000_calib)
-
-        # AFE...
-        afe_baseline = AFEBaseline.load_from_host(Host)
-
-        afe_calib = AFECalib.load_from_host(Host)
-        sensors = afe_calib.sensors(afe_baseline)
-
-        # Sampler...
-        sampler = AFESampler(pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
+        # NDIR...
+        ndir = NDIR.find(Host.ndir_device())
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print(ndir, file=sys.stderr)
+
+        # Sampler...
+        sampler = NDIRSampler(ndir, cmd.interval, cmd.samples)
+
+        if cmd.verbose:
+            print(ndir, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -134,10 +115,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt as ex:
         if cmd.verbose:
-            print("afe_sampler: KeyboardInterrupt", file=sys.stderr)
+            print("ndir_sampler: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
-
-    finally:
-        I2C.close()
