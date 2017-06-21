@@ -63,7 +63,11 @@ class StatusSampler(Sampler):
                 pass
 
         # temperature...
-        board_sample = self.__board.sample()
+        try:
+            board_sample = self.__board.sample()
+        except OSError:
+            board_sample = self.__board.null_datum()
+
         mcu_sample = Host.mcu_temp()
 
         temperature = SystemTemp.construct(board_sample, mcu_sample)

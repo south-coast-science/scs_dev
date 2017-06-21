@@ -111,17 +111,17 @@ if __name__ == '__main__':
         sensors = afe_calib.sensors(afe_baseline)
 
         # Sampler...
-        afe = AFESampler(pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
+        sampler = AFESampler(pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:
-            print(afe, file=sys.stderr)
+            print(sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        for sample in afe.samples():
+        for sample in sampler.samples():
             recorded = LocalizedDatetime.now()
             datum = SampleDatum(system_id.message_tag(), recorded, sample)
 
