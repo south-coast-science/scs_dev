@@ -16,7 +16,7 @@ class CmdPower(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog 1 | 0 [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { 1 | 0 } [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
