@@ -35,7 +35,7 @@ from scs_dfe.gas.pt1000_conf import Pt1000Conf
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
-from scs_ndir.gas.ndir import NDIR
+from scs_ndir.gas.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,8 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # NDIR...
-        ndir = NDIR.find(Host.ndir_device())
+        ndir_conf = NDIRConf.load_from_host(Host)
+        ndir = ndir_conf.ndir(Host)
 
         # SHT...
         sht_conf = SHTConf.load_from_host(Host)

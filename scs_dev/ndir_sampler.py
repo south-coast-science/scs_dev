@@ -25,7 +25,7 @@ from scs_dev.cmd.cmd_sampler import CmdSampler
 
 from scs_host.sys.host import Host
 
-from scs_ndir.gas.ndir import NDIR
+from scs_ndir.gas.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -85,11 +85,11 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # NDIR...
-        device = Host.ndir_device()
-        ndir = NDIR.find(device)
+        ndir_conf = NDIRConf.load_from_host(Host)
+        ndir = ndir_conf.ndir(Host)
 
         if ndir is None:
-            print("NDIR not available at %s" % device, file=sys.stderr)
+            print("NDIR not available.", file=sys.stderr)
             exit()
 
         if cmd.verbose:
