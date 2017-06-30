@@ -24,7 +24,7 @@ from scs_core.gas.pt1000_calib import Pt1000Calib
 
 from scs_core.sample.sample_datum import SampleDatum
 
-from scs_core.sync.sampler import Sampler
+from scs_core.sync.timed_sampler import TimedSampler
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
@@ -41,7 +41,7 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AFESampler(Sampler):
+class AFESampler(TimedSampler):
     """
     classdocs
     """
@@ -52,7 +52,7 @@ class AFESampler(Sampler):
         """
         Constructor
         """
-        Sampler.__init__(self, interval, sample_count)
+        TimedSampler.__init__(self, interval, sample_count)
 
         self.__afe = AFE(pt1000_conf, pt1000, sensors)
 
