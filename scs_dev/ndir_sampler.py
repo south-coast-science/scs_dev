@@ -95,7 +95,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(ndir, file=sys.stderr)
 
-        # Sampler...
+        # SemaphoreSampler...
         sampler = NDIRSampler(ndir, cmd.interval, cmd.samples)
 
         if cmd.verbose:
