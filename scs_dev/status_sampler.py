@@ -15,6 +15,9 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
+
+from scs_core.sync.timed_runner import TimedRunner
+
 from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -55,12 +58,14 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
+        # runner...
+        runner = TimedRunner(cmd.interval, cmd.samples)
 
         # sampler...
         gps = PAM7Q()
         gps.power_on()
 
-        sampler = StatusSampler(system_id, cmd.interval, cmd.samples)
+        sampler = StatusSampler(runner, system_id)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

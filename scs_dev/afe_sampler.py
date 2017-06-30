@@ -30,44 +30,13 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
+from scs_dev.sampler.afe_sampler import AFESampler
 
-from scs_dfe.gas.afe import AFE
 from scs_dfe.gas.pt1000 import Pt1000
 from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class AFESampler(TimedRunner):
-    """
-    classdocs
-    """
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # noinspection PyShadowingNames
-    def __init__(self, pt1000_conf, pt1000, sensors, interval, sample_count=None):
-        """
-        Constructor
-        """
-        TimedRunner.__init__(self, interval, sample_count)
-
-        self.__afe = AFE(pt1000_conf, pt1000, sensors)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def sample(self):
-        return 'afe', self.__afe.sample()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AFESampler:{afe:%s, timer:%s, sample_count:%d}" % \
-                    (self.__afe, self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -84,7 +53,6 @@ if __name__ == '__main__':
 
     try:
         I2C.open(Host.I2C_SENSORS)
-
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -110,8 +78,11 @@ if __name__ == '__main__':
         afe_calib = AFECalib.load_from_host(Host)
         sensors = afe_calib.sensors(afe_baseline)
 
-        # ScheduleRunner...
-        sampler = AFESampler(pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
+        # runner...
+        runner = TimedRunner(cmd.interval, cmd.samples)
+
+        # sampler...
+        sampler = AFESampler(runner, pt1000_conf, pt1000, sensors)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
