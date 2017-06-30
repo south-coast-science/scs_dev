@@ -6,12 +6,12 @@ Created on 18 Feb 2017
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.climate_datum import ClimateDatum
-from scs_core.sync.timed_sampler import TimedSampler
+from scs_core.sync.timed_runner import TimedRunner
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClimateSampler(TimedSampler):
+class ClimateSampler(TimedRunner):
     """
     classdocs
     """
@@ -22,7 +22,7 @@ class ClimateSampler(TimedSampler):
         """
         Constructor
         """
-        TimedSampler.__init__(self, interval, sample_count)
+        TimedRunner.__init__(self, interval, sample_count)
 
         self.__system_id = system_id
         self.__sht = sht

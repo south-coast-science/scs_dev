@@ -16,7 +16,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sample.sample_datum import SampleDatum
 
-from scs_core.sync.timed_sampler import TimedSampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
@@ -30,7 +30,7 @@ from scs_ndir.gas.ndir_conf import NDIRConf
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class NDIRSampler(TimedSampler):
+class NDIRSampler(TimedRunner):
     """
     classdocs
     """
@@ -41,7 +41,7 @@ class NDIRSampler(TimedSampler):
         """
         Constructor
         """
-        TimedSampler.__init__(self, interval, sample_count)
+        TimedRunner.__init__(self, interval, sample_count)
 
         self.__ndir = ndir
 
@@ -95,7 +95,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(ndir, file=sys.stderr)
 
-        # SemaphoreSampler...
+        # ScheduleRunner...
         sampler = NDIRSampler(ndir, cmd.interval, cmd.samples)
 
         if cmd.verbose:

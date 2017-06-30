@@ -6,14 +6,14 @@ Created on 20 Oct 2016
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.gases_datum import GasesDatum
-from scs_core.sync.timed_sampler import TimedSampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_dfe.gas.afe import AFE
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class GasesSampler(TimedSampler):
+class GasesSampler(TimedRunner):
     """
     classdocs
     """
@@ -24,7 +24,7 @@ class GasesSampler(TimedSampler):
         """
         Constructor
         """
-        TimedSampler.__init__(self, interval, sample_count)
+        TimedRunner.__init__(self, interval, sample_count)
 
         self.__system_id = system_id
         self.__ndir = ndir

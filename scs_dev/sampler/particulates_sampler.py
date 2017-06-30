@@ -8,14 +8,14 @@ import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sample.particulates_datum import ParticulatesDatum
-from scs_core.sync.timed_sampler import TimedSampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_dfe.particulate.opc_n2 import OPCN2
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ParticulatesSampler(TimedSampler):
+class ParticulatesSampler(TimedRunner):
     """
     classdocs
     """
@@ -26,7 +26,7 @@ class ParticulatesSampler(TimedSampler):
         """
         Constructor
         """
-        TimedSampler.__init__(self, interval, sample_count)
+        TimedRunner.__init__(self, interval, sample_count)
 
         self.__system_id = system_id
         self.__opc = OPCN2()

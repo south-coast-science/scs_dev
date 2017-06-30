@@ -20,7 +20,7 @@ from scs_core.gas.pt1000_calib import Pt1000Calib
 
 from scs_core.sample.sample_datum import SampleDatum
 
-from scs_core.sync.timed_sampler import TimedSampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
@@ -41,7 +41,7 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class TempSampler(TimedSampler):
+class TempSampler(TimedRunner):
     """
     classdocs
     """
@@ -53,7 +53,7 @@ class TempSampler(TimedSampler):
         """
         Constructor
         """
-        TimedSampler.__init__(self, interval, sample_count)
+        TimedRunner.__init__(self, interval, sample_count)
 
         self.__int_climate = int_climate
         self.__ext_climate = ext_climate

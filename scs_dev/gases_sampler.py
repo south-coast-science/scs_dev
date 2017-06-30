@@ -86,7 +86,7 @@ if __name__ == '__main__':
         afe_calib = AFECalib.load_from_host(Host)
         sensors = afe_calib.sensors(afe_baseline)
 
-        # SemaphoreSampler...
+        # ScheduleRunner...
         sampler = GasesSampler(system_id, ndir, sht, pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
 
         if cmd.verbose:

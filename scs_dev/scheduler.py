@@ -20,7 +20,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_verbose import CmdVerbose
 
 from scs_host.sys.host import Host
-from scs_host.sync.semaphore_scheduler import SemaphoreScheduler
+from scs_host.sync.scheduler import Scheduler
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -54,11 +54,12 @@ if __name__ == '__main__':
             print(schedule, file=sys.stderr)
             sys.stderr.flush()
 
+        # Scheduler...
+        scheduler = Scheduler(schedule, cmd.verbose)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
-
-        scheduler = SemaphoreScheduler(schedule, cmd.verbose)
 
         scheduler.run()
 
