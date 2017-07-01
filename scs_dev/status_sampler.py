@@ -27,6 +27,7 @@ from scs_dev.sampler.status_sampler import StatusSampler
 from scs_dfe.gps.pam7q import PAM7Q
 
 from scs_host.bus.i2c import I2C
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSampler(10)
+    cmd = CmdSampler()
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -59,7 +60,8 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # runner...
-        runner = TimedRunner(cmd.interval, cmd.samples)
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
 
         # sampler...
         gps = PAM7Q()

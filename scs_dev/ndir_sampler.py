@@ -24,6 +24,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.ndir_sampler import NDIRSampler
 
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 from scs_ndir.gas.ndir_conf import NDIRConf
@@ -67,7 +68,8 @@ if __name__ == '__main__':
             print(ndir, file=sys.stderr)
 
         # runner...
-        runner = TimedRunner(cmd.interval, cmd.samples)
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
 
         # sampler...
         sampler = NDIRSampler(runner, ndir)

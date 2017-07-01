@@ -29,13 +29,14 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.cmd.cmd_sn import CmdSN
+from scs_dev.cmd.cmd_sn_sampler import CmdSNSampler
 from scs_dev.sampler.afe_sn_sampler import AFESNSampler
 
 from scs_dfe.gas.pt1000 import Pt1000
 from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSN()
+    cmd = CmdSNSampler()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -84,10 +85,11 @@ if __name__ == '__main__':
         sensors = afe_calib.sensors(afe_baseline)
 
         # runner...
-        runner = TimedRunner(cmd.interval, cmd.samples)
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
 
         # sampler...
-        afe = AFESNSampler(runner, pt1000_conf, pt1000, sensors, cmd.sn)
+        afe = AFESNSampler(runner, pt1000_conf, pt1000, sensors, cmd.gas)
 
         if cmd.verbose:
             print(afe, file=sys.stderr)

@@ -9,24 +9,26 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdSN(object):
+class CmdSNSampler(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -s SENSOR [-i INTERVAL] [-n SAMPLES] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog -g SENSOR { -s SEMAPHORE | -i INTERVAL [-n SAMPLES]} [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
-        self.__parser.add_option("--sn", "-s", type="int", nargs=1, action="store", dest="sn",
+        self.__parser.add_option("--gas", "-g", type="int", nargs=1, action="store", dest="gas",
                                  help="sensor number (1 to 4)")
 
         # optional...
+        self.__parser.add_option("--semaphore", "-s", type="string", nargs=1, action="store", dest="semaphore",
+                                 help="sampling controlled by SEMAPHORE")
+
         self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
-                                 default=1.0,
-                                 help="sampling interval in seconds (default 1.0)")
+                                 help="sampling interval in seconds")
 
         self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
                                  help="number of samples (default for-ever)")
@@ -40,7 +42,13 @@ class CmdSN(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.sn is None:
+        if self.gas is None:
+            return False
+
+        if bool(self.semaphore is None) == bool(self.interval is None):
+            return False
+
+        if self.interval is None and self.samples is not None:
             return False
 
         return True
@@ -49,8 +57,13 @@ class CmdSN(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def sn(self):
-        return self.__opts.sn
+    def gas(self):
+        return self.__opts.gas
+
+
+    @property
+    def semaphore(self):
+        return self.__opts.semaphore
 
 
     @property
@@ -80,5 +93,5 @@ class CmdSN(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdSN:{sn:%s, interval:%0.1f, samples:%d, verbose:%s, args:%s}" % \
-                    (self.sn, self.interval, self.samples, self.verbose, self.args)
+        return "CmdSNSampler:{gas:%s, semaphore:%s, interval:%s, samples:%s, verbose:%s, args:%s}" % \
+                    (self.gas, self.semaphore, self.interval, self.samples, self.verbose, self.args)
