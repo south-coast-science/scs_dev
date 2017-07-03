@@ -24,52 +24,20 @@ from scs_core.gas.pt1000_calib import Pt1000Calib
 
 from scs_core.sample.sample_datum import SampleDatum
 
-from scs_core.sync.sampler import Sampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.cmd.cmd_sn import CmdSN
+from scs_dev.cmd.cmd_sn_sampler import CmdSNSampler
+from scs_dev.sampler.afe_sn_sampler import AFESNSampler
 
-from scs_dfe.gas.afe import AFE
 from scs_dfe.gas.pt1000 import Pt1000
 from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class AFESNSampler(Sampler):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # noinspection PyShadowingNames
-    def __init__(self, pt1000_conf, pt1000, sensors, sn, interval, sample_count=None):
-        """
-        Constructor
-        """
-        Sampler.__init__(self, interval, sample_count)
-
-        self.__sn = sn
-        self.__afe = AFE(pt1000_conf, pt1000, sensors)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def sample(self):
-        return 'afe', self.__afe.sample_station(self.__sn)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AFESNSampler:{afe:%s, sn:%d, timer:%s, sample_count:%d}" % \
-                    (self.__afe, self.__sn, self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -79,7 +47,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSN()
+    cmd = CmdSNSampler()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -116,8 +84,12 @@ if __name__ == '__main__':
         afe_calib = AFECalib.load_from_host(Host)
         sensors = afe_calib.sensors(afe_baseline)
 
-        # Sampler...
-        afe = AFESNSampler(pt1000_conf, pt1000, sensors, cmd.sn, cmd.interval, cmd.samples)
+        # runner...
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
+
+        # sampler...
+        afe = AFESNSampler(runner, pt1000_conf, pt1000, sensors, cmd.gas)
 
         if cmd.verbose:
             print(afe, file=sys.stderr)

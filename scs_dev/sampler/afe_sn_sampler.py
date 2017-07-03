@@ -1,52 +1,42 @@
 """
-Created on 18 Feb 2017
+Created on 30 Jun 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.data.localized_datetime import LocalizedDatetime
-from scs_core.sample.climate_datum import ClimateDatum
 from scs_core.sampler.sampler import Sampler
+
+from scs_dfe.gas.afe import AFE
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class ClimateSampler(Sampler):
+class AFESNSampler(Sampler):
     """
     classdocs
     """
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, sht):
+    def __init__(self, runner, pt1000_conf, pt1000, sensors, sn):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
-        self.__system_id = system_id
-        self.__sht = sht
+        self.__sn = sn
+        self.__afe = AFE(pt1000_conf, pt1000, sensors)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def reset(self):
-        Sampler.reset(self)
-
-        self.__sht.reset()
-
-
     def sample(self):
-        tag = self.__system_id.message_tag()
-
-        sht_sample = self.__sht.sample()
-
-        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
-
-        return ClimateDatum(tag, recorded, sht_sample)
+        return 'afe', self.__afe.sample_station(self.__sn)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClimateSampler:{runner:%s, system_id:%s, sht:%s}" % (self.runner, self.__system_id, self.__sht)
+        return "AFESNSampler:{runner:%s, afe:%s, sn:%d}" %  (self.runner, self.__afe, self.__sn)
+
+

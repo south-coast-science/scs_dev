@@ -16,46 +16,18 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sample.sample_datum import SampleDatum
 
-from scs_core.sync.sampler import Sampler
+from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
+from scs_dev.sampler.ndir_sampler import NDIRSampler
 
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 from scs_ndir.gas.ndir_conf import NDIRConf
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class NDIRSampler(Sampler):
-    """
-    classdocs
-    """
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # noinspection PyShadowingNames
-    def __init__(self, ndir, interval, sample_count=None):
-        """
-        Constructor
-        """
-        Sampler.__init__(self, interval, sample_count)
-
-        self.__ndir = ndir
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def sample(self):
-        return 'ndir', self.__ndir.sample()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "NDIRSampler:{ndir:%s, timer:%s, sample_count:%d}" %  (self.__ndir, self.timer, self.sample_count)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -95,11 +67,15 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(ndir, file=sys.stderr)
 
-        # Sampler...
-        sampler = NDIRSampler(ndir, cmd.interval, cmd.samples)
+        # runner...
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
+
+        # sampler...
+        sampler = NDIRSampler(runner, ndir)
 
         if cmd.verbose:
-            print(ndir, file=sys.stderr)
+            print(sampler, file=sys.stderr)
             sys.stderr.flush()
 
 

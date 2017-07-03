@@ -5,8 +5,10 @@ Created on 20 Oct 2016
 """
 
 from scs_core.data.localized_datetime import LocalizedDatetime
+
 from scs_core.sample.gases_datum import GasesDatum
-from scs_core.sync.sampler import Sampler
+
+from scs_core.sampler.sampler import Sampler
 
 from scs_dfe.gas.afe import AFE
 
@@ -20,11 +22,11 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, system_id, ndir, sht, pt1000_conf, pt1000, sensors, interval, sample_count=None):
+    def __init__(self, runner, system_id, ndir, sht, pt1000_conf, pt1000, sensors):
         """
         Constructor
         """
-        Sampler.__init__(self, interval, sample_count)
+        Sampler.__init__(self, runner)
 
         self.__system_id = system_id
         self.__ndir = ndir
@@ -35,6 +37,8 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def reset(self):
+        Sampler.reset(self)
+
         self.__sht.reset()
 
 
@@ -64,5 +68,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{system_id:%s, ndir:%s, afe:%s, sht:%s, timer:%s, sample_count:%s}" % \
-                    (self.__system_id, self.__ndir, self.__afe, self.__sht, self.timer, self.sample_count)
+        return "GasesSampler:{runner:%s, system_id:%s, ndir:%s, afe:%s, sht:%s}" % \
+                    (self.runner, self.__system_id, self.__ndir, self.__afe, self.__sht)

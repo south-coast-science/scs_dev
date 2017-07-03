@@ -22,6 +22,8 @@ from scs_core.gas.afe_baseline import AFEBaseline
 from scs_core.gas.afe_calib import AFECalib
 from scs_core.gas.pt1000_calib import Pt1000Calib
 
+from scs_core.sync.timed_runner import TimedRunner
+
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
@@ -33,6 +35,7 @@ from scs_dfe.gas.pt1000 import Pt1000
 from scs_dfe.gas.pt1000_conf import Pt1000Conf
 
 from scs_host.bus.i2c import I2C
+from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 from scs_ndir.gas.ndir_conf import NDIRConf
@@ -86,8 +89,12 @@ if __name__ == '__main__':
         afe_calib = AFECalib.load_from_host(Host)
         sensors = afe_calib.sensors(afe_baseline)
 
-        # Sampler...
-        sampler = GasesSampler(system_id, ndir, sht, pt1000_conf, pt1000, sensors, cmd.interval, cmd.samples)
+        # runner...
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+            else ScheduleRunner(cmd.semaphore, cmd.verbose)
+
+        # sampler...
+        sampler = GasesSampler(runner, system_id, ndir, sht, pt1000_conf, pt1000, sensors)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
