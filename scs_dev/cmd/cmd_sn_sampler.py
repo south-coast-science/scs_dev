@@ -16,7 +16,7 @@ class CmdSNSampler(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -g SENSOR { -s SEMAPHORE | -i INTERVAL [-n SAMPLES]} [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog -g SENSOR [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES]}] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -31,7 +31,7 @@ class CmdSNSampler(object):
                                  help="sampling interval in seconds")
 
         self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
-                                 help="number of samples (default for-ever)")
+                                 help="number of samples (1 if interval not specified)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -45,10 +45,10 @@ class CmdSNSampler(object):
         if self.gas is None:
             return False
 
-        if bool(self.semaphore is None) == bool(self.interval is None):
+        if self.__opts.semaphore is not None and self.__opts.interval is not None:
             return False
 
-        if self.interval is None and self.samples is not None:
+        if self.__opts.interval is None and self.__opts.samples is not None:
             return False
 
         return True
@@ -68,12 +68,12 @@ class CmdSNSampler(object):
 
     @property
     def interval(self):
-        return self.__opts.interval
+        return 0 if self.__opts.interval is None else self.__opts.interval
 
 
     @property
     def samples(self):
-        return self.__opts.samples
+        return 1 if self.__opts.interval is None else self.__opts.samples
 
 
     @property

@@ -14,16 +14,27 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.uptime_datum import UptimeDatum
+from scs_dev.cmd.cmd_sampler import CmdSampler
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdSampler()
+
+    if cmd.verbose:
+        print(cmd, file=sys.stderr)
+
     try:
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
+
         now = LocalizedDatetime.now()
 
         raw = subprocess.check_output('uptime')
@@ -34,5 +45,13 @@ if __name__ == '__main__':
         print(JSONify.dumps(datum))
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    except KeyboardInterrupt as ex:
+        if cmd.verbose:
+            print("uptime: KeyboardInterrupt", file=sys.stderr)
+
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
