@@ -34,6 +34,6 @@ class NDIRSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "NDIRSampler:{runner:%s, ndir:%s}" %  (self.runner , self.__ndir)
+        return "NDIRSampler:{runner:%s, ndir:%s}" %  (self.runner, self.__ndir)
 
 

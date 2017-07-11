@@ -25,6 +25,8 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_dfe.particulate.opc_conf import OPCConf
+
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
@@ -34,7 +36,6 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    io = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -61,25 +62,35 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
+        # OPCConf...
+        opc_conf = OPCConf.load_from_host(Host)
+
+        if opc_conf is None:
+            print("OPCConf not available.", file=sys.stderr)
+            exit()
+
+        if cmd.verbose:
+            print(opc_conf, file=sys.stderr)
+
+        # OPCMonitor...
+        opc_monitor = opc_conf.opc_monitor()
+
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, cmd.verbose)
 
         # sampler...
-        sampler = ParticulatesSampler(runner, system_id)
+        sampler = ParticulatesSampler(runner, system_id, opc_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
             sys.stderr.flush()
 
-        sampler.off()       # in case it had been left on after the last run
-
-        sampler.on()
-        sampler.reset()
-
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -103,6 +114,6 @@ if __name__ == '__main__':
 
     finally:
         if sampler:
-            sampler.off()
+            sampler.stop()
 
         I2C.close()

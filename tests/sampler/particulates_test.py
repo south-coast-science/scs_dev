@@ -10,10 +10,14 @@ import sys
 import time
 
 from scs_core.data.json import JSONify
+from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_dfe.particulate.opc_conf import OPCConf
+
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
@@ -22,20 +26,30 @@ from scs_host.sys.host import Host
 sampler = None
 
 try:
+    I2C.open(Host.I2C_SENSORS)
+
+    # SystemID...
     system_id = SystemID.load_from_host(Host)
 
     if system_id is None:
         print("SystemID not available.", file=sys.stderr)
         exit()
 
-    sampler = ParticulatesSampler(system_id, 10)
+    # OPCConf...
+    conf = OPCConf('N2', 5, False)
+
+    # OPCMonitor...
+    monitor = conf.opc_monitor()
+
+    runner = TimedRunner(10)
+
+    sampler = ParticulatesSampler(runner, system_id, monitor)
     print(sampler)
     print("-")
 
-    sampler.on()
-    sampler.reset()
+    sampler.start()
 
-    time.sleep(5)
+    time.sleep(11)
 
     datum = sampler.sample()
     print(datum)
@@ -46,4 +60,6 @@ try:
 
 finally:
     if sampler:
-        sampler.off()
+        sampler.stop()
+
+        I2C.close()

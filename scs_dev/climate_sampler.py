@@ -60,13 +60,19 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
+        # SHTConf...
+        sht_conf = SHTConf.load_from_host(Host)
+
+        if sht_conf is None:
+            print("SHTConf not available.", file=sys.stderr)
+            exit()
+
+        # SHT...
+        sht = sht_conf.ext_sht()
+
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, cmd.verbose)
-
-        # sampler...
-        sht_conf = SHTConf.load_from_host(Host)
-        sht = sht_conf.ext_sht()
 
         sampler = ClimateSampler(runner, system_id, sht)
 
