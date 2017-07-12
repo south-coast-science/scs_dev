@@ -91,7 +91,7 @@ if __name__ == '__main__':
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, cmd.verbose)
+            else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
         sampler = GasesSampler(runner, system_id, ndir, sht, pt1000_conf, pt1000, sensors)
