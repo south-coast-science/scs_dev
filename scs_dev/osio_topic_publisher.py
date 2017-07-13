@@ -72,7 +72,7 @@ if __name__ == '__main__':
         else:
             topic = cmd.topic
 
-        # TODO: check if topic exists
+        # TODO: check if topic exists?
 
         if cmd.verbose:
             print("topic: %s" % topic, file=sys.stderr)
