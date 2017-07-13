@@ -15,7 +15,7 @@ High-level scripts and command-line applications for South Coast Science data pr
 **Raspberry Pi, in /home/pi/.profile:**
 
 export \\
-export PYTHONPATH=\~/SCS/scs_analysis:\~/SCS/scs_dev:\~/SCS/scs_osio:\~/SCS/scs_mfr:\~/SCS/scs_dfe_eng:\~/SCS/scs_ndir_alphasense:\~/SCS/scs_host_rpi:\~/SCS/scs_core:$PYTHONPATH
+PYTHONPATH=\~/SCS/scs_analysis:\~/SCS/scs_dev:\~/SCS/scs_osio:\~/SCS/scs_mfr:\~/SCS/scs_dfe_eng:\~/SCS/scs_ndir_alphasense:\~/SCS/scs_host_rpi:\~/SCS/scs_core:$PYTHONPATH
 
 
 **Beaglebone, in /root/.bashrc:**
