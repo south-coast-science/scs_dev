@@ -10,8 +10,6 @@ from scs_core.sample.gases_datum import GasesDatum
 
 from scs_core.sampler.sampler import Sampler
 
-from scs_dfe.gas.afe import AFE
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -22,7 +20,7 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, ndir, sht, pt1000_conf, pt1000, sensors):
+    def __init__(self, runner, system_id, ndir, sht, afe):
         """
         Constructor
         """
@@ -30,8 +28,8 @@ class GasesSampler(Sampler):
 
         self.__system_id = system_id
         self.__ndir = ndir
-        self.__afe = AFE(pt1000_conf, pt1000, sensors)
         self.__sht = sht
+        self.__afe = afe
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -68,5 +66,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{runner:%s, system_id:%s, ndir:%s, afe:%s, sht:%s}" % \
-                    (self.runner, self.__system_id, self.__ndir, self.__afe, self.__sht)
+        return "GasesSampler:{runner:%s, system_id:%s, ndir:%s, sht:%s, afe:%s}" % \
+                    (self.runner, self.__system_id, self.__ndir, self.__sht, self.__afe)

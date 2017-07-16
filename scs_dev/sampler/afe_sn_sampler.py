@@ -6,8 +6,6 @@ Created on 30 Jun 2017
 
 from scs_core.sampler.sampler import Sampler
 
-from scs_dfe.gas.afe import AFE
-
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,14 +16,14 @@ class AFESNSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, pt1000_conf, pt1000, sensors, sn):
+    def __init__(self, runner, afe, sn):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
+        self.__afe = afe
         self.__sn = sn
-        self.__afe = AFE(pt1000_conf, pt1000, sensors)
 
 
     # ----------------------------------------------------------------------------------------------------------------

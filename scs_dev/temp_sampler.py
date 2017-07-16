@@ -15,26 +15,15 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-
-from scs_core.gas.pt1000_calib import Pt1000Calib
-
 from scs_core.sample.sample_datum import SampleDatum
-
 from scs_core.sync.timed_runner import TimedRunner
-
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
-
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.temp_sampler import TempSampler
-
 from scs_dfe.board.mcp9808 import MCP9808
-
 from scs_dfe.climate.sht_conf import SHTConf
-
-from scs_dfe.gas.pt1000 import Pt1000
-from scs_dfe.gas.pt1000_conf import Pt1000Conf
-
+from scs_dfe.gas.afe_conf import AFEConf
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
@@ -77,11 +66,11 @@ if __name__ == '__main__':
         int_climate = sht_conf.int_sht()
         ext_climate = sht_conf.ext_sht()
 
-        # Pt1000...
-        pt1000_conf = Pt1000Conf.load_from_host(Host)
-        pt1000_calib = Pt1000Calib.load_from_host(Host)
-        pt1000 = Pt1000(pt1000_calib)
+        # AFE...
+        afe_conf = AFEConf.load_from_host(Host)
+        afe = afe_conf.afe(Host)
 
+        # board...
         board = MCP9808(True)
 
         # runner...
@@ -89,7 +78,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = TempSampler(runner, int_climate, ext_climate, pt1000_conf, pt1000, board)
+        sampler = TempSampler(runner, int_climate, ext_climate, afe, board)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

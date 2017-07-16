@@ -6,8 +6,6 @@ Created on 30 Jun 2017
 
 from scs_core.sampler.sampler import Sampler
 
-from scs_dfe.gas.afe import AFE
-
 from scs_host.sys.host import Host
 
 
@@ -21,7 +19,7 @@ class TempSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     # noinspection PyShadowingNames
-    def __init__(self, runner, int_climate, ext_climate, pt1000_conf, pt1000, board):
+    def __init__(self, runner, int_climate, ext_climate, afe, board):
         """
         Constructor
         """
@@ -29,7 +27,7 @@ class TempSampler(Sampler):
 
         self.__int_climate = int_climate
         self.__ext_climate = ext_climate
-        self.__afe = AFE(pt1000_conf, pt1000, [])
+        self.__afe = afe
         self.__board = board
 
         self.__int_climate.reset()
