@@ -7,6 +7,7 @@ Created on 20 Oct 2016
 import time
 
 from scs_core.sample.particulates_datum import ParticulatesDatum
+
 from scs_core.sampler.sampler import Sampler
 
 
