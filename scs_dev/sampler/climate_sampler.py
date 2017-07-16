@@ -6,7 +6,7 @@ Created on 18 Feb 2017
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.sample.climate_datum import ClimateDatum
+from scs_core.sample.climate_sample import ClimateSample
 
 from scs_core.sampler.sampler import Sampler
 
@@ -45,7 +45,7 @@ class ClimateSampler(Sampler):
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return ClimateDatum(tag, recorded, sht_sample)
+        return ClimateSample(tag, recorded, sht_sample)
 
 
     # ----------------------------------------------------------------------------------------------------------------

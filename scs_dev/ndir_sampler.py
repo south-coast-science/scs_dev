@@ -14,7 +14,7 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.sample.sample_datum import SampleDatum
+from scs_core.sample.sample import Sample
 
 from scs_core.sync.timed_runner import TimedRunner
 
@@ -84,7 +84,7 @@ if __name__ == '__main__':
 
         for sample in sampler.samples():
             recorded = LocalizedDatetime.now()
-            datum = SampleDatum(system_id.message_tag(), recorded, sample)
+            datum = Sample(system_id.message_tag(), recorded, sample)
 
             print(JSONify.dumps(datum))
             sys.stdout.flush()

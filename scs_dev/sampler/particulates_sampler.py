@@ -6,7 +6,7 @@ Created on 20 Oct 2016
 
 import time
 
-from scs_core.sample.particulates_datum import ParticulatesDatum
+from scs_core.sample.particulates_sample import ParticulatesSample
 
 from scs_core.sampler.sampler import Sampler
 
@@ -53,7 +53,7 @@ class ParticulatesSampler(Sampler):
         if opc_sample is None:
             return None
 
-        return ParticulatesDatum(tag, opc_sample.rec, opc_sample)
+        return ParticulatesSample(tag, opc_sample.rec, opc_sample)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.location.gpgga import GPGGA
 from scs_core.location.gps_location import GPSLocation
 
-from scs_core.sample.status_datum import StatusDatum
+from scs_core.sample.status_sample import StatusSample
 
 from scs_core.sampler.sampler import Sampler
 
@@ -77,7 +77,7 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusDatum(tag, recorded, location, temperature, uptime)
+        return StatusSample(tag, recorded, location, temperature, uptime)
 
 
     # ----------------------------------------------------------------------------------------------------------------

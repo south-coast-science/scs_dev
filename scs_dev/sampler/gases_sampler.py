@@ -6,7 +6,7 @@ Created on 20 Oct 2016
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.sample.gases_datum import GasesDatum
+from scs_core.sample.gases_sample import GasesSample
 
 from scs_core.sampler.sampler import Sampler
 
@@ -60,7 +60,7 @@ class GasesSampler(Sampler):
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return GasesDatum(tag, recorded, co2_datum, afe_datum, sht_datum)
+        return GasesSample(tag, recorded, co2_datum, afe_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
