@@ -9,12 +9,12 @@ Created on 20 Oct 2016
 import sys
 
 from scs_core.data.json import JSONify
+from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
-
 from scs_dev.sampler.status_sampler import StatusSampler
-
+from scs_dfe.board.mcp9808 import MCP9808
+from scs_dfe.gps.gps_conf import GPSConf
 from scs_host.bus.i2c import I2C
-
 from scs_host.sys.host import Host
 
 
@@ -29,7 +29,16 @@ try:
         print("SystemID not available.", file=sys.stderr)
         exit()
 
-    sampler = StatusSampler(system_id, 1.0)
+    # board...
+    board = MCP9808(True)
+
+    # GPS...
+    gps_conf = GPSConf.load_from_host(Host)
+    gps = gps_conf.gps()
+
+    runner = TimedRunner(10)
+
+    sampler = StatusSampler(runner, system_id, board, gps)
     print(sampler)
     print("-")
 

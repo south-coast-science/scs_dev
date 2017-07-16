@@ -15,17 +15,13 @@ import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
-
 from scs_core.sync.timed_runner import TimedRunner
-
-from scs_core.sys.system_id import SystemID
 from scs_core.sys.exception_report import ExceptionReport
-
+from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.status_sampler import StatusSampler
-
-from scs_dfe.gps.pam7q import PAM7Q
-
+from scs_dfe.board.mcp9808 import MCP9808
+from scs_dfe.gps.gps_conf import GPSConf
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
@@ -59,22 +55,30 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(system_id, file=sys.stderr)
 
+        # board...
+        board = MCP9808(True)
+
+        # GPS...
+        gps_conf = GPSConf.load_from_host(Host)
+        gps = gps_conf.gps()
+
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        gps = PAM7Q()
-        gps.power_on()
-
-        sampler = StatusSampler(runner, system_id)
+        sampler = StatusSampler(runner, system_id, board, gps)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
             sys.stderr.flush()
 
+
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        if gps:
+            gps.power_on()
 
         for sample in sampler.samples():
             if cmd.verbose:

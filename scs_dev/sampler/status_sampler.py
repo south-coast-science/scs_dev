@@ -13,8 +13,6 @@ from scs_core.sample.status_datum import StatusDatum
 from scs_core.sampler.sampler import Sampler
 from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
-from scs_dfe.board.mcp9808 import MCP9808
-from scs_dfe.gps.pam7q import PAM7Q
 from scs_host.sys.host import Host
 
 
@@ -27,15 +25,15 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id):
+    def __init__(self, runner, system_id, board, gps):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
         self.__system_id = system_id
-        self.__board = MCP9808(True)
-        self.__gps = PAM7Q()
+        self.__board = board
+        self.__gps = gps
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -46,18 +44,15 @@ class StatusSampler(Sampler):
         # location...
         location = None
 
-        try:
-            self.__gps.open()
-            gga = self.__gps.report(GPGGA)
-            location = GPSLocation.construct(gga)
-        except RuntimeError:
-            pass
-
-        finally:
+        if self.__gps:
             try:
+                self.__gps.open()
+
+                gga = self.__gps.report(GPGGA)
+                location = GPSLocation.construct(gga)
+
+            finally:
                 self.__gps.close()
-            except RuntimeError:
-                pass
 
         # temperature...
         try:
