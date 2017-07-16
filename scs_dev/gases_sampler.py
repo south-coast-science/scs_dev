@@ -29,7 +29,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 from scs_ndir.gas.ndir_conf import NDIRConf
 
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
