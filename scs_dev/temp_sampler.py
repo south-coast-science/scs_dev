@@ -34,7 +34,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
