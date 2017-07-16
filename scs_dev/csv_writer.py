@@ -14,7 +14,6 @@ import sys
 from scs_core.csv.csv_writer import CSVWriter
 from scs_core.data.json import JSONify
 from scs_core.sys.exception_report import ExceptionReport
-
 from scs_dev.cmd.cmd_csv_writer import CmdCSVWriter
 
 
