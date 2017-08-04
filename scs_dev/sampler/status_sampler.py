@@ -15,6 +15,8 @@ from scs_core.sample.status_sample import StatusSample
 
 from scs_core.sampler.sampler import Sampler
 
+from scs_core.sync.schedule import Schedule
+
 from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
 from scs_host.sys.host import Host
@@ -68,6 +70,9 @@ class StatusSampler(Sampler):
 
         temperature = SystemTemp.construct(board_sample, mcu_sample)
 
+        # schedule...
+        schedule = Schedule.load_from_host(Host)
+
         # uptime...
         raw = subprocess.check_output('uptime')
         report = raw.decode()
@@ -77,7 +82,7 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(tag, recorded, location, temperature, uptime)
+        return StatusSample(tag, recorded, location, temperature, schedule, uptime)
 
 
     # ----------------------------------------------------------------------------------------------------------------
