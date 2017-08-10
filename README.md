@@ -6,8 +6,9 @@ High-level scripts and command-line applications for South Coast Science data pr
 * Third party: paho-mqtt, pyserial
 * SCS root:  scs_core
 * SCS host:  scs_host_bbe or scs_host_rpi
-* SCS NDIR:  scs_ndir_alphasense
 * SCS dfe:   scs_dfe_eng
+* SCS NDIR:  scs_ndir_alphasense
+* SCS PSU:   scs_psu
 
 
 **Example PYTHONPATH:**
