@@ -31,7 +31,7 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, board, gps):
+    def __init__(self, runner, system_id, board, gps, psu):
         """
         Constructor
         """
@@ -40,6 +40,7 @@ class StatusSampler(Sampler):
         self.__system_id = system_id
         self.__board = board
         self.__gps = gps
+        self.__psu = psu
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -79,14 +80,17 @@ class StatusSampler(Sampler):
 
         uptime = UptimeDatum.construct_from_report(None, report)
 
+        # psu...
+        psu_status = self.__psu.status() if self.__psu else None
+
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(tag, recorded, location, temperature, schedule, uptime)
+        return StatusSample(tag, recorded, location, temperature, schedule, uptime, psu_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps:%s}" % \
-               (self.runner, self.__system_id, self.__board, self.__gps)
+        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps:%s, psu:%s}" % \
+               (self.runner, self.__system_id, self.__board, self.__gps, self.__psu)

@@ -11,11 +11,19 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
+
 from scs_dev.sampler.status_sampler import StatusSampler
+
 from scs_dfe.board.mcp9808 import MCP9808
 from scs_dfe.gps.gps_conf import GPSConf
+
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
+
+try:
+    from scs_psu.psu.psu_conf import PSUConf
+except ImportError:
+    from scs_core.psu.psu_conf import PSUConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -36,9 +44,13 @@ try:
     gps_conf = GPSConf.load_from_host(Host)
     gps = gps_conf.gps()
 
+    # PSU...
+    psu_conf = PSUConf.load_from_host(Host)
+    psu = psu_conf.psu(Host)
+
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, system_id, board, gps)
+    sampler = StatusSampler(runner, system_id, board, gps, psu)
     print(sampler)
     print("-")
 

@@ -33,7 +33,11 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-from scs_ndir.gas.ndir_conf import NDIRConf
+
+try:
+    from scs_ndir.gas.ndir_conf import NDIRConf
+except ImportError:
+    from scs_core.gas.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
