@@ -8,8 +8,8 @@ import subprocess
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.location.gpgga import GPGGA
-from scs_core.location.gps_location import GPSLocation
+from scs_core.position.gpgga import GPGGA
+from scs_core.position.gps_location import GPSLocation
 
 from scs_core.sample.status_sample import StatusSample
 
@@ -19,6 +19,7 @@ from scs_core.sync.schedule import Schedule
 
 from scs_core.sys.system_temp import SystemTemp
 from scs_core.sys.uptime_datum import UptimeDatum
+
 from scs_host.sys.host import Host
 
 
