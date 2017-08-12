@@ -8,6 +8,8 @@ import subprocess
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.location.timezone_conf import TimezoneConf
+
 from scs_core.position.gpgga import GPGGA
 from scs_core.position.gps_location import GPSLocation
 
@@ -49,15 +51,19 @@ class StatusSampler(Sampler):
     def sample(self):
         tag = self.__system_id.message_tag()
 
-        # location...
-        location = None
+        # timezone...
+        timezone_conf = TimezoneConf.load_from_host(Host)
+        timezone = timezone_conf.timezone()
+
+        # position...
+        position = None
 
         if self.__gps:
             try:
                 self.__gps.open()
 
                 gga = self.__gps.report(GPGGA)
-                location = GPSLocation.construct(gga)
+                position = GPSLocation.construct(gga)
 
             finally:
                 self.__gps.close()
@@ -87,7 +93,7 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(tag, recorded, location, temperature, schedule, uptime, psu_status)
+        return StatusSample(tag, recorded, timezone, position, temperature, schedule, uptime, psu_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
