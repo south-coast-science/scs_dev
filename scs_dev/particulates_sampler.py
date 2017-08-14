@@ -13,10 +13,12 @@ command line example:
 """
 
 import sys
+import time
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.system_id import SystemID
@@ -45,6 +47,7 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
+
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -85,6 +88,20 @@ if __name__ == '__main__':
         if cmd.verbose:
             print(sampler, file=sys.stderr)
             sys.stderr.flush()
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # wait until needed...
+
+        if cmd.semaphore:
+            while True:
+                schedule = Schedule.load_from_host(Host)
+                item = schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE) if schedule else None
+
+                if item:
+                    break
+
+                time.sleep(1)
 
 
         # ------------------------------------------------------------------------------------------------------------
