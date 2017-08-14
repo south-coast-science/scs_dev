@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
-            exit()
+            exit(1)
 
         if cmd.verbose:
             print(system_id, file=sys.stderr)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         if opc_conf is None:
             print("OPCConf not available.", file=sys.stderr)
-            exit()
+            exit(1)
 
         if cmd.verbose:
             print(opc_conf, file=sys.stderr)

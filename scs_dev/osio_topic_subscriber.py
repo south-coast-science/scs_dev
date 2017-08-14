@@ -37,7 +37,7 @@ if __name__ == '__main__':
     cmd = CmdTopicSubscriber()
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
-        exit()
+        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
             if system_id is None:
                 print("SystemID not available.", file=sys.stderr)
-                exit()
+                exit(1)
 
             if cmd.verbose:
                 print(system_id, file=sys.stderr)
@@ -63,7 +63,7 @@ if __name__ == '__main__':
 
             if project is None:
                 print("Project not available.", file=sys.stderr)
-                exit()
+                exit(1)
 
             topic = project.channel_path(cmd.channel, system_id)
 

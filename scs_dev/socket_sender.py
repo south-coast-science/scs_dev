@@ -32,7 +32,7 @@ if __name__ == '__main__':
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
-        exit()
+        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)

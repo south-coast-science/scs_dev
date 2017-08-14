@@ -9,7 +9,7 @@ Warning: osio_mqtt_client should be started before control_receiver.
 
 command line example:
 cat ~/SCS/pipes/control_subscription_pipe | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v | \
-./osio_topic_publisher.py -cX > ~/SCS/pipes/control_publication_pipe 
+./osio_topic_publisher.py -cX > ~/SCS/pipes/control_publication_pipe
 """
 
 import json
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
-        exit()
+        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
-            exit()
+            exit(1)
 
         if cmd.verbose:
             print(system_id, file=sys.stderr)

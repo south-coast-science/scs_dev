@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
-            exit()
+            exit(1)
 
         if cmd.verbose:
             print(system_id, file=sys.stderr)
