@@ -104,15 +104,13 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt as ex:
-        print("bluetooth_monitor: " + type(ex).__name__, file=sys.stderr)
-        # TODO: BluetoothSerial.stop()
-        pass
+    except KeyboardInterrupt:
+        print("bluetooth_monitor: KeyboardInterrupt", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
-        # TODO: reboot system!
+        # TODO: reboot system!?
 
     finally:
-        # BluetoothSerial.stop()          # !?
-        print("exiting", end='\r\n')
+        # TODO: BluetoothSerial.stop()
+        print("exiting")

@@ -161,7 +161,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt as ex:
+    except KeyboardInterrupt:
         if cmd.verbose:
             print("socket_receiver: KeyboardInterrupt", file=sys.stderr)
 
