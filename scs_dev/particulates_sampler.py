@@ -34,6 +34,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: handle the case where there is no OPC - like the schedule issue?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
