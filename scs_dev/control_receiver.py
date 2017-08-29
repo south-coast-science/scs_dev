@@ -128,10 +128,10 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
                 if cmd.verbose:
-                    print(receipt, file=sys.stderr)
+                    print(JSONify.dumps(receipt), file=sys.stderr)
                     sys.stderr.flush()
 
-            # execute immediate commands...
+            # execute deferred commands...
             if command.cmd in deferred_commands:
                 command.execute(Host)
 
