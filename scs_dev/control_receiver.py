@@ -32,6 +32,8 @@ from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 from scs_host.sys.host import Host
 
 
+# TODO: replace SystemID with generated shared secret
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
