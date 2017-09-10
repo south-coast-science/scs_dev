@@ -75,10 +75,11 @@ if __name__ == '__main__':
     # end...
 
     except KeyboardInterrupt:
+        if cmd.prompt:
+            print("", file=sys.stderr)
+
         if cmd.verbose:
             print("psu: KeyboardInterrupt", file=sys.stderr)
-        else:
-            print("", file=sys.stderr)
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
