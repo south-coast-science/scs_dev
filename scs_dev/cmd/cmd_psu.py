@@ -16,11 +16,11 @@ class CmdPSU(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-p] [-v] [CMD [PARAM]]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -i | CMD [PARAM] } [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--prompt", "-p", action="store_true", dest="prompt", default=False,
-                                 help="display prompt on stderr (if no CMD)")
+        self.__parser.add_option("--interactive", "-i", action="store_true", dest="interactive", default=False,
+                                 help="interactive mode")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -30,7 +30,15 @@ class CmdPSU(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
+    def is_valid(self):
+        if bool(self.interactive) == bool(self.psu_command):
+            return False
+
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def has_psu_command(self):
         return bool(self.psu_command)
 
@@ -43,8 +51,8 @@ class CmdPSU(object):
 
 
     @property
-    def prompt(self):
-        return self.__opts.prompt
+    def interactive(self):
+        return self.__opts.interactive
 
 
     @property
@@ -59,6 +67,10 @@ class CmdPSU(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def print_help(self, file):
+        self.__parser.print_help(file)
+
+
     def __str__(self, *args, **kwargs):
-        return "CmdPSU:{prompt:%s, verbose:%s, args:%s}" % \
-                    (self.prompt, self.verbose, self.args)
+        return "CmdPSU:{interactive:%s, verbose:%s, args:%s}" % \
+                    (self.interactive, self.verbose, self.args)

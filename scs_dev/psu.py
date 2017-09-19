@@ -33,6 +33,10 @@ if __name__ == '__main__':
 
         cmd = CmdPSU()
 
+        if not cmd.is_valid():
+            cmd.print_help(sys.stderr)
+            exit(2)
+
         if cmd.verbose:
             print(cmd, file=sys.stderr)
 
@@ -50,14 +54,14 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if cmd.has_psu_command:
+        if cmd.has_psu_command():
             # use cmd args...
             response = psu.communicate(cmd.psu_command)
             print(response)
 
         else:
             # use stdin...
-            if cmd.prompt:
+            if cmd.interactive:
                 print('> ', file=sys.stderr, end='')
                 sys.stderr.flush()
 
@@ -66,7 +70,7 @@ if __name__ == '__main__':
                 print(response)
                 sys.stdout.flush()
 
-                if cmd.prompt:
+                if cmd.interactive:
                     print('> ', file=sys.stderr, end='')
                     sys.stderr.flush()
 
@@ -75,7 +79,7 @@ if __name__ == '__main__':
     # end...
 
     except KeyboardInterrupt:
-        if cmd.prompt:
+        if cmd.interactive:
             print("", file=sys.stderr)
 
         if cmd.verbose:

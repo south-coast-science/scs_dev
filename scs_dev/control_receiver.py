@@ -113,12 +113,10 @@ if __name__ == '__main__':
             command = Command.construct_from_tokens(datum.cmd_tokens)
 
             if command.cmd is not None and not command.is_valid(Host):
-                print("control_receiver: invalid command: %s" % command, file=sys.stderr)
-                sys.stderr.flush()
-                continue
+                command.error("invalid command")
 
             # execute immediate commands...
-            if command.cmd not in deferred_commands:
+            elif command.cmd not in deferred_commands:
                 command.execute(Host)
 
             # receipt...
