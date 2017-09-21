@@ -173,8 +173,5 @@ if __name__ == '__main__':
     # close...
 
     finally:
-        try:
-            if receiver is not None:
-                receiver.close()
-        except:
-            raise
+        if receiver is not None:
+            receiver.close()
