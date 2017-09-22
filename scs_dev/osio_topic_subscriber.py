@@ -27,6 +27,18 @@ from scs_dev.cmd.cmd_topic_subscriber import CmdTopicSubscriber
 from scs_host.sys.host import Host
 
 
+# TODO: catch and report the following error:
+
+# received: {"/orgs/south-coast-science-test/infuser/device/alpha-pi-eng-000112/control": {"tag": "bruno.local", "attn": "scs-ap1-112", "rec": "2017-09-22T08:55:17.761+01:00", "cmd_tokens": ["?"],
+# "digest": "d163b1b1755c477e48499087c34099aefbb13bcf316a63152cb1bb58153c39aa"}}
+
+# {"cls": "ValueError", "args": ["Expecting value: line 1 column 2 (char 1)"], "trace": [
+# {"loc": "File \"/home/pi/SCS/scs_dev/scs_dev/osio_topic_subscriber.py\", line 84, in <module>", "stat": "jdict = json.loads(line, object_pairs_hook=OrderedDict)"},
+# {"loc": "File \"/usr/lib/python3.4/json/__init__.py\", line 331, in loads", "stat": "return cls(**kw).decode(s)"},
+# {"loc": "File \"/usr/lib/python3.4/json/decoder.py\", line 343, in decode", "stat": "obj, end = self.raw_decode(s, idx=_w(s, 0).end())"},
+# {"loc": "File \"/usr/lib/python3.4/json/decoder.py\", line 361, in raw_decode", "stat": "raise ValueError(errmsg(\"Expecting value\", s, err.value)) from None"}],
+# "sum": "ValueError: Expecting value: line 1 column 2 (char 1)"}
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
