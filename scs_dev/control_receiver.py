@@ -86,7 +86,10 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             # control...
-            jdict = json.loads(line, object_pairs_hook=OrderedDict)
+            try:
+                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+            except ValueError:
+                continue
 
             try:
                 datum = ControlDatum.construct_from_jdict(jdict)

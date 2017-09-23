@@ -187,13 +187,12 @@ if __name__ == '__main__':
         if cmd.publish:
             for line in sys.stdin:
                 try:
-                    datum = json.loads(line, object_pairs_hook=OrderedDict)
+                    jdict = json.loads(line, object_pairs_hook=OrderedDict)
                 except ValueError:
-                    handler.print_status("bad datum: %s" % line.strip())
                     continue
 
                 while True:
-                    publication = Publication.construct_from_jdict(datum)
+                    publication = Publication.construct_from_jdict(jdict)
 
                     try:
                         if 'rec' in publication.payload:
