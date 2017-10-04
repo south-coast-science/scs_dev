@@ -10,18 +10,14 @@ WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-./osio_mqtt_client.py \
-/orgs/south-coast-science-dev/unep/loc/1/gases gases.uds \
-/orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
--p osio_mqtt_pub.uds -s -e
 """
 
-import json
+# import json
 import logging
 import sys
 import time
 
-from collections import OrderedDict
+# from collections import OrderedDict
 
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 
@@ -29,7 +25,7 @@ from scs_core.aws.client.client_id import ClientID
 from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
+# from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -92,8 +88,6 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cert_dir = Host.aws_dir() + 'cert/'
-
     topic = "bruno/1"
 
     try:
@@ -127,10 +121,10 @@ if __name__ == '__main__':
         client.configureCredentials(client_id.root_ca_file_path, client_id.private_key_path, client_id.certificate_path)
 
         client.configureAutoReconnectBackoffTime(1, 32, 20)
-        client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
-        client.configureDrainingFrequency(2)  # Draining: 2 Hz
-        client.configureConnectDisconnectTimeout(30)  # 10 sec
-        client.configureMQTTOperationTimeout(30)  # 5 sec
+        client.configureOfflinePublishQueueing(-1)              # Infinite offline Publish queueing
+        client.configureDrainingFrequency(2)                    # Draining: 2 Hz
+        client.configureConnectDisconnectTimeout(30)            # 10 sec
+        client.configureMQTTOperationTimeout(30)                # 5 sec
 
 
         # ------------------------------------------------------------------------------------------------------------
