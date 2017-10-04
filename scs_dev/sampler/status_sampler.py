@@ -52,7 +52,7 @@ class StatusSampler(Sampler):
         tag = self.__system_id.message_tag()
 
         # timezone...
-        timezone_conf = TimezoneConf.load_from_host(Host)
+        timezone_conf = TimezoneConf.load(Host)
         timezone = timezone_conf.timezone()
 
         # position...
@@ -79,7 +79,7 @@ class StatusSampler(Sampler):
         temperature = SystemTemp.construct(board_sample, mcu_sample)
 
         # schedule...
-        schedule = Schedule.load_from_host(Host)
+        schedule = Schedule.load(Host)
 
         # uptime...
         raw = subprocess.check_output('uptime')

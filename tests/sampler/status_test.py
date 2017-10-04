@@ -31,7 +31,7 @@ except ImportError:
 try:
     I2C.open(Host.I2C_SENSORS)
 
-    system_id = SystemID.load_from_host(Host)
+    system_id = SystemID.load(Host)
 
     if system_id is None:
         print("SystemID not available.", file=sys.stderr)
@@ -41,7 +41,7 @@ try:
     board = MCP9808(True)
 
     # GPS...
-    gps_conf = GPSConf.load_from_host(Host)
+    gps_conf = GPSConf.load(Host)
     gps = gps_conf.gps()
 
     # PSU...

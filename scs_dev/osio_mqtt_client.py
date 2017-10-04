@@ -112,7 +112,7 @@ if __name__ == '__main__':
         # resources...
 
         # APIAuth...
-        api_auth = APIAuth.load_from_host(Host)
+        api_auth = APIAuth.load(Host)
 
         if api_auth is None:
             print("APIAuth not available.", file=sys.stderr)
@@ -122,7 +122,7 @@ if __name__ == '__main__':
             print(api_auth, file=sys.stderr)
 
         # ClientAuth...
-        client_auth = ClientAuth.load_from_host(Host)
+        client_auth = ClientAuth.load(Host)
 
         if client_auth is None:
             print("ClientAuth not available.", file=sys.stderr)
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
         if cmd.channel:
             # SystemID...
-            system_id = SystemID.load_from_host(Host)
+            system_id = SystemID.load(Host)
 
             if system_id is None:
                 print("SystemID not available.", file=sys.stderr)
@@ -153,7 +153,7 @@ if __name__ == '__main__':
                 print(system_id, file=sys.stderr)
 
             # Project...
-            project = Project.load_from_host(Host)
+            project = Project.load(Host)
 
             if project is None:
                 print("Project not available.", file=sys.stderr)

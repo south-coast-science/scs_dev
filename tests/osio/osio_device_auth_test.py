@@ -39,6 +39,6 @@ print("-")
 
 auth.save(Host)
 
-auth = ClientAuth.load_from_host(Host)
+auth = ClientAuth.load(Host)
 print(auth)
 print("-")

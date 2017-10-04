@@ -59,7 +59,7 @@ if __name__ == '__main__':
         # resources...
 
         # SystemID...
-        system_id = SystemID.load_from_host(Host)
+        system_id = SystemID.load(Host)
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
@@ -69,15 +69,15 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # NDIR...
-        ndir_conf = NDIRConf.load_from_host(Host)
+        ndir_conf = NDIRConf.load(Host)
         ndir = ndir_conf.ndir(Host)
 
         # SHT...
-        sht_conf = SHTConf.load_from_host(Host)
+        sht_conf = SHTConf.load(Host)
         sht = sht_conf.int_sht()
 
         # AFE...
-        afe_conf = AFEConf.load_from_host(Host)
+        afe_conf = AFEConf.load(Host)
         afe = afe_conf.afe(Host)
 
         # runner...

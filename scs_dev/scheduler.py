@@ -44,7 +44,7 @@ if __name__ == '__main__':
         # resources...
 
         # Schedule...
-        schedule = Schedule.load_from_host(Host)
+        schedule = Schedule.load(Host)
 
         if schedule is None:
             print("Schedule not available.", file=sys.stderr)

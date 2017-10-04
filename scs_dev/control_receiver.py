@@ -66,7 +66,7 @@ if __name__ == '__main__':
 
     else:
         # SystemID...
-        system_id = SystemID.load_from_host(Host)
+        system_id = SystemID.load(Host)
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)

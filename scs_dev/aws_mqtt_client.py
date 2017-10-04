@@ -110,14 +110,14 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        endpoint = Endpoint.load_from_host(Host)
+        endpoint = Endpoint.load(Host)
 
 
-        client_id = ClientID.load_from_host(Host)
+        client_id = ClientID.load(Host)
 
-        root_ca_file_path = client_id.root_ca_file_path(Host)
-        private_key_path = client_id.private_key_path(Host)
-        certificate_path = client_id.certificate_path(Host)
+        root_ca_file_path = client_id.root_ca_file_path()
+        private_key_path = client_id.private_key_path()
+        certificate_path = client_id.certificate_path()
 
         logger = logging.getLogger("AWSIoTPythonSDK.core")
         logger.setLevel(logging.DEBUG)
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
         myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
 
-        myAWSIoTMQTTClient.configureEndpoint(endpoint.host, 8883)
+        myAWSIoTMQTTClient.configureEndpoint(endpoint.endpoint_host, 8883)
         myAWSIoTMQTTClient.configureCredentials(root_ca_file_path, private_key_path, certificate_path)
 
         myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)

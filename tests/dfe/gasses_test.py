@@ -25,7 +25,7 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     # SystemID...
-    system_id = SystemID.load_from_host(Host)
+    system_id = SystemID.load(Host)
 
     if system_id is None:
         print("SystemID not available.", file=sys.stderr)
@@ -35,11 +35,11 @@ try:
     ndir = NDIR.find(Host.ndir_device())
 
     # SHT...
-    sht_conf = SHTConf.load_from_host(Host)
+    sht_conf = SHTConf.load(Host)
     sht = sht_conf.int_sht()
 
     # AFE...
-    afe_conf = AFEConf.load_from_host(Host)
+    afe_conf = AFEConf.load(Host)
     afe = afe_conf.afe(Host)
 
     # runner...

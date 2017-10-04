@@ -51,7 +51,7 @@ if __name__ == '__main__':
         # resources...
 
         # SystemID...
-        system_id = SystemID.load_from_host(Host)
+        system_id = SystemID.load(Host)
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
@@ -61,7 +61,7 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # SHTConf...
-        sht_conf = SHTConf.load_from_host(Host)
+        sht_conf = SHTConf.load(Host)
 
         if sht_conf is None:
             print("SHTConf not available.", file=sys.stderr)

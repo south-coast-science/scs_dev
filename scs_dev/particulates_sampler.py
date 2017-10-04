@@ -56,7 +56,7 @@ if __name__ == '__main__':
         I2C.open(Host.I2C_SENSORS)
 
         # SystemID...
-        system_id = SystemID.load_from_host(Host)
+        system_id = SystemID.load(Host)
 
         if system_id is None:
             print("SystemID not available.", file=sys.stderr)
@@ -66,7 +66,7 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # OPCConf...
-        opc_conf = OPCConf.load_from_host(Host)
+        opc_conf = OPCConf.load(Host)
 
         if opc_conf is None:
             print("OPCConf not available.", file=sys.stderr)
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
         if cmd.semaphore:
             while True:
-                schedule = Schedule.load_from_host(Host)
+                schedule = Schedule.load(Host)
                 item = schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE) if schedule else None
 
                 if item:
