@@ -135,11 +135,16 @@ if __name__ == '__main__':
         myAWSIoTMQTTClient.subscribe(topic, 1, handler.handle)
         time.sleep(2)
 
-        while True:
-            time.sleep(2)
+        for line in sys.stdin:
+            datum = line.strip()
+
+            if datum is None:
+                break
+
+            myAWSIoTMQTTClient.publish(topic, datum, 1)
 
 
-            # ----------------------------------------------------------------------------------------------------------------
+        # ----------------------------------------------------------------------------------------------------------------
         # end...
 
     except KeyboardInterrupt:
