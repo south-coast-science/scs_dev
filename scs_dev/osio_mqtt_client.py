@@ -86,7 +86,7 @@ class OSIOMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTControlHandler:{verbose:%s}" % self.__verbose
+        return "OSIOMQTTHandler:{verbose:%s}" % self.__verbose
 
 
 # --------------------------------------------------------------------------------------------------------------------

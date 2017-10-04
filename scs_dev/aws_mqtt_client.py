@@ -94,17 +94,7 @@ if __name__ == '__main__':
 
     cert_dir = Host.aws_dir() + 'cert/'
 
-    rootCAPath = cert_dir + "root-CA.crt"
-    certificatePath = cert_dir + "scs-rpi-006.cert.pem"  # 9f01402232-certificate.pem.crt
-    privateKeyPath = cert_dir + "scs-rpi-006.private.key"  # 9f01402232-private.pem.key
-    clientId = "rpi-006"
     topic = "bruno/1"
-
-    # rootCAPath = "/home/pi/SCS/aws/root-CA.crt"
-    # certificatePath = "/home/pi/SCS/aws/scs-rpi-006.cert.pem"  # 9f01402232-certificate.pem.crt
-    # privateKeyPath = "/home/pi/SCS/aws/scs-rpi-006.private.key"  # 9f01402232-private.pem.key
-    # clientId = "rpi-006"
-    # topic = "bruno/1"
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -112,12 +102,15 @@ if __name__ == '__main__':
 
         endpoint = Endpoint.load(Host)
 
+        if endpoint is None:
+            print("Endpoint not available.", file=sys.stderr)
+            exit(1)
 
         client_id = ClientID.load(Host)
 
-        root_ca_file_path = client_id.root_ca_file_path()
-        private_key_path = client_id.private_key_path()
-        certificate_path = client_id.certificate_path()
+        if client_id is None:
+            print("ClientID not available.", file=sys.stderr)
+            exit(1)
 
         logger = logging.getLogger("AWSIoTPythonSDK.core")
         logger.setLevel(logging.DEBUG)
@@ -128,16 +121,16 @@ if __name__ == '__main__':
 
         logger.addHandler(streamHandler)
 
-        myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
+        client = AWSIoTMQTTClient(client_id.name)
 
-        myAWSIoTMQTTClient.configureEndpoint(endpoint.endpoint_host, 8883)
-        myAWSIoTMQTTClient.configureCredentials(root_ca_file_path, private_key_path, certificate_path)
+        client.configureEndpoint(endpoint.endpoint_host, 8883)
+        client.configureCredentials(client_id.root_ca_file_path, client_id.private_key_path, client_id.certificate_path)
 
-        myAWSIoTMQTTClient.configureAutoReconnectBackoffTime(1, 32, 20)
-        myAWSIoTMQTTClient.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
-        myAWSIoTMQTTClient.configureDrainingFrequency(2)  # Draining: 2 Hz
-        myAWSIoTMQTTClient.configureConnectDisconnectTimeout(30)  # 10 sec
-        myAWSIoTMQTTClient.configureMQTTOperationTimeout(30)  # 5 sec
+        client.configureAutoReconnectBackoffTime(1, 32, 20)
+        client.configureOfflinePublishQueueing(-1)  # Infinite offline Publish queueing
+        client.configureDrainingFrequency(2)  # Draining: 2 Hz
+        client.configureConnectDisconnectTimeout(30)  # 10 sec
+        client.configureMQTTOperationTimeout(30)  # 5 sec
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -145,8 +138,8 @@ if __name__ == '__main__':
 
         handler = AWSMQTTHandler()
 
-        myAWSIoTMQTTClient.connect()
-        myAWSIoTMQTTClient.subscribe(topic, 1, handler.handle)
+        client.connect()
+        client.subscribe(topic, 1, handler.handle)
         time.sleep(2)
 
         for line in sys.stdin:
@@ -155,7 +148,7 @@ if __name__ == '__main__':
             if datum is None:
                 break
 
-            myAWSIoTMQTTClient.publish(topic, datum, 1)
+            client.publish(topic, datum, 1)
 
 
         # ----------------------------------------------------------------------------------------------------------------
