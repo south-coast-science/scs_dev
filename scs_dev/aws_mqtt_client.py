@@ -7,25 +7,26 @@ Created on 4 Oct 2017
 
 WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
 
-Requires APIAuth and ClientAuth documents.
+Requires Endpoint and ClientCredentials documents.
 
 command line example:
+./aws_mqtt_client.py
 """
 
-# import json
-import logging
+import json
+# import logging
 import sys
-import time
+# import time
 
-# from collections import OrderedDict
+from collections import OrderedDict
 
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-
-from scs_core.aws.client.client_id import ClientID
+from scs_core.aws.client.mqtt_client import MQTTClient
+from scs_core.aws.client.client_credentials import ClientCredentials
 from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
 # from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.publication import Publication
 
 from scs_core.sys.exception_report import ExceptionReport
 
@@ -94,37 +95,34 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # endpoint...
         endpoint = Endpoint.load(Host)
 
         if endpoint is None:
             print("Endpoint not available.", file=sys.stderr)
             exit(1)
 
-        client_id = ClientID.load(Host)
+        # endpoint...
+        credentials = ClientCredentials.load(Host)
 
-        if client_id is None:
+        if credentials is None:
             print("ClientID not available.", file=sys.stderr)
             exit(1)
 
-        logger = logging.getLogger("AWSIoTPythonSDK.core")
-        logger.setLevel(logging.DEBUG)
+        # logger...
+        # logger = logging.getLogger("AWSIoTPythonSDK.core")
+        # logger.setLevel(logging.DEBUG)
+        #
+        # streamHandler = logging.StreamHandler()
+        # formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        # streamHandler.setFormatter(formatter)
+        #
+        # logger.addHandler(streamHandler)
 
-        streamHandler = logging.StreamHandler()
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        streamHandler.setFormatter(formatter)
+        # client...
+        client = MQTTClient(endpoint, credentials)
 
-        logger.addHandler(streamHandler)
-
-        client = AWSIoTMQTTClient(client_id.name)
-
-        client.configureEndpoint(endpoint.endpoint_host, 8883)
-        client.configureCredentials(client_id.root_ca_file_path, client_id.private_key_path, client_id.certificate_path)
-
-        client.configureAutoReconnectBackoffTime(1, 32, 20)
-        client.configureOfflinePublishQueueing(-1)              # Infinite offline Publish queueing
-        client.configureDrainingFrequency(2)                    # Draining: 2 Hz
-        client.configureConnectDisconnectTimeout(30)            # 10 sec
-        client.configureMQTTOperationTimeout(30)                # 5 sec
+        print(client, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -133,16 +131,18 @@ if __name__ == '__main__':
         handler = AWSMQTTHandler()
 
         client.connect()
-        client.subscribe(topic, 1, handler.handle)
-        time.sleep(2)
+        # client.subscribe(topic, 1, handler.handle)
+        # time.sleep(2)
 
         for line in sys.stdin:
-            datum = line.strip()
+            try:
+                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+            except ValueError:
+                continue
 
-            if datum is None:
-                break
+            publication = Publication.construct_from_jdict(jdict)
 
-            client.publish(topic, datum, 1)
+            client.publish(publication)
 
 
         # ----------------------------------------------------------------------------------------------------------------

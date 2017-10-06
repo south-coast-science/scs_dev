@@ -26,7 +26,7 @@ from scs_core.osio.config.project import Project
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.cmd.cmd_topic_publisher import CmdTopicPublisher
+from scs_dev.cmd.cmd_osio_topic_publisher import CmdOSIOTopicPublisher
 
 from scs_host.sys.host import Host
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdTopicPublisher()
+    cmd = CmdOSIOTopicPublisher()
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit(2)
