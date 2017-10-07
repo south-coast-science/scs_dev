@@ -21,7 +21,7 @@ from collections import OrderedDict
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
-from scs_core.osio.config.project import Project
+from scs_core.aws.config.project import Project
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
@@ -63,7 +63,7 @@ if __name__ == '__main__':
                 print(system_id, file=sys.stderr)
 
             # Project...
-            project = Project.load(Host)        # TODO: replace with AWS project
+            project = Project.load(Host)
 
             if project is None:
                 print("Project not available.", file=sys.stderr)

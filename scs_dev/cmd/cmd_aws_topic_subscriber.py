@@ -6,7 +6,7 @@ Created on 19 Nov 2016
 
 import optparse
 
-from scs_core.osio.config.project import Project        # TODO: replace with AWS project
+from scs_core.aws.config.project import Project
 
 
 # --------------------------------------------------------------------------------------------------------------------
