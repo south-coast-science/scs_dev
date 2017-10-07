@@ -10,7 +10,9 @@ WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
 Requires Endpoint and ClientCredentials documents.
 
 command line example:
-./aws_mqtt_client.py
+./gases_sampler.py -i2 | \
+    ./aws_topic_publisher.py -t south-coast-science-dev/development/loc/3/gases | \
+    ./aws_mqtt_client.py -s -e
 """
 
 import json
