@@ -5,8 +5,6 @@ Created on 7 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
-
 Requires SystemID and Project documents.
 
 command line example:
