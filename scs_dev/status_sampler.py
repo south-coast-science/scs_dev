@@ -76,7 +76,7 @@ if __name__ == '__main__':
         psu_conf = PSUConf.load_from_host(Host)
         psu = psu_conf.psu(Host)
 
-        if cmd.verbose:
+        if cmd.verbose and psu:
             print(psu, file=sys.stderr)
 
         # runner...
