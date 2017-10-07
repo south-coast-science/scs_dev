@@ -210,6 +210,7 @@ if __name__ == '__main__':
             if cmd.verbose:
                 now = LocalizedDatetime.now()
                 print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
+                sys.stderr.flush()
 
             if cmd.echo:
                 print(message)
