@@ -207,8 +207,9 @@ if __name__ == '__main__':
 
             client.publish(publication)
 
-            now = LocalizedDatetime.now()
-            print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
+            if cmd.verbose:
+                now = LocalizedDatetime.now()
+                print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
 
             if cmd.echo:
                 print(message)
