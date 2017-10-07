@@ -5,14 +5,16 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-WARNING: only one MQTT client can run at any one time on a TCP/IP host.
+WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
 
 Requires APIAuth and ClientAuth documents.
 
 command line example:
-cat ~/SCS/pipes/control_publication_pipe | \
-./osio_mqtt_client.py -v -p /orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control > \
-~/SCS/pipes/control_subscription_pipe"""
+./osio_mqtt_client.py \
+/orgs/south-coast-science-dev/unep/loc/1/gases gases.uds \
+/orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
+-p osio_mqtt_pub.uds -s -e
+"""
 
 import json
 import random
@@ -21,28 +23,26 @@ import time
 
 from collections import OrderedDict
 
+from scs_analysis.cmd.cmd_mqtt_client import CmdMQTTClient
+
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
-from scs_core.osio.config.project import Project
 from scs_core.osio.manager.topic_manager import TopicManager
 
 from scs_core.sys.exception_report import ExceptionReport
-from scs_core.sys.system_id import SystemID
-
-from scs_dev.cmd.cmd_osio_mqtt_client import CmdOSIOMQTTClient
 
 from scs_host.client.http_client import HTTPClient
-from scs_host.client.mqtt_client import MQTTClient
-from scs_host.client.mqtt_client import MQTTSubscriber
+from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
+
+from scs_host.comms.domain_socket import DomainSocket
+from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-
-# TODO: update to use UDS - like scs_analysis.osio_mqtt_client
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -54,24 +54,38 @@ class OSIOMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, verbose):
+    def __init__(self, comms, echo, verbose):
         """
         Constructor
         """
+        self.__comms = comms
+
+        self.__echo = echo
         self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def print_publication(self, pub):
-        print(JSONify.dumps(pub))
-        sys.stdout.flush()
+    def handle(self, pub):
+        try:
+            self.__comms.connect()
+            self.__comms.write(JSONify.dumps(pub), False)
 
-        if not self.__verbose:
-            return
+        except ConnectionRefusedError:
+            if self.__verbose:
+                print("OSIOMQTTHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
+                sys.stderr.flush()
 
-        print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
-        sys.stderr.flush()
+        finally:
+            self.__comms.close()
+
+        if self.__echo:
+            print(JSONify.dumps(pub))
+            sys.stdout.flush()
+
+        if self.__verbose:
+            print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
+            sys.stderr.flush()
 
 
     def print_status(self, status):
@@ -86,7 +100,8 @@ class OSIOMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTHandler:{verbose:%s}" % self.__verbose
+        return "OSIOMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
+               (self.__comms, self.__echo, self.__verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -94,11 +109,13 @@ class OSIOMQTTHandler(object):
 if __name__ == '__main__':
 
     client = None
+    pub_comms = None
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdOSIOMQTTClient()
+    cmd = CmdMQTTClient()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -130,38 +147,37 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print(client_auth, file=sys.stderr)
-            sys.stderr.flush()
+
+        # comms...
+        pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
 
         # manager...
         manager = TopicManager(HTTPClient(), api_auth.api_key)
 
-        # responder...
-        handler = OSIOMQTTHandler(cmd.verbose)
+        # check topics...
+        unavailable = False
+        for subscription in cmd.subscriptions:
+            if not manager.find(subscription.topic):
+                print("Topic not available: %s" % subscription[0], file=sys.stderr)
+                unavailable = True
+
+        if unavailable:
+            exit(1)
 
         # subscribers...
-        subscribers = [MQTTSubscriber(topic, handler.print_publication) for topic in cmd.topics]
+        subscribers = []
 
-        if cmd.channel:
-            # SystemID...
-            system_id = SystemID.load(Host)
+        for subscription in cmd.subscriptions:
+            sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
 
-            if system_id is None:
-                print("SystemID not available.", file=sys.stderr)
-                exit(1)
+            # handler...
+            handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
 
             if cmd.verbose:
-                print(system_id, file=sys.stderr)
+                print(handler, file=sys.stderr)
+                sys.stderr.flush()
 
-            # Project...
-            project = Project.load(Host)
-
-            if project is None:
-                print("Project not available.", file=sys.stderr)
-                exit(1)
-
-            topic = project.channel_path(cmd.channel, system_id)
-
-            subscribers.append(MQTTSubscriber(topic, handler.print_publication))
+            subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
 
         # client...
         client = MQTTClient(*subscribers)
@@ -171,57 +187,42 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # check topics...
-        unavailable = False
-        for topic in cmd.topics:
-            if not manager.find(topic):
-                print("Topic not available: %s" % topic, file=sys.stderr)
-                unavailable = True
-
-        # TODO: also check if channel topic is available
-
-        if unavailable:
-            exit(1)
-
         # publish...
-        if cmd.publish:
-            for line in sys.stdin:
-                try:
-                    jdict = json.loads(line, object_pairs_hook=OrderedDict)
-                except ValueError:
-                    continue
+        pub_comms.connect()
 
-                while True:
-                    publication = Publication.construct_from_jdict(jdict)
+        for message in pub_comms.read():
+            try:
+                datum = json.loads(message, object_pairs_hook=OrderedDict)
+            except ValueError:
+                handler.print_status("bad datum: %s" % message)
+                continue
 
-                    try:
-                        if 'rec' in publication.payload:
-                            handler.print_status(publication.payload['rec'])
-
-                        success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
-
-                        if not success:
-                            handler.print_status("abandoned")
-
-                        break
-
-                    except Exception as ex:
-                        if cmd.verbose:
-                            print(JSONify.dumps(ExceptionReport.construct(ex)))
-                            sys.stderr.flush()
-
-                    time.sleep(random.uniform(1.0, 2.0))           # Don't hammer the client!
-
-                handler.print_status("done")
-
-                if cmd.echo:
-                    print(line, end="")
-                    sys.stdout.flush()
-
-        # subscribe...
-        if cmd.topics:
             while True:
-                time.sleep(0.1)
+                publication = Publication.construct_from_jdict(datum)
+
+                try:
+                    if 'rec' in publication.payload:
+                        handler.print_status(publication.payload['rec'])
+
+                    success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
+
+                    if not success:
+                        handler.print_status("abandoned")
+
+                    break
+
+                except Exception as ex:
+                    if cmd.verbose:
+                        print(JSONify.dumps(ExceptionReport.construct(ex)))
+                        sys.stderr.flush()
+
+                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
+
+            handler.print_status("done")
+
+            if cmd.echo:
+                print(message)
+                sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -237,3 +238,6 @@ if __name__ == '__main__':
     finally:
         if client:
             client.disconnect()
+
+        if pub_comms:
+            pub_comms.close()
