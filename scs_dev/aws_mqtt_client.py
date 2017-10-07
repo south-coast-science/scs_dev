@@ -22,12 +22,15 @@ from collections import OrderedDict
 
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 from scs_core.aws.client.client_credentials import ClientCredentials
+from scs_core.aws.config.project import Project
 from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
+from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.sys.exception_report import ExceptionReport
+from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 
@@ -138,16 +141,44 @@ if __name__ == '__main__':
         # subscribers...
         subscribers = []
 
-        for subscription in cmd.subscriptions:
-            sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
+        if cmd.channel:
+            # SystemID...
+            system_id = SystemID.load(Host)
 
-            # handler...
-            handler = AWSMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+            if system_id is None:
+                print("SystemID not available.", file=sys.stderr)
+                exit(1)
 
             if cmd.verbose:
-                print(handler, file=sys.stderr)
+                print(system_id, file=sys.stderr)
 
-            subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
+            # Project...
+            project = Project.load(Host)
+
+            if project is None:
+                print("Project not available.", file=sys.stderr)
+                exit(1)
+
+            topic = project.channel_path(cmd.channel, system_id)
+
+            # handler...
+            sub_comms = DomainSocket(cmd.channel_uds) if cmd.channel_uds else StdIO()
+
+            handler = AWSMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+
+            subscribers.append(MQTTSubscriber(topic, handler.handle))
+
+        else:
+            for subscription in cmd.subscriptions:
+                sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
+
+                # handler...
+                handler = AWSMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+
+                if cmd.verbose:
+                    print(handler, file=sys.stderr)
+
+                subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
 
         # client...
         client = MQTTClient(*subscribers)
@@ -175,6 +206,9 @@ if __name__ == '__main__':
             publication = Publication.construct_from_jdict(jdict)
 
             client.publish(publication)
+
+            now = LocalizedDatetime.now()
+            print("%s:         mqtt: done" % now.as_iso8601(), file=sys.stderr)
 
             if cmd.echo:
                 print(message)

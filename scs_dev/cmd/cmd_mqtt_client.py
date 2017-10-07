@@ -17,7 +17,8 @@ class CmdMQTTClient(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-p UDS_PUB] "
-                                                    "[-s] [SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] "
+                                                    "[-s] { -c { C | G | P | S | X } (UDS_SUB_1) | "
+                                                    "[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] }"
                                                     "[-e] [-v]", version="%prog 1.0")
 
         # optional...
@@ -26,6 +27,9 @@ class CmdMQTTClient(object):
 
         self.__parser.add_option("--sub", "-s", action="store_true", dest="uds_sub",
                                  help="write subscriptions to UDS instead of stdout")
+
+        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+                                 help="subscribe to channel")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo input to stdout (if writing subscriptions to DomainSocket)")
@@ -42,8 +46,16 @@ class CmdMQTTClient(object):
         if self.echo and not self.__opts.uds_sub:
             return False
 
-        if self.__opts.uds_sub and len(self.__args) % 2 != 0:
-            return False
+        if self.channel is None:
+            if self.__opts.uds_sub and len(self.__args) % 2 != 0:
+                return False
+
+        else:
+            if self.__opts.uds_sub and len(self.__args) != 1:
+                return False
+
+            if not self.__opts.uds_sub and len(self.__args) != 0:
+                return False
 
         return True
 
@@ -62,6 +74,19 @@ class CmdMQTTClient(object):
                 subscriptions.append(Subscription(self.__args[i]))
 
         return subscriptions
+
+
+    @property
+    def channel(self):
+        return self.__opts.channel
+
+
+    @property
+    def channel_uds(self):
+        if self.channel is None or not self.__opts.uds_sub:
+            return None
+
+        return self.__args[0]
 
 
     @property
@@ -93,8 +118,8 @@ class CmdMQTTClient(object):
     def __str__(self, *args, **kwargs):
         subscriptions = '[' + ', '.join(str(subscription) for subscription in self.subscriptions) + ']'
 
-        return "CmdMQTTClient:{subscriptions:%s, uds_pub_addr:%s, echo:%s, verbose:%s, args:%s}" % \
-               (subscriptions, self.uds_pub_addr, self.echo, self.verbose, self.args)
+        return "CmdMQTTClient:{subscriptions:%s, channel:%s, uds_pub_addr:%s, echo:%s, verbose:%s, args:%s}" % \
+               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.verbose, self.args)
 
 
 # --------------------------------------------------------------------------------------------------------------------
