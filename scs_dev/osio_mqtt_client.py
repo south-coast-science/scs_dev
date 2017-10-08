@@ -227,13 +227,12 @@ if __name__ == '__main__':
                 handler.print_status("bad datum: %s" % message)
                 continue
 
+            success = False
+
             while True:
                 publication = Publication.construct_from_jdict(datum)
 
                 try:
-                    if 'rec' in publication.payload:
-                        handler.print_status(publication.payload['rec'])
-
                     success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
                     if not success:
@@ -248,7 +247,8 @@ if __name__ == '__main__':
 
                 time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
 
-            handler.print_status("done")
+            if success:
+                handler.print_status("done")
 
             if cmd.echo:
                 print(message)
