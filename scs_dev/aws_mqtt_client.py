@@ -125,14 +125,14 @@ if __name__ == '__main__':
         endpoint = Endpoint.load(Host)
 
         if endpoint is None:
-            print("Endpoint not available.", file=sys.stderr)
+            print("Endpoint config not available.", file=sys.stderr)
             exit(1)
 
         # endpoint...
         credentials = ClientCredentials.load(Host)
 
         if credentials is None:
-            print("ClientID not available.", file=sys.stderr)
+            print("ClientCredentials not available.", file=sys.stderr)
             exit(1)
 
         # comms...
