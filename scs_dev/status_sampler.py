@@ -73,7 +73,7 @@ if __name__ == '__main__':
         gps = gps_conf.gps()
 
         # PSU...
-        psu_conf = PSUConf.load_from_host(Host)
+        psu_conf = PSUConf.load(Host)
         psu = psu_conf.psu(Host)
 
         if cmd.verbose and psu:

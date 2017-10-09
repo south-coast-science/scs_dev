@@ -45,7 +45,7 @@ try:
     gps = gps_conf.gps()
 
     # PSU...
-    psu_conf = PSUConf.load_from_host(Host)
+    psu_conf = PSUConf.load(Host)
     psu = psu_conf.psu(Host)
 
     runner = TimedRunner(10)
