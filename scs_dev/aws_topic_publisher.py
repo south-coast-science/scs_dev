@@ -7,7 +7,7 @@ Created on 18 Nov 2016
 
 https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
 
-Requires SystemID and Project documents.
+Requires SystemID and AWS Project documents.
 
 command line example:
 ./status_sampler.py | ./aws_topic_publisher.py -e -t /users/southcoastscience-dev/test/json

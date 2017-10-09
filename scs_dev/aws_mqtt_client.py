@@ -7,7 +7,7 @@ Created on 4 Oct 2017
 
 WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
 
-Requires Endpoint and ClientCredentials documents.
+Requires AWS Endpoint and ClientCredentials documents.
 
 command line example:
 ./gases_sampler.py -i2 | \

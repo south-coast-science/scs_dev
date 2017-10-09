@@ -5,7 +5,7 @@ Created on 7 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-Requires SystemID and Project documents.
+Requires SystemID and AWS Project documents.
 
 command line example:
 ./aws_mqtt_client.py south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
