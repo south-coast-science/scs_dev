@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps = gps_conf.gps()
+        gps = gps_conf.gps(Host)
 
         # PSU...
         psu_conf = PSUConf.load(Host)
