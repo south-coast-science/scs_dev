@@ -14,6 +14,9 @@ command line example:
 /orgs/south-coast-science-dev/unep/loc/1/gases gases.uds \
 /orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
 -p osio_mqtt_pub.uds -s -e
+
+BUGS
+When run as a background process, osio_mqtt_client will exit if it has no stdin stream.
 """
 
 import json

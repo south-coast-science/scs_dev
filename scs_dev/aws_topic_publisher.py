@@ -5,12 +5,20 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
+DESCRIPTION
+The aws_topic_publisher utility is used to prepare data for publication by the aws_mqtt_client script. The
+aws_topic_publisher works by taking data from stdin, wrapping it in a JSON document whose only field has the name of
+the given topic, and presenting the result on stdout.
 
-Requires SystemID and AWS Project documents.
+Topic paths can be specified either explicitly in full, or by reference to a device project. In the latter case, the
+relevant system ID and project documents must be available.
 
-command line example:
-./status_sampler.py | ./aws_topic_publisher.py -e -t /users/southcoastscience-dev/test/json
+EXAMPLES
+./status_sampler.py -i10 | ./aws_topic_publisher.py -e -cS
+
+SEE ALSO
+scs_analysis/aws_mqtt_client
+scs_analysis/aws_topic_subscriber
 """
 
 import json
@@ -30,6 +38,8 @@ from scs_dev.cmd.cmd_aws_topic_publisher import CmdAWSTopicPublisher
 
 from scs_host.sys.host import Host
 
+
+# TODO: need to move project handling out of osio, and make it common with aws.
 
 # --------------------------------------------------------------------------------------------------------------------
 
