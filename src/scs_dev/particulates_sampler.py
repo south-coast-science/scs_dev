@@ -76,7 +76,7 @@ if __name__ == '__main__':
             print(opc_conf, file=sys.stderr)
 
         # OPCMonitor...
-        opc_monitor = opc_conf.opc_monitor()
+        opc_monitor = opc_conf.opc_monitor(Host)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \

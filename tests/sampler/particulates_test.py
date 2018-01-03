@@ -39,7 +39,7 @@ try:
     conf = OPCConf('N2', 5, False)
 
     # OPCMonitor...
-    monitor = conf.opc_monitor()
+    monitor = conf.opc_monitor(Host)
 
     runner = TimedRunner(10)
 
