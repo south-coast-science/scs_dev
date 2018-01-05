@@ -29,7 +29,7 @@ from scs_core.data.json import JSONify
 
 from scs_host.sys.host import Host
 
-from scs_analysis.cmd.cmd_aws_api_auth import CmdAWSAPIAuth
+from scs_dev.cmd.cmd_aws_api_auth import CmdAWSAPIAuth
 
 
 # --------------------------------------------------------------------------------------------------------------------
