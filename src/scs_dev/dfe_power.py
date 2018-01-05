@@ -51,7 +51,7 @@ if __name__ == '__main__':
             print(io, file=sys.stderr)
             sys.stderr.flush()
 
-        opc = OPCN2(Host.OPC_SPI_BUS, Host.OPC_SPI_DEVICE)
+        opc = OPCN2(Host.opc_spi_bus(), Host.opc_spi_device())
 
 
         # ------------------------------------------------------------------------------------------------------------
