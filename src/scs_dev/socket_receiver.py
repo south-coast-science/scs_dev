@@ -151,7 +151,7 @@ if __name__ == '__main__':
 
         receiver.accept()
 
-        for datum in [receiver.messages()]:
+        for datum in receiver.messages():
             print(datum)
             sys.stdout.flush()
 
