@@ -36,7 +36,7 @@ try:
         exit(1)
 
     # NDIR...
-    ndir = NDIR.find(Host.ndir_device())
+    ndir = NDIR(Host.ndir_spi_bus(), Host.ndir_spi_device())       # NDIR.find(Host.ndir_device())
 
     # SHT...
     sht_conf = SHTConf.load(Host)
