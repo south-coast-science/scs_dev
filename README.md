@@ -15,7 +15,7 @@ High-level scripts and command-line applications for South Coast Science data pr
 
 Raspberry Pi, in /home/pi/.bashrc:
 
-    export PYTHONPATH=\~/SCS/scs_analysis/src:\~/SCS/scs_dev/src:\~/SCS/scs_osio/src:\~/SCS/scs_mfr/src:\~/SCS/scs_dfe_eng/src:\~/SCS/scs_ndir/src:\~/SCS/scs_host_rpi/src:\~/SCS/scs_core/src:$PYTHONPATH
+    export PYTHONPATH=~/SCS/scs_analysis/src:~/SCS/scs_dev/src:~/SCS/scs_osio/src:~/SCS/scs_mfr/src:~/SCS/scs_dfe_eng/src:~/SCS/scs_ndir/src:~/SCS/scs_host_rpi/src:~/SCS/scs_core/src:$PYTHONPATH
 
 
 BeagleBone, in /root/.bashrc:**
@@ -25,4 +25,4 @@ BeagleBone, in /root/.bashrc:**
 
 BeagleBone, in /home/debian/.bashrc:**
 
-    export PYTHONPATH=\~/SCS/scs_dev/src:\~/SCS/scs_osio/src:\~/SCS/scs_mfr/src:\~/SCS/scs_psu/src:\~/SCS/scs_comms_ge910/src:\~/SCS/scs_dfe_eng/src:~debian/SCS/scs_ndir_alphasense/src:\~/SCS/scs_host_bbe/src:\~/SCS/scs_core/src:$PYTHONPATH
+    export PYTHONPATH=~/SCS/scs_dev/src:~/SCS/scs_osio/src:~/SCS/scs_mfr/src:~/SCS/scs_psu/src:~/SCS/scs_comms_ge910/src:~/SCS/scs_dfe_eng/src:~debian/SCS/scs_ndir_alphasense/src:~/SCS/scs_host_bbe/src:~/SCS/scs_core/src:$PYTHONPATH
