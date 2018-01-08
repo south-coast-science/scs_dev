@@ -41,6 +41,8 @@ except ImportError:
 
 if __name__ == '__main__':
 
+    psu = None
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -94,6 +96,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        if psu:
+            psu.open()
+
         if gps:
             gps.power_on()
 
@@ -118,4 +123,7 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
+        if psu:
+            psu.close()
+
         I2C.close()

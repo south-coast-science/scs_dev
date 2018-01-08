@@ -18,7 +18,7 @@ from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.psu import PSU
+from scs_psu.psu.v1.psu_v1 import PSUv1
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -26,6 +26,7 @@ from scs_psu.psu.psu import PSU
 if __name__ == '__main__':
 
     cmd = None
+    psu = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -44,7 +45,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        psu = PSU(Host.psu_device())
+        psu = PSUv1(Host.psu_device())          # TODO: Use PSUConf to find the correct version
 
         if cmd.verbose:
             print(psu, file=sys.stderr)
@@ -53,6 +54,8 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        psu.open()
 
         if cmd.has_psu_command():
             # use cmd args...
@@ -87,3 +90,7 @@ if __name__ == '__main__':
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
+    finally:
+        if psu:
+            psu.close()
