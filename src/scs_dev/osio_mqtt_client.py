@@ -15,6 +15,8 @@ command line example:
 /orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
 -p osio_mqtt_pub.uds -s -e
 
+./gases_sampler.py | ./osio_topic_publisher.py -cG | ./osio_mqtt_client.py -cG      // simple echo
+
 BUGS
 When run as a background process, osio_mqtt_client will exit if it has no stdin stream.
 """
@@ -48,6 +50,9 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
+
+# TODO: fix the case where there are no subscriptions  - no handler!
+# TODO: allow echo if there are no subscriptions
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
