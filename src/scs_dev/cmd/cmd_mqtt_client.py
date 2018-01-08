@@ -32,7 +32,7 @@ class CmdMQTTClient(object):
                                  help="subscribe to channel")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="echo input to stdout (if writing subscriptions to DomainSocket)")
+                                 help="echo input to stdout (if not writing subscriptions to stdout)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -43,7 +43,7 @@ class CmdMQTTClient(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.echo and not self.__opts.uds_sub:
+        if self.echo and self.subscriptions and not self.__opts.uds_sub:
             return False
 
         if self.channel is None:
