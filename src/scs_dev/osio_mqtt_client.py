@@ -51,9 +51,6 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
-# TODO: fix the case where there are no subscriptions  - no handler!
-# TODO: allow echo if there are no subscriptions
-
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
@@ -98,6 +95,32 @@ class OSIOMQTTHandler(object):
             sys.stderr.flush()
 
 
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "OSIOMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
+               (self.__comms, self.__echo, self.__verbose)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+# reporter...
+
+class OSIOMQTTReporter(object):
+    """
+    classdocs
+    """
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, verbose):
+        """
+        Constructor
+        """
+        self.__verbose = verbose
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def print_status(self, status):
         if not self.__verbose:
             return
@@ -110,8 +133,7 @@ class OSIOMQTTHandler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
-               (self.__comms, self.__echo, self.__verbose)
+        return "OSIOMQTTReporter:{verbose:%s}" % self.__verbose
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -221,6 +243,9 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
+        # reporter...
+        reporter = OSIOMQTTReporter(cmd.verbose)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -232,7 +257,7 @@ if __name__ == '__main__':
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
-                handler.print_status("bad datum: %s" % message)
+                reporter.print_status("bad datum: %s" % message)
                 continue
 
             success = False
@@ -244,7 +269,7 @@ if __name__ == '__main__':
                     success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
                     if not success:
-                        handler.print_status("abandoned")
+                        reporter.print_status("abandoned")
 
                     break
 
@@ -256,7 +281,7 @@ if __name__ == '__main__':
                 time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
 
             if success:
-                handler.print_status("done")
+                reporter.print_status("done")
 
             if cmd.echo:
                 print(message)
