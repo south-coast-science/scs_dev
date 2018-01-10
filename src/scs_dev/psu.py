@@ -18,7 +18,7 @@ from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_host.sys.host import Host
 
-from scs_psu.psu.v1.psu_v1 import PSUv1
+from scs_psu.psu.psu_conf import PSUConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -45,7 +45,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resource...
 
-        psu = PSUv1(Host.psu_device())          # TODO: Use PSUConf to find the correct version
+        psu_conf = PSUConf.load(Host)
+        psu = psu_conf.psu(Host)
+
+        if psu is None:
+            print("psu: no PSU present", file=sys.stderr)
+            exit(1)
 
         if cmd.verbose:
             print(psu, file=sys.stderr)

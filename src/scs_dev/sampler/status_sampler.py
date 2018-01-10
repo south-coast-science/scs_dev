@@ -90,6 +90,8 @@ class StatusSampler(Sampler):
         # psu...
         psu_status = self.__psu.status() if self.__psu else None
 
+        print("psu_status: %s" % psu_status)
+
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
