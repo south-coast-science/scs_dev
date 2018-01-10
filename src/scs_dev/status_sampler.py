@@ -41,6 +41,7 @@ except ImportError:
 
 if __name__ == '__main__':
 
+    gps = None
     psu = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -101,6 +102,7 @@ if __name__ == '__main__':
 
         if gps:
             gps.power_on()
+            gps.open()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -123,6 +125,9 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
+        if gps:
+            gps.close()
+
         if psu:
             psu.close()
 
