@@ -2,6 +2,8 @@
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+Warning: GPS and PSU serial ports must be open in order for sampling to work.
 """
 
 import subprocess
@@ -59,14 +61,8 @@ class StatusSampler(Sampler):
         position = None
 
         if self.__gps:
-            try:
-                self.__gps.open()
-
-                gga = self.__gps.report(GPGGA)
-                position = GPSLocation.construct(gga)
-
-            finally:
-                self.__gps.close()
+            gga = self.__gps.report(GPGGA)
+            position = GPSLocation.construct(gga)
 
         # temperature...
         try:
@@ -89,8 +85,6 @@ class StatusSampler(Sampler):
 
         # psu...
         psu_status = self.__psu.status() if self.__psu else None
-
-        print("psu_status: %s" % psu_status)
 
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
