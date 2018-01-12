@@ -36,17 +36,15 @@ class ParticulatesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        self.__monitor.on()
         self.__monitor.start()
 
         # wait for data...
         while self.sample() is None:
-            time.sleep(1)
+            time.sleep(1.0)
 
 
     def stop(self):
         self.__monitor.stop()
-        self.__monitor.off()
 
 
     def sample(self):
