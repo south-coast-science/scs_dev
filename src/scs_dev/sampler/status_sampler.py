@@ -49,17 +49,19 @@ class StatusSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
+        # start...
         if self.__psu_monitor:
             self.__psu_monitor.start()
 
-            if self.__gps_monitor:
-                self.__gps_monitor.start()
+        if self.__gps_monitor:
+            self.__gps_monitor.start()
 
-            # wait for data...
+        # wait for data...
+        if self.__psu_monitor:
             while self.__psu_monitor.sample() is None:
                 time.sleep(1.0)
 
-            # wait for data...
+        if self.__gps_monitor:
             while self.__gps_monitor.sample() is None:
                 time.sleep(1.0)
 
