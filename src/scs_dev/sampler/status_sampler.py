@@ -52,12 +52,12 @@ class StatusSampler(Sampler):
         if self.__psu_monitor:
             self.__psu_monitor.start()
 
+            if self.__gps_monitor:
+                self.__gps_monitor.start()
+
             # wait for data...
             while self.__psu_monitor.sample() is None:
                 time.sleep(1.0)
-
-        if self.__gps_monitor:
-            self.__gps_monitor.start()
 
             # wait for data...
             while self.__gps_monitor.sample() is None:
