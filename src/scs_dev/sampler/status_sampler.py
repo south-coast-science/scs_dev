@@ -7,13 +7,11 @@ Warning: GPS and PSU serial ports must be open in order for sampling to work.
 """
 
 import subprocess
+import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.location.timezone_conf import TimezoneConf
-
-from scs_core.position.gpgga import GPGGA
-from scs_core.position.gps_location import GPSLocation
 
 from scs_core.sample.status_sample import StatusSample
 
@@ -36,7 +34,7 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, board, gps, psu):
+    def __init__(self, runner, system_id, board, gps_monitor, psu_monitor):
         """
         Constructor
         """
@@ -44,11 +42,35 @@ class StatusSampler(Sampler):
 
         self.__system_id = system_id
         self.__board = board
-        self.__gps = gps
-        self.__psu = psu
+        self.__gps_monitor = gps_monitor
+        self.__psu_monitor = psu_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def start(self):
+        if self.__psu_monitor:
+            self.__psu_monitor.start()
+
+            if self.__gps_monitor:
+                self.__gps_monitor.start()
+
+            # wait for data...
+            while self.__psu_monitor.sample() is None:
+                time.sleep(1.0)
+
+            # wait for data...
+            while self.__gps_monitor.sample() is None:
+                time.sleep(1.0)
+
+
+    def stop(self):
+        if self.__psu_monitor:
+            self.__psu_monitor.stop()
+
+        if self.__gps_monitor:
+            self.__gps_monitor.stop()
+
 
     def sample(self):
         tag = self.__system_id.message_tag()
@@ -58,11 +80,7 @@ class StatusSampler(Sampler):
         timezone = timezone_conf.timezone()
 
         # position...
-        position = None
-
-        if self.__gps:
-            gga = self.__gps.report(GPGGA)
-            position = GPSLocation.construct(gga)
+        position = self.__gps_monitor.sample() if self.__gps_monitor else None
 
         # temperature...
         try:
@@ -83,17 +101,17 @@ class StatusSampler(Sampler):
 
         uptime = UptimeDatum.construct_from_report(None, report)
 
-        # psu...
-        psu_status = self.__psu.status() if self.__psu else None
+        # psu_monitor...
+        psu_monitor_status = self.__psu_monitor.sample() if self.__psu_monitor else None
 
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(tag, recorded, timezone, position, temperature, schedule, uptime, psu_status)
+        return StatusSample(tag, recorded, timezone, position, temperature, schedule, uptime, psu_monitor_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps:%s, psu:%s}" % \
-               (self.runner, self.__system_id, self.__board, self.__gps, self.__psu)
+        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
+               (self.runner, self.__system_id, self.__board, self.__gps_monitor, self.__psu_monitor)

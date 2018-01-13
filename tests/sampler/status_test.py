@@ -42,7 +42,7 @@ try:
 
     # GPS...
     gps_conf = GPSConf.load(Host)
-    gps = gps_conf.gps(Host)
+    gps_monitor = gps_conf.gps_monitor(Host)
 
     # PSU...
     psu_conf = PSUConf.load(Host)
@@ -50,7 +50,7 @@ try:
 
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, system_id, board, gps, psu)
+    sampler = StatusSampler(runner, system_id, board, gps_monitor, psu)
     print(sampler)
     print("-")
 

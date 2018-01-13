@@ -41,8 +41,7 @@ except ImportError:
 
 if __name__ == '__main__':
 
-    gps = None
-    psu = None
+    sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -73,21 +72,21 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps = gps_conf.gps(Host)
+        gps_monitor = gps_conf.gps_monitor(Host)
 
-        # PSU...
+        # PSUMonitor...
         psu_conf = PSUConf.load(Host)
-        psu = psu_conf.psu(Host)
+        psu_monitor = psu_conf.psu_monitor(Host)
 
-        if cmd.verbose and psu:
-            print(psu, file=sys.stderr)
+        if cmd.verbose and psu_monitor:
+            print(psu_monitor, file=sys.stderr)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = StatusSampler(runner, system_id, board, gps, psu)
+        sampler = StatusSampler(runner, system_id, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -97,12 +96,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if psu:
-            psu.open()
-
-        if gps:
-            gps.power_on()
-            gps.open()
+        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -125,10 +119,7 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
-        if gps:
-            gps.close()
-
-        if psu:
-            psu.close()
+        if sampler:
+            sampler.stop()
 
         I2C.close()
