@@ -7,7 +7,6 @@ Warning: GPS and PSU serial ports must be open in order for sampling to work.
 """
 
 import subprocess
-import sys
 import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime

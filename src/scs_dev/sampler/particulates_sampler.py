@@ -20,7 +20,6 @@ class ParticulatesSampler(Sampler):
 
     SCHEDULE_SEMAPHORE =    "scs-particulates"        # hard-coded path
 
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, runner, system_id, opc_monitor):
