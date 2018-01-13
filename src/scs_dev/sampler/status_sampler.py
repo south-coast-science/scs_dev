@@ -7,14 +7,12 @@ Warning: GPS and PSU serial ports must be open in order for sampling to work.
 """
 
 import subprocess
+import sys
 import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.location.timezone_conf import TimezoneConf
-
-from scs_core.position.gpgga import GPGGA
-from scs_core.position.gps_location import GPSLocation
 
 from scs_core.sample.status_sample import StatusSample
 
@@ -37,7 +35,7 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, board, gps, psu_monitor):
+    def __init__(self, runner, system_id, board, gps_monitor, psu_monitor):
         """
         Constructor
         """
@@ -45,22 +43,34 @@ class StatusSampler(Sampler):
 
         self.__system_id = system_id
         self.__board = board
-        self.__gps = gps
+        self.__gps_monitor = gps_monitor
         self.__psu_monitor = psu_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        self.__psu_monitor.start()
+        if self.__psu_monitor:
+            self.__psu_monitor.start()
 
-        # wait for data...
-        while self.sample() is None:
-            time.sleep(1.0)
+            # wait for data...
+            while self.__psu_monitor.sample() is None:
+                time.sleep(1.0)
+
+        if self.__gps_monitor:
+            self.__gps_monitor.start()
+
+            # wait for data...
+            while self.__gps_monitor.sample() is None:
+                time.sleep(1.0)
 
 
     def stop(self):
-        self.__psu_monitor.stop()
+        if self.__psu_monitor:
+            self.__psu_monitor.stop()
+
+        if self.__gps_monitor:
+            self.__gps_monitor.stop()
 
 
     def sample(self):
@@ -71,11 +81,7 @@ class StatusSampler(Sampler):
         timezone = timezone_conf.timezone()
 
         # position...
-        position = None
-
-        if self.__gps:
-            gga = self.__gps.report(GPGGA)
-            position = GPSLocation.construct(gga)
+        position = self.__gps_monitor.sample() if self.__gps_monitor else None
 
         # temperature...
         try:
@@ -108,5 +114,5 @@ class StatusSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps:%s, psu_monitor:%s}" % \
-               (self.runner, self.__system_id, self.__board, self.__gps, self.__psu_monitor)
+        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
+               (self.runner, self.__system_id, self.__board, self.__gps_monitor, self.__psu_monitor)

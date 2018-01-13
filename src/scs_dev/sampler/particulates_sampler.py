@@ -23,33 +23,33 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, monitor):
+    def __init__(self, runner, system_id, opc_monitor):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
         self.__system_id = system_id
-        self.__monitor = monitor
+        self.__opc_monitor = opc_monitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        self.__monitor.start()
+        self.__opc_monitor.start()
 
         # wait for data...
-        while self.sample() is None:
+        while self.__opc_monitor.sample() is None:
             time.sleep(1.0)
 
 
     def stop(self):
-        self.__monitor.stop()
+        self.__opc_monitor.stop()
 
 
     def sample(self):
         tag = self.__system_id.message_tag()
-        opc_sample = self.__monitor.sample()
+        opc_sample = self.__opc_monitor.sample()
 
         if opc_sample is None:
             return None
@@ -60,5 +60,5 @@ class ParticulatesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParticulatesSampler:{runner:%s, system_id:%s, monitor:%s}" % \
-               (self.runner, self.__system_id, self.__monitor)
+        return "ParticulatesSampler:{runner:%s, system_id:%s, opc_monitor:%s}" % \
+               (self.runner, self.__system_id, self.__opc_monitor)

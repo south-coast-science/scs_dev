@@ -41,8 +41,6 @@ except ImportError:
 
 if __name__ == '__main__':
 
-    gps = None
-    psu_monitor = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -74,7 +72,7 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps = gps_conf.gps(Host)
+        gps_monitor = gps_conf.gps_monitor(Host)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
@@ -88,7 +86,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = StatusSampler(runner, system_id, board, gps, psu_monitor)
+        sampler = StatusSampler(runner, system_id, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -97,10 +95,6 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
-
-        if gps:
-            gps.power_on()
-            gps.open()
 
         sampler.start()
 
@@ -127,8 +121,5 @@ if __name__ == '__main__':
     finally:
         if sampler:
             sampler.stop()
-
-        if gps:
-            gps.close()
 
         I2C.close()
