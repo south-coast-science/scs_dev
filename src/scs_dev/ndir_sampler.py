@@ -24,6 +24,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.ndir_sampler import NDIRSampler
 
+from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -43,6 +44,8 @@ if __name__ == '__main__':
         print(cmd, file=sys.stderr)
 
     try:
+        I2C.open(Host.I2C_SENSORS)
+
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -99,3 +102,6 @@ if __name__ == '__main__':
 
     except Exception as ex:
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
+
+    finally:
+        I2C.close()
