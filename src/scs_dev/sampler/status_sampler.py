@@ -2,8 +2,6 @@
 Created on 20 Oct 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-Warning: GPS and PSU serial ports must be open in order for sampling to work.
 """
 
 import subprocess
