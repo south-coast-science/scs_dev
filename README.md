@@ -1,5 +1,7 @@
 # scs_dev
-High-level scripts and command-line applications for South Coast Science data producer developers.
+High-level scripts and command-line applications for South Coast Science data producers.
+
+_Contains command line utilities and library classes._
 
 **Required libraries:** 
 
