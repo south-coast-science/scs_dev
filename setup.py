@@ -6,7 +6,7 @@ with open('requirements.txt') as req_txt:
 
 setup(
     name='scs_dev',
-    version='0.1.2',
+    version='0.1.3',
     description='High-level scripts and command-line applications for South Coast Science data producers.',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
