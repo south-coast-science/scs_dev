@@ -5,7 +5,7 @@ _Contains command line utilities and library classes._
 
 **Required libraries:** 
 
-* Third party: paho-mqtt, pyserial
+* Third party: AWSIoTPythonSDK, paho-mqtt, pyserial
 * SCS root:  scs_core
 * SCS host:  scs_host_bbe, scs_host_bbe_southern or scs_host_rpi
 * SCS dfe:   scs_dfe_eng
