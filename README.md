@@ -3,14 +3,22 @@ High-level scripts and command-line applications for South Coast Science data pr
 
 _Contains command line utilities and library classes._
 
+
 **Required libraries:** 
 
-* Third party: paho-mqtt, pyserial
+* Third party: AWSIoTPythonSDK, paho-mqtt, pyserial
 * SCS root:  scs_core
 * SCS host:  scs_host_bbe, scs_host_bbe_southern or scs_host_rpi
 * SCS dfe:   scs_dfe_eng
 * SCS NDIR:  scs_ndir_alphasense
 * SCS PSU:   scs_psu
+
+
+**Branches:**
+
+The stable branch of this repository is master. For deployment purposes, use:
+
+    git clone --branch=master https://github.com/south-coast-science/scs_dev.git
 
 
 **Example PYTHONPATH:**

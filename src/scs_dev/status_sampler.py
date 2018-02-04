@@ -37,6 +37,9 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
+# TODO: ! fix bug where status waits for GPS receiver
+# TODO: ! fix bug where status waits for PSU
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

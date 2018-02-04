@@ -11,7 +11,7 @@ setup(
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
     url='https://github.com/south-coast-science/scs_dev',
-    package_dir={'':'src'},
+    package_dir={'': 'src'},
     packages=find_packages('src'),
     classifiers=[
         'Development Status :: 4 - Beta',
@@ -26,7 +26,7 @@ setup(
     install_requires=required,
     platforms=['any'],
     python_requires=">=3.3",
-    scripts = [
+    scripts=[
         'src/scs_dev/aws_api_auth.py',
         'src/scs_dev/aws_mqtt_client.py',
         'src/scs_dev/aws_topic_publisher.py',

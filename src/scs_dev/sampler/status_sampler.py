@@ -23,6 +23,8 @@ from scs_core.sys.uptime_datum import UptimeDatum
 from scs_host.sys.host import Host
 
 
+# TODO: reporting GPS / PSU depends on conf, not return value
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
@@ -55,13 +57,13 @@ class StatusSampler(Sampler):
             self.__gps_monitor.start()
 
         # wait for data...
-        if self.__psu_monitor:
-            while self.__psu_monitor.sample() is None:
-                time.sleep(1.0)
-
-        if self.__gps_monitor:
-            while self.__gps_monitor.sample() is None:
-                time.sleep(1.0)
+        # if self.__psu_monitor:
+        #     while self.__psu_monitor.sample() is None:
+        #         time.sleep(1.0)
+        #
+        # if self.__gps_monitor:
+        #     while self.__gps_monitor.sample() is None:
+        #         time.sleep(1.0)
 
 
     def stop(self):
