@@ -5,7 +5,6 @@ Created on 20 Oct 2016
 """
 
 import subprocess
-import time
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
