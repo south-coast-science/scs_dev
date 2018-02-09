@@ -115,8 +115,9 @@ if __name__ == '__main__':
                 print("%s: particulates: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
                 sys.stderr.flush()
 
-            print(JSONify.dumps(sample))
-            sys.stdout.flush()
+            if sample is not None:
+                print(JSONify.dumps(sample))
+                sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
