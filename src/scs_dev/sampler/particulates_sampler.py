@@ -50,7 +50,7 @@ class ParticulatesSampler(Sampler):
         tag = self.__system_id.message_tag()
         opc_sample = self.__opc_monitor.sample()
 
-        if opc_sample is None:
+        if opc_sample is None or opc_sample.is_zero():      # do not return zero samples
             return None
 
         return ParticulatesSample(tag, opc_sample.rec, opc_sample)

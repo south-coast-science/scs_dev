@@ -110,6 +110,9 @@ if __name__ == '__main__':
         sampler.start()
 
         for sample in sampler.samples():
+            if sample is None:
+                continue
+
             if cmd.verbose:
                 now = LocalizedDatetime.now()
                 print("%s: particulates: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
