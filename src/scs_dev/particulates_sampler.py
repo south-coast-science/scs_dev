@@ -110,14 +110,16 @@ if __name__ == '__main__':
         sampler.start()
 
         for sample in sampler.samples():
+            if sample is None:
+                continue
+
             if cmd.verbose:
                 now = LocalizedDatetime.now()
                 print("%s: particulates: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
                 sys.stderr.flush()
 
-            if sample is not None:
-                print(JSONify.dumps(sample))
-                sys.stdout.flush()
+            print(JSONify.dumps(sample))
+            sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
