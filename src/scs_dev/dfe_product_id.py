@@ -5,6 +5,22 @@ Created on 26 Sep 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_analysis/
+
+
 command line example:
 ./dfe_product_id.py
 """
