@@ -72,6 +72,9 @@ if __name__ == '__main__':
         ndir_conf = NDIRConf.load(Host)
         ndir = ndir_conf.ndir(Host)
 
+        if ndir:
+            ndir.power_on()
+
         # SHT...
         sht_conf = SHTConf.load(Host)
         sht = sht_conf.int_sht()
