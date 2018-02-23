@@ -44,17 +44,17 @@ class GasesSampler(Sampler):
         tag = self.__system_id.message_tag()
 
         try:
-            co2_datum = self.__ndir.sample_co2(True) if self.__ndir else None
+            co2_datum = None if self.__ndir is None else self.__ndir.sample_co2(True)
         except OSError:
             co2_datum = self.__ndir.null_datum()
 
         try:
-            sht_datum = self.__sht.sample()
+            sht_datum = None if self.__sht is None else self.__sht.sample()
         except OSError:
             sht_datum = self.__sht.null_datum()
 
         try:
-            afe_datum = self.__afe.sample(sht_datum)
+            afe_datum = None if self.__afe is None else self.__afe.sample(sht_datum)
         except OSError:
             afe_datum = self.__afe.null_datum()
 

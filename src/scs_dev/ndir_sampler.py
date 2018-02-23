@@ -14,15 +14,13 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.sample.sample import Sample
-
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
-from scs_dev.sampler.ndir_sampler import NDIRSampler
+from scs_dev.sampler.gases_sampler import GasesSampler
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -75,7 +73,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = NDIRSampler(runner, ndir)
+        sampler = GasesSampler(runner, system_id, ndir, None, None)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -86,10 +84,12 @@ if __name__ == '__main__':
         # run...
 
         for sample in sampler.samples():
-            recorded = LocalizedDatetime.now()
-            datum = Sample(system_id.message_tag(), recorded, sample)
+            if cmd.verbose:
+                now = LocalizedDatetime.now()
+                print("%s:        gases: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
+                sys.stderr.flush()
 
-            print(JSONify.dumps(datum))
+            print(JSONify.dumps(sample))
             sys.stdout.flush()
 
 
