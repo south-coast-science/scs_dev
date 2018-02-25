@@ -88,9 +88,12 @@ ENV/
 # Rope project settings
 .ropeproject
 
-# South Coast Science
-**/*.csv
-**/*.log
-
 # PyCharm
 .idea/
+
+# South Coast Science
+**/*.csv
+**/*.numbers
+**/*.xls
+**/*.xlsx
+**/*.log
