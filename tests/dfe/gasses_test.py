@@ -14,8 +14,8 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.gases_sampler import GasesSampler
 
+from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.climate.sht_conf import SHTConf
-from scs_dfe.gas.afe_conf import AFEConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -43,8 +43,8 @@ try:
     sht = sht_conf.int_sht()
 
     # AFE...
-    afe_conf = AFEConf.load(Host)
-    afe = afe_conf.afe(Host)
+    dfe_conf = DFEConf.load(Host)
+    afe = dfe_conf.afe(Host)
 
     # runner...
     runner = TimedRunner(0)

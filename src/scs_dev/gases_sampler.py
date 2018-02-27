@@ -26,8 +26,8 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
+from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.climate.sht_conf import SHTConf
-from scs_dfe.gas.afe_conf import AFEConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -80,8 +80,8 @@ if __name__ == '__main__':
         sht = sht_conf.int_sht()
 
         # AFE...
-        afe_conf = AFEConf.load(Host)
-        afe = afe_conf.afe(Host)
+        dfe_conf = DFEConf.load(Host)
+        afe = dfe_conf.afe(Host)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
