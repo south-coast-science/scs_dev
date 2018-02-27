@@ -96,7 +96,7 @@ if __name__ == '__main__':
         if cmd.semaphore:
             while True:
                 schedule = Schedule.load(Host)
-                item = schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE) if schedule else None
+                item = None if schedule is None else schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE)
 
                 if item:
                     break
