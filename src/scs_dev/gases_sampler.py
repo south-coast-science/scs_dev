@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
         # AFE...
         dfe_conf = DFEConf.load(Host)
-        afe = dfe_conf.afe(Host)
+        afe = None if dfe_conf is None else dfe_conf.afe(Host)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \

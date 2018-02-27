@@ -81,11 +81,11 @@ class StatusSampler(Sampler):
         timezone = timezone_conf.timezone()
 
         # position...
-        position = self.__gps_monitor.sample() if self.__gps_monitor else None
+        position = None if self.__gps_monitor is None else self.__gps_monitor.sample()
 
         # temperature...
         try:
-            board_sample = self.__board.sample()
+            board_sample = None if self.__board is None else self.__board.sample()
         except OSError:
             board_sample = self.__board.null_datum()
 
@@ -103,7 +103,7 @@ class StatusSampler(Sampler):
         uptime = UptimeDatum.construct_from_report(None, report)
 
         # psu_monitor...
-        psu_monitor_status = self.__psu_monitor.sample() if self.__psu_monitor else None
+        psu_monitor_status = None if self.__psu_monitor is None else self.__psu_monitor.sample()
 
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention

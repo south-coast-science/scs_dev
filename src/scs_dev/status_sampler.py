@@ -24,7 +24,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.status_sampler import StatusSampler
 
-from scs_dfe.board.mcp9808 import MCP9808
+from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.gps.gps_conf import GPSConf
 
 from scs_host.bus.i2c import I2C
@@ -71,7 +71,8 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # board...
-        board = MCP9808(True)
+        dfe_conf = DFEConf.load(Host)
+        board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
 
         # GPS...
         gps_conf = GPSConf.load(Host)
