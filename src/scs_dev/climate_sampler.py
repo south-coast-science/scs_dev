@@ -67,6 +67,9 @@ if __name__ == '__main__':
             print("SHTConf not available.", file=sys.stderr)
             exit(1)
 
+        if cmd.verbose:
+            print(sht_conf, file=sys.stderr)
+
         # SHT...
         sht = sht_conf.ext_sht()
 

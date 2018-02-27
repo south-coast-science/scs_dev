@@ -72,16 +72,25 @@ if __name__ == '__main__':
         ndir_conf = NDIRConf.load(Host)
         ndir = ndir_conf.ndir(Host)
 
+        if cmd.verbose and ndir_conf:
+            print(ndir_conf, file=sys.stderr)
+
         if ndir:
             ndir.power_on()
 
         # SHT...
         sht_conf = SHTConf.load(Host)
-        sht = sht_conf.int_sht()
+        sht = None if sht_conf is None else sht_conf.int_sht()
+
+        if cmd.verbose and sht_conf:
+            print(sht_conf, file=sys.stderr)
 
         # AFE...
         dfe_conf = DFEConf.load(Host)
         afe = None if dfe_conf is None else dfe_conf.afe(Host)
+
+        if cmd.verbose and dfe_conf:
+            print(dfe_conf, file=sys.stderr)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \

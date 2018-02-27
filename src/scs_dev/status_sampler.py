@@ -74,13 +74,19 @@ if __name__ == '__main__':
         dfe_conf = DFEConf.load(Host)
         board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
 
+        if cmd.verbose and dfe_conf:
+            print(dfe_conf, file=sys.stderr)
+
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = gps_conf.gps_monitor(Host)
+        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
+
+        if cmd.verbose and gps_monitor:
+            print(gps_monitor, file=sys.stderr)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
-        psu_monitor = psu_conf.psu_monitor(Host)
+        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host)
 
         if cmd.verbose and psu_monitor:
             print(psu_monitor, file=sys.stderr)
