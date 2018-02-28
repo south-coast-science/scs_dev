@@ -37,6 +37,9 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
+        if self.__ndir_monitor is None:
+            return
+
         self.__ndir_monitor.start()
 
         # wait for data...
@@ -45,6 +48,9 @@ class GasesSampler(Sampler):
 
 
     def stop(self):
+        if self.__ndir_monitor is None:
+            return
+
         self.__ndir_monitor.stop()
 
 
