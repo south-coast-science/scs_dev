@@ -20,13 +20,13 @@ class ClimateSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, sht):
+    def __init__(self, runner, tag, sht):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
-        self.__system_id = system_id
+        self.__tag = tag
         self.__sht = sht
 
 
@@ -39,16 +39,14 @@ class ClimateSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__system_id.message_tag()
-
         sht_sample = self.__sht.sample()
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return ClimateSample(tag, recorded, sht_sample)
+        return ClimateSample(self.__tag, recorded, sht_sample)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ClimateSampler:{runner:%s, system_id:%s, sht:%s}" % (self.runner, self.__system_id, self.__sht)
+        return "ClimateSampler:{runner:%s, tag:%s, sht:%s}" % (self.runner, self.__tag, self.__sht)

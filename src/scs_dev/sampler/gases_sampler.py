@@ -4,6 +4,8 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import time
+
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sample.gases_sample import GasesSample
@@ -20,19 +22,31 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, ndir, sht, afe):
+    def __init__(self, runner, tag, ndir_monitor, sht, afe):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
-        self.__system_id = system_id
-        self.__ndir = ndir
+        self.__tag = tag
+        self.__ndir_monitor = ndir_monitor
         self.__sht = sht
         self.__afe = afe
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def start(self):
+        self.__ndir_monitor.start()
+
+        # wait for data...
+        while self.__ndir_monitor.sample() is None:
+            time.sleep(1.0)
+
+
+    def stop(self):
+        self.__ndir_monitor.stop()
+
 
     def reset(self):
         Sampler.reset(self)
@@ -41,12 +55,10 @@ class GasesSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__system_id.message_tag()
-
         try:
-            co2_datum = None if self.__ndir is None else self.__ndir.sample_co2(True)
+            ndir_datum = None if self.__ndir_monitor is None else self.__ndir_monitor.sample()
         except OSError:
-            co2_datum = self.__ndir.null_datum()
+            ndir_datum = self.__ndir_monitor.null_datum()
 
         try:
             sht_datum = None if self.__sht is None else self.__sht.sample()
@@ -60,11 +72,11 @@ class GasesSampler(Sampler):
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return GasesSample(tag, recorded, co2_datum, afe_datum, sht_datum)
+        return GasesSample(self.__tag, recorded, ndir_datum, afe_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{runner:%s, system_id:%s, ndir:%s, sht:%s, afe:%s}" % \
-                    (self.runner, self.__system_id, self.__ndir, self.__sht, self.__afe)
+        return "GasesSampler:{runner:%s, tag:%s, ndir_monitor:%s, sht:%s, afe:%s}" % \
+                    (self.runner, self.__tag, self.__ndir_monitor, self.__sht, self.__afe)

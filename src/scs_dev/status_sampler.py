@@ -24,7 +24,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.status_sampler import StatusSampler
 
-from scs_dfe.board.mcp9808 import MCP9808
+from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.gps.gps_conf import GPSConf
 
 from scs_host.bus.i2c import I2C
@@ -36,9 +36,6 @@ try:
 except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
-
-# TODO: ! fix bug where status waits for GPS receiver
-# TODO: ! fix bug where status waits for PSU
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -71,15 +68,22 @@ if __name__ == '__main__':
             print(system_id, file=sys.stderr)
 
         # board...
-        board = MCP9808(True)
+        dfe_conf = DFEConf.load(Host)
+        board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
+
+        if cmd.verbose and dfe_conf:
+            print(dfe_conf, file=sys.stderr)
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = gps_conf.gps_monitor(Host)
+        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
+
+        if cmd.verbose and gps_monitor:
+            print(gps_monitor, file=sys.stderr)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
-        psu_monitor = psu_conf.psu_monitor(Host)
+        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host)
 
         if cmd.verbose and psu_monitor:
             print(psu_monitor, file=sys.stderr)
@@ -89,7 +93,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = StatusSampler(runner, system_id, board, gps_monitor, psu_monitor)
+        sampler = StatusSampler(runner, system_id.message_tag(), board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

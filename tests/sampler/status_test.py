@@ -6,8 +6,6 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 from scs_core.data.json import JSONify
 from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
@@ -32,10 +30,7 @@ try:
     I2C.open(Host.I2C_SENSORS)
 
     system_id = SystemID.load(Host)
-
-    if system_id is None:
-        print("SystemID not available.", file=sys.stderr)
-        exit(1)
+    tag = None if system_id is None else system_id.message_tag()
 
     # board...
     board = MCP9808(True)
@@ -50,7 +45,7 @@ try:
 
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, system_id, board, gps_monitor, psu)
+    sampler = StatusSampler(runner, tag, board, gps_monitor, psu)
     print(sampler)
     print("-")
 
