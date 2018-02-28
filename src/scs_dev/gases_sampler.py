@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
-        ndir_monitor = ndir_conf.ndir_monitor(Host)
+        ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
         if cmd.verbose and ndir_conf:
             print(ndir_conf, file=sys.stderr)
