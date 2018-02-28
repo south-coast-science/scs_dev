@@ -44,9 +44,9 @@ class GasesSampler(Sampler):
         tag = self.__system_id.message_tag()
 
         try:
-            co2_datum = None if self.__ndir is None else self.__ndir.sample_co2(True)
+            ndir_datum = None if self.__ndir is None else self.__ndir.sample()
         except OSError:
-            co2_datum = self.__ndir.null_datum()
+            ndir_datum = self.__ndir.null_datum()
 
         try:
             sht_datum = None if self.__sht is None else self.__sht.sample()
@@ -60,7 +60,7 @@ class GasesSampler(Sampler):
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return GasesSample(tag, recorded, co2_datum, afe_datum, sht_datum)
+        return GasesSample(tag, recorded, ndir_datum, afe_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
