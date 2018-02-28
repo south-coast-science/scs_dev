@@ -37,9 +37,6 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
-# TODO: ! fix bug where status waits for GPS receiver
-# TODO: ! fix bug where status waits for PSU
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -96,7 +93,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = StatusSampler(runner, system_id, board, gps_monitor, psu_monitor)
+        sampler = StatusSampler(runner, system_id.message_tag(), board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

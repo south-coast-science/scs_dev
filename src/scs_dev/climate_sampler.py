@@ -77,7 +77,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = ClimateSampler(runner, system_id, sht)
+        sampler = ClimateSampler(runner, system_id.message_tag(), sht)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

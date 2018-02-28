@@ -43,6 +43,8 @@ except ImportError:
 
 if __name__ == '__main__':
 
+    sampler = None
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -70,13 +72,10 @@ if __name__ == '__main__':
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
-        ndir = ndir_conf.ndir(Host)
+        ndir_monitor = ndir_conf.ndir_monitor(Host)
 
         if cmd.verbose and ndir_conf:
             print(ndir_conf, file=sys.stderr)
-
-        if ndir:
-            ndir.power_on()
 
         # SHT...
         sht_conf = SHTConf.load(Host)
@@ -97,7 +96,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = GasesSampler(runner, system_id, ndir, sht, afe)
+        sampler = GasesSampler(runner, system_id.message_tag(), ndir_monitor, sht, afe)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -106,6 +105,8 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -128,4 +129,7 @@ if __name__ == '__main__':
         print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
+        if sampler:
+            sampler.stop()
+
         I2C.close()

@@ -6,7 +6,6 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
 import time
 
 from scs_core.data.json import JSONify
@@ -30,10 +29,7 @@ try:
 
     # SystemID...
     system_id = SystemID.load(Host)
-
-    if system_id is None:
-        print("SystemID not available.", file=sys.stderr)
-        exit(1)
+    tag = None if system_id is None else system_id.message_tag()
 
     # OPCConf...
     conf = OPCConf('N2', 5, False)
@@ -43,7 +39,7 @@ try:
 
     runner = TimedRunner(10)
 
-    sampler = ParticulatesSampler(runner, system_id, monitor)
+    sampler = ParticulatesSampler(runner, tag, monitor)
     print(sampler)
     print("-")
 

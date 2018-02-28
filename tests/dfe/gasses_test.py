@@ -6,8 +6,6 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 from scs_core.data.json import JSONify
 from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
@@ -30,10 +28,7 @@ try:
 
     # SystemID...
     system_id = SystemID.load(Host)
-
-    if system_id is None:
-        print("SystemID not available.", file=sys.stderr)
-        exit(1)
+    tag = None if system_id is None else system_id.message_tag()
 
     # NDIR...
     ndir = NDIR(Host.ndir_spi_bus(), Host.ndir_spi_device())       # NDIR.find(Host.ndir_device())
@@ -49,7 +44,7 @@ try:
     # runner...
     runner = TimedRunner(0)
 
-    sampler = GasesSampler(runner, system_id, ndir, sht, afe)
+    sampler = GasesSampler(runner, tag, ndir, sht, afe)
     print(sampler)
     print("-")
 

@@ -83,7 +83,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = ParticulatesSampler(runner, system_id, opc_monitor)
+        sampler = ParticulatesSampler(runner, system_id.message_tag(), opc_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
@@ -93,6 +93,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # wait until needed...
 
+        # TODO: why wait for a schedule item?
+
         if cmd.semaphore:
             while True:
                 schedule = Schedule.load(Host)
@@ -101,7 +103,7 @@ if __name__ == '__main__':
                 if item:
                     break
 
-                time.sleep(1)
+                time.sleep(1.0)
 
 
         # ------------------------------------------------------------------------------------------------------------

@@ -22,8 +22,6 @@ from scs_core.sys.uptime_datum import UptimeDatum
 from scs_host.sys.host import Host
 
 
-# TODO: reporting GPS / PSU depends on conf, not return value
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class StatusSampler(Sampler):
@@ -33,13 +31,13 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, system_id, board, gps_monitor, psu_monitor):
+    def __init__(self, runner, tag, board, gps_monitor, psu_monitor):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
-        self.__system_id = system_id
+        self.__tag = tag
         self.__board = board
         self.__gps_monitor = gps_monitor
         self.__psu_monitor = psu_monitor
@@ -55,15 +53,6 @@ class StatusSampler(Sampler):
         if self.__gps_monitor:
             self.__gps_monitor.start()
 
-        # wait for data...
-        # if self.__psu_monitor:
-        #     while self.__psu_monitor.sample() is None:
-        #         time.sleep(1.0)
-        #
-        # if self.__gps_monitor:
-        #     while self.__gps_monitor.sample() is None:
-        #         time.sleep(1.0)
-
 
     def stop(self):
         if self.__psu_monitor:
@@ -74,8 +63,6 @@ class StatusSampler(Sampler):
 
 
     def sample(self):
-        tag = self.__system_id.message_tag()
-
         # timezone...
         timezone_conf = TimezoneConf.load(Host)
         timezone = timezone_conf.timezone()
@@ -108,11 +95,11 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(tag, recorded, timezone, position, temperature, schedule, uptime, psu_monitor_status)
+        return StatusSample(self.__tag, recorded, timezone, position, temperature, schedule, uptime, psu_monitor_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, system_id:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
-               (self.runner, self.__system_id, self.__board, self.__gps_monitor, self.__psu_monitor)
+        return "StatusSampler:{runner:%s, tag:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
+               (self.runner, self.__tag, self.__board, self.__gps_monitor, self.__psu_monitor)
