@@ -74,9 +74,6 @@ if __name__ == '__main__':
         ndir_conf = NDIRConf.load(Host)
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
-        if cmd.verbose and ndir_conf:
-            print(ndir_monitor.firmware(), file=sys.stderr)
-
         # SHT...
         sht_conf = SHTConf.load(Host)
         sht = None if sht_conf is None else sht_conf.int_sht()
@@ -107,6 +104,10 @@ if __name__ == '__main__':
         # run...
 
         sampler.start()
+
+        if cmd.verbose and ndir_conf:
+            print(ndir_monitor.firmware(), file=sys.stderr)
+            sys.stderr.flush()
 
         for sample in sampler.samples():
             if cmd.verbose:
