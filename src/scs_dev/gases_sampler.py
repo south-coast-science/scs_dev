@@ -75,7 +75,7 @@ if __name__ == '__main__':
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
         if cmd.verbose and ndir_conf:
-            print(ndir_conf, file=sys.stderr)
+            print(ndir_monitor.firmware(), file=sys.stderr)
 
         # SHT...
         sht_conf = SHTConf.load(Host)
