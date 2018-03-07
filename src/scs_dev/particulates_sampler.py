@@ -72,9 +72,6 @@ if __name__ == '__main__':
             print("OPCConf not available.", file=sys.stderr)
             exit(1)
 
-        if cmd.verbose:
-            print(opc_conf, file=sys.stderr)
-
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(Host)
 
@@ -110,6 +107,10 @@ if __name__ == '__main__':
         # run...
 
         sampler.start()
+
+        if cmd.verbose:
+            print(opc_monitor.firmware(), file=sys.stderr)
+            sys.stderr.flush()
 
         for sample in sampler.samples():
             if sample is None:
