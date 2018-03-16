@@ -18,7 +18,10 @@ from scs_dfe.climate.sht_conf import SHTConf
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
-from scs_ndir.gas.ndir import NDIR
+try:
+    from scs_ndir.gas.ndir_conf import NDIRConf
+except ImportError:
+    from scs_core.gas.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -31,7 +34,8 @@ try:
     tag = None if system_id is None else system_id.message_tag()
 
     # NDIR...
-    ndir = NDIR(Host.ndir_spi_bus(), Host.ndir_spi_device())       # NDIR.find(Host.ndir_device())
+    ndir_conf = NDIRConf.load(Host)
+    ndir = ndir_conf.ndir(Host)
 
     # SHT...
     sht_conf = SHTConf.load(Host)
