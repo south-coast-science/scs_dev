@@ -5,6 +5,22 @@ Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_dev/
+
+
 Warning: osio_mqtt_client should be started before control_receiver.
 
 command line example:

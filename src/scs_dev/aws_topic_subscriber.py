@@ -5,6 +5,15 @@ Created on 7 Oct 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The xx utility .
+
+EXAMPLES
+./status_sampler.py -i10 | ./aws_topic_publisher.py -e -cS
+
+SEE ALSO
+scs_dev/aws_topic_subscriber
+
 Requires SystemID and AWS Project documents.
 
 command line example:

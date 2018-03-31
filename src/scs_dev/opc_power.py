@@ -5,6 +5,23 @@ Created on 26 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_dev/
+
+
+
 command line example:
 ./opc_power.py -v 0
 """

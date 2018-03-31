@@ -5,6 +5,23 @@ Created on 18 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_dev/
+
+
+
 command line example:
 ./status_sampler.py -n 10 | ./socket_sender.py bruno.local -e
 """

@@ -5,7 +5,15 @@ Created on 11 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-command line example:
+DESCRIPTION
+The node utility is used to extract a node from within a JSON document. Data is presented as a sequence of documents on
+stdin; the extracted node is passed to stdout. The extracted node may be a leaf node or an internal node. If no node
+path is specified, the whole input document is passed to stdout.
+
+The node utility may be set to either ignore documents that do not contain the specified node, or to terminate when the
+node is not present.
+
+EXAMPLES
 ./climate_sampler.py -i2 | ./node.py val
 """
 
@@ -25,10 +33,6 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdNode()
-
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(2)
 
     if cmd.verbose:
         print(cmd, file=sys.stderr)

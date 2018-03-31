@@ -5,6 +5,23 @@ Created on 28 Feb 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The xx utility .
+
+EXAMPLES
+./status_sampler.py -i10 | ./aws_topic_publisher.py -e -cS
+
+FILES
+~/SCS/xx
+
+DOCUMENT EXAMPLE
+{"api-key": "de92c5ff-b47a-4cc4-a04c-62d684d74a1f"}
+
+SEE ALSO
+scs_dev/aws_topic_subscriber
+
+
+
 command line example:
 ./dfe_power.py -v 0
 """

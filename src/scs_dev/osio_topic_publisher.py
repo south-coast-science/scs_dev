@@ -5,6 +5,23 @@ Created on 18 Nov 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_dev/
+
+
+
 https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
 
 Requires SystemID and Project documents.
