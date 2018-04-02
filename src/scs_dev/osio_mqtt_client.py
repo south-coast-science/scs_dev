@@ -295,9 +295,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("osio_mqtt_client: KeyboardInterrupt", file=sys.stderr)
 
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
-
     finally:
         if client:
             client.disconnect()

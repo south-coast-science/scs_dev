@@ -30,9 +30,7 @@ command line example:
 
 import sys
 
-from scs_core.data.json import JSONify
 from scs_core.sync.schedule import Schedule
-from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
 
@@ -87,9 +85,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("scheduler: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if scheduler:

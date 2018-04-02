@@ -39,7 +39,6 @@ from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.system_id import SystemID
-from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
@@ -148,9 +147,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("particulates_sampler: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if sampler:

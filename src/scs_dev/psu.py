@@ -28,9 +28,6 @@ command line example:
 
 import sys
 
-from scs_core.data.json import JSONify
-from scs_core.sys.exception_report import ExceptionReport
-
 from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_host.sys.host import Host
@@ -109,9 +106,6 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("psu: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if psu:

@@ -41,7 +41,6 @@ from scs_core.data.publication import Publication
 
 from scs_core.osio.config.project import Project
 
-from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_osio_topic_subscriber import CmdOSIOTopicSubscriber
@@ -121,6 +120,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("osio_topic_subscriber: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
