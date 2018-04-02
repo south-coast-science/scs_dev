@@ -16,7 +16,7 @@ class CmdControlReceiver(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [TAG SERIAL_NUMBER] [-r] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-r] [-e] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--receipt", "-r", action="store_true", dest="receipt", default=False,
@@ -32,22 +32,6 @@ class CmdControlReceiver(object):
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    def is_valid(self):
-        return len(self.__args) == 0 or len(self.__args) == 2
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def tag(self):
-        return self.__args[0] if len(self.__args) > 0 else None
-
-
-    @property
-    def serial_number(self):
-        return self.__args[1] if len(self.__args) > 1 else None
-
 
     @property
     def receipt(self):
@@ -76,5 +60,5 @@ class CmdControlReceiver(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdControlReceiver:{tag:%s, serial_number:%s, receipt:%s, verbose:%s, args:%s}" % \
-                    (self.tag, self.serial_number, self.receipt, self.verbose, self.args)
+        return "CmdControlReceiver:{receipt:%s, verbose:%s, args:%s}" % \
+                    (self.receipt, self.verbose, self.args)

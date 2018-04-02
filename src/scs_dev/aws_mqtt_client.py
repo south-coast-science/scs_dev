@@ -41,10 +41,9 @@ import sys
 
 from collections import OrderedDict
 
+from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
-from scs_core.aws.client.client_credentials import ClientCredentials
 from scs_core.aws.config.project import Project
-from scs_core.aws.service.endpoint import Endpoint
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -142,19 +141,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # endpoint...
-        endpoint = Endpoint.load(Host)
+        # ClientAuth...
+        auth = ClientAuth.load(Host)
 
-        if endpoint is None:
-            print("Endpoint config not available.", file=sys.stderr)
+        if auth is None:
+            print("aws_mqtt_client: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
-        # endpoint...
-        credentials = ClientCredentials.load(Host)
-
-        if credentials is None:
-            print("ClientCredentials not available.", file=sys.stderr)
-            exit(1)
+        if cmd.verbose:
+            print(auth, file=sys.stderr)
 
         # comms...
         pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
@@ -214,7 +209,7 @@ if __name__ == '__main__':
 
         handler = AWSMQTTHandler()
 
-        client.connect(endpoint, credentials)
+        client.connect(auth)
 
         pub_comms.connect()
 
