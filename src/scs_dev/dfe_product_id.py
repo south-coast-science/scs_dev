@@ -18,7 +18,7 @@ DOCUMENT EXAMPLE
 xx
 
 SEE ALSO
-scs_analysis/
+scs_dev/
 
 
 command line example:

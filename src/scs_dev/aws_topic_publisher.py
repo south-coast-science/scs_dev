@@ -17,8 +17,8 @@ EXAMPLES
 ./status_sampler.py -i10 | ./aws_topic_publisher.py -e -cS
 
 SEE ALSO
-scs_analysis/aws_mqtt_client
-scs_analysis/aws_topic_subscriber
+scs_dev/aws_mqtt_client
+scs_dev/aws_topic_subscriber
 """
 
 import json

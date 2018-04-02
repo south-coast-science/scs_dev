@@ -5,6 +5,22 @@ Created on 17 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+DESCRIPTION
+The XX utility is used to .
+
+EXAMPLES
+xx
+
+FILES
+~/SCS/aws/
+
+DOCUMENT EXAMPLE
+xx
+
+SEE ALSO
+scs_dev/
+
+
 Warning: osio_mqtt_client should be started before control_receiver.
 
 command line example:
@@ -25,14 +41,13 @@ from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.exception_report import ExceptionReport
+from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 
 from scs_host.sys.host import Host
 
-
-# TODO: replace SystemID with generated shared secret
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -49,10 +64,6 @@ if __name__ == '__main__':
 
     cmd = CmdControlReceiver()
 
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(2)
-
     if cmd.verbose:
         print(cmd, file=sys.stderr)
 
@@ -60,24 +71,29 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------------------------------------
     # resources...
 
-    if cmd.tag:
-        system_tag = cmd.tag
-        subscriber_sn = cmd.serial_number
+    # SystemID...
+    system_id = SystemID.load(Host)
 
-    else:
-        # SystemID...
-        system_id = SystemID.load(Host)
+    if system_id is None:
+        print("control_receiver: SystemID not available.", file=sys.stderr)
+        exit(1)
 
-        if system_id is None:
-            print("SystemID not available.", file=sys.stderr)
-            exit(1)
+    if cmd.verbose:
+        print(system_id, file=sys.stderr)
 
-        if cmd.verbose:
-            print(system_id, file=sys.stderr)
-            sys.stderr.flush()
+    # SharedSecret...
+    secret = SharedSecret.load(Host)
 
-        system_tag = system_id.message_tag()
-        subscriber_sn = Host.serial_number()
+    if secret is None:
+        print("control_receiver: SharedSecret not available.", file=sys.stderr)
+        exit(1)
+
+    if cmd.verbose:
+        print(secret, file=sys.stderr)
+        sys.stderr.flush()
+
+    system_tag = system_id.message_tag()
+    key = secret.key
 
 
     try:
@@ -103,7 +119,7 @@ if __name__ == '__main__':
                 print(datum, file=sys.stderr)
                 sys.stderr.flush()
 
-            if not datum.is_valid(subscriber_sn):
+            if not datum.is_valid(key):
                 print("control_receiver: invalid digest: %s" % datum, file=sys.stderr)
                 sys.stderr.flush()
                 continue
@@ -125,7 +141,7 @@ if __name__ == '__main__':
             # receipt...
             if cmd.receipt:
                 now = LocalizedDatetime.now()
-                receipt = ControlReceipt.construct_from_datum(datum, now, command, subscriber_sn)
+                receipt = ControlReceipt.construct_from_datum(datum, now, command, key)
 
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()

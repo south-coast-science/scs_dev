@@ -16,7 +16,7 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog PATH [-i] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-i] [-v] [PATH]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,
@@ -30,20 +30,6 @@ class CmdNode(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):
-        if self.path is None:
-            return False
-
-        return True
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def path(self):
-        return self.__args[0] if len(self.__args) > 0 else None
-
-
     @property
     def ignore(self):
         return self.__opts.ignore
@@ -52,6 +38,11 @@ class CmdNode(object):
     @property
     def verbose(self):
         return self.__opts.verbose
+
+
+    @property
+    def path(self):
+        return self.__args[0] if len(self.__args) > 0 else None
 
 
     @property
@@ -66,4 +57,4 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{ignore:%s, verbose:%s, args:%s}" %  (self.ignore, self.verbose, self.args)
+        return "CmdNode:{ignore:%s, verbose:%s, path:%s, args:%s}" %  (self.ignore, self.verbose, self.path, self.args)
