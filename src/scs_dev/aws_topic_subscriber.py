@@ -32,7 +32,6 @@ from scs_core.data.publication import Publication
 from scs_core.aws.config.project import Project
 
 from scs_core.sys.system_id import SystemID
-from scs_core.sys.exception_report import ExceptionReport
 
 from scs_dev.cmd.cmd_aws_topic_subscriber import CmdAWSTopicSubscriber
 
@@ -67,7 +66,7 @@ if __name__ == '__main__':
             system_id = SystemID.load(Host)
 
             if system_id is None:
-                print("SystemID not available.", file=sys.stderr)
+                print("aws_topic_subscriber: SystemID not available.", file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:
@@ -77,7 +76,7 @@ if __name__ == '__main__':
             project = Project.load(Host)
 
             if project is None:
-                print("Project not available.", file=sys.stderr)
+                print("aws_topic_subscriber: Project not available.", file=sys.stderr)
                 exit(1)
 
             topic = project.channel_path(cmd.channel, system_id)
@@ -112,6 +111,3 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("aws_topic_subscriber: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)

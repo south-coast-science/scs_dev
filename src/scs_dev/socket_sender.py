@@ -28,9 +28,6 @@ command line example:
 
 import sys
 
-from scs_core.data.json import JSONify
-from scs_core.sys.exception_report import ExceptionReport
-
 from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
 
 from scs_host.comms.network_socket import NetworkSocket
@@ -84,9 +81,6 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         if cmd.verbose:
             print("socket_sender: KeyboardInterrupt", file=sys.stderr)
-
-    except Exception as ex:
-        print(JSONify.dumps(ExceptionReport.construct(ex)), file=sys.stderr)
 
     finally:
         if sender:
