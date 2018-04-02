@@ -67,7 +67,7 @@ if __name__ == '__main__':
             system_id = SystemID.load(Host)
 
             if system_id is None:
-                print("SystemID not available.", file=sys.stderr)
+                print("aws_topic_subscriber: SystemID not available.", file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:
@@ -77,7 +77,7 @@ if __name__ == '__main__':
             project = Project.load(Host)
 
             if project is None:
-                print("Project not available.", file=sys.stderr)
+                print("aws_topic_subscriber: Project not available.", file=sys.stderr)
                 exit(1)
 
             topic = project.channel_path(cmd.channel, system_id)

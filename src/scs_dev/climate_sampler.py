@@ -70,7 +70,7 @@ if __name__ == '__main__':
         system_id = SystemID.load(Host)
 
         if system_id is None:
-            print("SystemID not available.", file=sys.stderr)
+            print("climate_sampler: SystemID not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         sht_conf = SHTConf.load(Host)
 
         if sht_conf is None:
-            print("SHTConf not available.", file=sys.stderr)
+            print("climate_sampler: SHTConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:

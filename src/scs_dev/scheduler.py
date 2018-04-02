@@ -64,7 +64,7 @@ if __name__ == '__main__':
         schedule = Schedule.load(Host)
 
         if schedule is None:
-            print("Schedule not available.", file=sys.stderr)
+            print("scheduler: Schedule not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
