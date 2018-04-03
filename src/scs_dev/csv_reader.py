@@ -5,6 +5,9 @@ Created on 4 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+SYNOPSIS
+csv_reader.py [-v] [FILENAME]
+
 DESCRIPTION
 The csv_reader utility is used to convert data from comma-separated value (CSV) format to JSON format.
 

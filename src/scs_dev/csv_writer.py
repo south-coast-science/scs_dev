@@ -5,6 +5,9 @@ Created on 19 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+SYNOPSIS
+csv_writer.py [-c] [-a] [-e] [-v] [FILENAME]
+
 DESCRIPTION
 The csv_writer utility is used to convert from JSON format to comma-separated value (CSV) format.
 
