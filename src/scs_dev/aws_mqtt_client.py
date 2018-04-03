@@ -206,8 +206,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        handler = AWSMQTTHandler()
-
         client.connect(auth)
 
         pub_comms.connect()
@@ -220,7 +218,7 @@ if __name__ == '__main__':
 
             publication = Publication.construct_from_jdict(jdict)
 
-            client.publish(publication)
+            client.publish(publication)     # TODO: handle return value of False
 
             if cmd.verbose:
                 print("%s:         mqtt: done" % LocalizedDatetime.now().as_iso8601(), file=sys.stderr)
