@@ -21,7 +21,6 @@ SEE ALSO
 scs_dev/
 
 
-
 Requires SystemID document.
 
 Note: this script uses the internal SHT temp sensor for temperature compensation.
@@ -54,6 +53,8 @@ try:
 except ImportError:
     from scs_core.gas.ndir_conf import NDIRConf
 
+
+# TODO: needs flag to keep NDIR switched on?
 
 # --------------------------------------------------------------------------------------------------------------------
 
