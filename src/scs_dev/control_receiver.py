@@ -6,26 +6,64 @@ Created on 17 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The function of the control_receiver utility is execute commands received over a messaging topic. In addition to
+enabling secure remote management, the utility provides a secure challenge-response facility.
+
+A typical South Coast Science device is provided with a messaging topic whose purpose is to enable bidirectional
+command-and-response communications between the device and one or more remote management systems. Commands
+are in the form of a specific JSON format, which is validated as follows:
+
+* the message must identify the device as the recipient
+* the digest in the incoming message matches the digest computed by the device
+* the command must be listed in the device's ~/SCS/cmd/ directory, or be "?"
+
+If validated, the control_receiver utility executes the command, and publishes a receipt message which includes:
+
+* the command stdout
+* the command stderr
+* the command return code
+* the original message digest
+* a new message digest
+
+Entries in ~/SCS/cmd/ are typically symbolic links to commands that are implemented elsewhere, either by the operating
+system, or by South Coast Science packages.
+
+It is the responsibility of the device administrator to mange the ~/SCS/cmd/ directory. Care should be taken to exclude
+commands that:
+
+* could cause harm to the system
+* require an interactive mode
+* require root privileges
+* can change the contents of the ~/SCS/cmd/ directory
+
+SYNOPSIS
+control_receiver.py [-r] [-e] [-v]
 
 EXAMPLES
-xx
+( cat ~/SCS/pipes/control_subscription_pipe & ) | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v
 
 FILES
-~/SCS/aws/
+~/SCS/cmd/*
+~/SCS/conf/system_id.json
+~/SCS/conf/shared_secret.json
 
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - REQUEST
+{"/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control":
+{"tag": "bruno", "attn": "scs-ap1-6", "rec": "2018-04-04T14:41:11.872+01:00", "cmd_tokens": ["?"],
+"digest": "bf682976cb45d889dfbb7ebdecd207bf3e3b4a6e12336859a93d7023b8454514"}}
+
+DOCUMENT EXAMPLE - RESPONSE
+{"/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control":
+{"tag": "scs-ap1-6", "rec": "2018-04-04T13:41:59.521+00:00",
+"cmd": {"cmd": "?", "params": [],
+"stdout": ["[\"afe_baseline\", \"afe_calib\", \"opc_power\", \"ps\", \"schedule\", \"shared_secret\"]"],
+"stderr": [], "ret": 0},
+"omd": "40ef7a9c0f70033bbe21827ed25286b448a5ad3ace9b16f44f3d94da6a89ab25",
+"digest": "597f8de3852f1067f52f126398777abdba6c204c378e8f5d30bad6d8d99ee536"}}
 
 SEE ALSO
-scs_dev/
-
-
-Warning: osio_mqtt_client should be started before control_receiver.
-
-command line example:
-cat ~/SCS/pipes/control_subscription_pipe | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v | \
-./osio_topic_publisher.py -cX > ~/SCS/pipes/control_publication_pipe
+scs_analysis/aws_mqtt_control
+scs_analysis/osio_mqtt_control
 """
 
 import json
