@@ -53,6 +53,9 @@ SEE ALSO
 scs_dev/scheduler
 scs_mfr/schedule
 scs_mfr/system_id
+
+BUGS
+problem with GPS / PSU monitors?
 """
 
 import sys
