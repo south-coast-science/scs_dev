@@ -6,11 +6,12 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The gases_sampler utility reads a set of values from the Alphasense analogue front-end (AFE) board attached to the
-South Coast Science digital front-end (DFE) board. The gases_sampler utility reports raw electrode voltages,
-temperature-compensated voltages, and gas concentrations (in parts per billion) derived according to the relevant
-Alphasense application notes. If the AFE board includes a Pt1000 temperature sensor, then the gases_sampler utility
-may also report the Pt1000 voltage and temperature.
+The gases_sampler utility reads a set of values from a South Coast Science digital front-end (DFE) board hosting an
+Alphasense analogue front-end (AFE) board.
+
+The gases_sampler utility reports raw electrode voltages, temperature-compensated voltages, and gas concentrations
+(in parts per billion) derived according to the relevant Alphasense application notes. If the AFE board includes a
+Pt1000 temperature sensor, then the gases_sampler utility may also report the Pt1000 voltage and temperature.
 
 The DFE board supports AFEs with up to four electrochemical sensors, or three electrochemical sensors plus one
 photo-ionisation detector (PID). Before using the gases_sampler utility, the configuration of the AFE must be
