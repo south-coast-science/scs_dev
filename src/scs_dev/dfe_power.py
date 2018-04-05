@@ -8,12 +8,15 @@ Created on 28 Feb 2017
 DESCRIPTION
 The dfe_power utility is used to simultaneously switch on and off the power to GPS, OPC, NDIR and LED peripherals.
 
-Warning: the command is fully-functional only with the South Coast Science digital front-end (DFE) board for BeagleBone.
-For other DFE boards - such as that for RaspBerry Pi - the command is only able to command a operation start / stop to
+Note: the command is fully-functional only with the South Coast Science digital front-end (DFE) board for BeagleBone.
+For other DFE boards - such as that for Raspberry Pi - the utility is only able to command a operation start / stop to
 the OPC.
 
+SYNOPSIS
+dfe_power.py { 1 | 0 } [-v]
+
 EXAMPLES
-./dfe_power.py -v 0
+./dfe_power.py 0
 
 SEE ALSO
 scs_dev/opc_power

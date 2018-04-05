@@ -14,13 +14,14 @@ aws_mqtt_client may be subscribing to multiple topics. The aws_topic_subscriber 
 topic. It expects a JSON document of the form provided by aws_mqtt_client. It acts by returning the value of the field
 whose field name matches the topic name.
 
-Messaging topics can be specified either by a project channel name, or by an explicit topic path.
+Messaging topics can be specified either by a project channel name, or by an explicit topic path. If a project channel
+name is used, the aws_topic_subscriber utility requires system ID and AWS project configurations to be set.
 
 SYNOPSIS
 aws_topic_publisher.py { -t TOPIC | -c { C | G | P | S | X } } [-v]
 
 EXAMPLES
-( cat ~/SCS/pipes/control_subscription_pipe & ) | ./scs_dev/osio_topic_subscriber.py -cX
+( cat ~/SCS/pipes/control_subscription_pipe & ) | ./aws_topic_subscriber.py -cX | ./control_receiver.py -r -v
 
 DOCUMENT EXAMPLE - INPUT
 {"south-coast-science-dev/production-test/loc/1/gases":
@@ -42,6 +43,7 @@ DOCUMENT EXAMPLE - OUTPUT
 SEE ALSO
 scs_dev/aws_mqtt_client
 scs_mfr/aws_project
+scs_mfr/system_id
 """
 
 import json

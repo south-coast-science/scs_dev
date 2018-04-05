@@ -6,26 +6,53 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The status_sampler utility is used to report on the configuration and condition of the host system and its
+peripherals. Items included in the report vary depending on the hardware configuration of the equipment. Fields
+which are always reported include:
+
+* Sensing schedule
+* Unix uptime report
+* Temperature of the digital front-end board
+
+Fields which may be reported include:
+
+* Timezone
+* GPS location
+* Power supply condition
+* Temperature of the host processor
+
+The status_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
+fields for:
+
+* the unique tag of the device
+* the recording date / time
+* a value field containing the sensed values
+
+Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
+controlled by an independent scheduling process via a Unix semaphore.
+
+SYNOPSIS
+status_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-xx
+./status_sampler.py -i60
 
 FILES
-~/SCS/aws/
+~/SCS/conf/schedule.json
+~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - OUTPUT
+{"tag": "scs-ap1-6", "rec": "2018-04-05T14:17:01.943+00:00",
+"val": {"tz": {"name": "Europe/London", "utc-offset": "+01:00"},
+"sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 5.0, "tally": 1},
+"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
+"tmp": {"brd": 27.6, "hst": 42.9}, "up": {"period": "00-00:08:00.000",
+"users": 3, "load": {"av1": 0.0, "av5": 0.09, "av15": 0.08}}}}
 
 SEE ALSO
-scs_dev/
-
-
-
-Requires SystemID document.
-
-command line example:
-./status_sampler.py -i 10 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/status
+scs_dev/scheduler
+scs_mfr/schedule
+scs_mfr/system_id
 """
 
 import sys

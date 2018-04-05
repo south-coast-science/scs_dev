@@ -10,13 +10,18 @@ The aws_topic_publisher utility is used to prepare data for publication by the a
 aws_topic_publisher acts by taking data from stdin, wrapping it in a JSON document whose only field has the name of
 the given topic, and presenting the result on stdout.
 
-Messaging topics can be specified either by a project channel name, or by an explicit topic path.
+Messaging topics can be specified either by a project channel name, or by an explicit topic path. If a project channel
+name is used, the aws_topic_publisher utility requires system ID and AWS project configurations to be set.
 
 SYNOPSIS
 aws_topic_publisher.py { -t TOPIC | -c { C | G | P | S | X } } [-v]
 
 EXAMPLES
-./gases_sampler.py -r -v | ./aws_topic_publisher.py -v -cX
+./control_receiver.py -r -v | ./aws_topic_publisher.py -v -cX > ~/SCS/pipes/mqtt_publication_pipe
+
+FILES
+~/SCS/aws/aws_project.json
+~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - INPUT
 {"tag": "scs-be2-2", "rec": "2018-04-04T13:05:52.675+00:00",
@@ -38,6 +43,7 @@ DOCUMENT EXAMPLE - OUTPUT
 SEE ALSO
 scs_dev/aws_mqtt_client
 scs_mfr/aws_project
+scs_mfr/system_id
 """
 
 import json

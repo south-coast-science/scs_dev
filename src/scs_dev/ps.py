@@ -6,24 +6,24 @@ Created on 13 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The ps utility is used to run the Unix ps (process snapshot) command. The utility present the output of the ps command
+as a JSON document, making it suitable for analysis by a remote device management system.
+
+The ps utility is normally included in the commands accepted by the control_receiver utility.
+
+SYNOPSIS
+ps.py
 
 EXAMPLES
-xx
+./ps.py
 
-FILES
-~/SCS/aws/
-
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - OUTPUT
+{"ppid": 1069, "pid": 1071, "uid": 1000, "tty": "?", "pcpu": 0.9, "pmem": 0.0, "cpu": "00-00:00:03.000",
+"elapsed": "00-02:50:12.000", "cmd": "python3 /home/pi/SCS/scs_dev/src/scs_dev/osio_topic_publisher.py -v -cG"}
 
 SEE ALSO
-scs_dev/
-
-
-
-command line example:
-./ps.py
+scs_dev/control_receiver
+scs_dev/uptime
 """
 
 import subprocess

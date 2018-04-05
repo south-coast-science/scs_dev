@@ -17,9 +17,9 @@ fields for:
 * a value field containing the sensed values
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
-controlled by an independent scheduling process, via a Unix semaphore.
+controlled by an independent scheduling process via a Unix semaphore.
 
-South Coast Science equipment may carry one or two SHT sensors configuration is specified by the
+South Coast Science equipment may carry one or two SHT sensors. The configuration is specified by the
 scs_mfr/sht_conf utility.
 
 SYNOPSIS
@@ -29,6 +29,7 @@ EXAMPLES
 ./climate_sampler.py -i10
 
 FILES
+~/SCS/conf/schedule.json
 ~/SCS/conf/sht_conf.json
 ~/SCS/conf/system_id.json
 

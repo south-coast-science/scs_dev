@@ -15,6 +15,8 @@ Likewise, documents gained from subscription are written to stdout, or a specifi
 Subscriptions can be specified either by a project channel name, or by an explicit messaging topic path. Documents
 gained by subscription may be delivered either to stdout, or to a specified Unix domain socket.
 
+The aws_mqtt_client utility requires the AWS client authorisation to operate.
+
 Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
@@ -22,14 +24,14 @@ aws_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) |
 [SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-v]
 
 EXAMPLES
-./aws_mqtt_client.py -cX
+( cat < /home/pi/SCS/pipes/mqtt_publication_pipe & ) | \
+/home/pi/SCS/scs_dev/src/scs_dev/aws_mqtt_client.py -v -cX  > /home/pi/SCS/pipes/control_subscription_pipe
 
 FILES
 ~/SCS/aws/aws_client_auth.json
 
 SEE ALSO
-scs_dev/aws_client_auth
-scs_dev/aws_topic_publisher
+scs_mfr/aws_client_auth
 scs_mfr/aws_project
 
 BUGS

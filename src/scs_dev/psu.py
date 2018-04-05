@@ -6,24 +6,27 @@ Created on 8 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The psu utility is used to communicate with the South Coast Science power supply (PSU) board for BeagleBone via a
+serial port connection.
+
+The utility can be used in either of two modes:
+
+* Interactive - the user is given a command prompt. A series of commands can be issued.
+* Command - a single PSU command is supplied as a command line parameter
+
+Note: the psu utility is not available on Raspberry Pi systems.
+
+SYNOPSIS
+psu.py { -i | CMD [PARAMS] } [-v]
 
 EXAMPLES
-xx
+./psu.py -i
 
 FILES
-~/SCS/aws/
+~/SCS/conf/psu_conf.json
 
 DOCUMENT EXAMPLE
 xx
-
-SEE ALSO
-scs_dev/
-
-
-
-command line example:
-./psu.py -p -v
 """
 
 import sys

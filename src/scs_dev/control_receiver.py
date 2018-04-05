@@ -17,7 +17,7 @@ are in the form of a specific JSON format, which is validated as follows:
 * the digest in the incoming message matches the digest computed by the device
 * the command must be listed in the device's ~/SCS/cmd/ directory, or be "?"
 
-If validated, the control_receiver utility executes the command, and publishes a receipt message which includes:
+If validated, the control_receiver utility executes the command, then publishes a receipt message which includes:
 
 * the command stdout
 * the command stderr

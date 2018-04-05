@@ -5,17 +5,36 @@ Created on 23 Mar 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-WARNING: only one MQTT client should run at any one time, per a TCP/IP host.
+DESCRIPTION
+The osio_mqtt_client utility is used to subscribe or publish using the OpenSensors.io Community Edition messaging
+infrastructure.
 
-Requires APIAuth and ClientAuth documents.
+Documents for publication are gained from stdin by default, otherwise from the specified Unix domain socket (UDS).
+Likewise, documents gained from subscription are written to stdout, or a specified UDS.
 
-command line example:
-./osio_mqtt_client.py \
-/orgs/south-coast-science-dev/unep/loc/1/gases gases.uds \
-/orgs/south-coast-science-dev/unep/loc/1/particulates particulates.uds \
--p osio_mqtt_pub.uds -s -e
+Subscriptions can be specified either by a project channel name, or by an explicit messaging topic path. Documents
+gained by subscription may be delivered either to stdout, or to a specified Unix domain socket.
 
-./gases_sampler.py | ./osio_topic_publisher.py -cG | ./osio_mqtt_client.py -cG      // simple echo
+The osio_mqtt_client utility requires both the OpenSensors.io API key and client authorisation to operate.
+
+Only one MQTT client should run at any one time, per TCP/IP host.
+
+SYNOPSIS
+osio_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | [SUB_TOPIC_1 (UDS_SUB_1) ..
+SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-v]
+
+EXAMPLES
+( cat < ~/SCS/pipes/mqtt_publication_pipe & ) | ./osio_mqtt_client.py -v -cX  > ./control_subscription_pipe
+
+FILES
+~/SCS/aws/osio_api_auth.json
+~/SCS/aws/osio_client_auth.json
+~/SCS/aws/osio_project.json
+
+SEE ALSO
+scs_mfr/osio_api_auth
+scs_mfr/osio_client_auth
+scs_mfr/osio_host_project
 
 BUGS
 When run as a background process, osio_mqtt_client will exit if it has no stdin stream.
