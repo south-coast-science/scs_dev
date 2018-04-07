@@ -13,7 +13,7 @@ The climate_sampler writes its output to stdout. As for all sensing utilities, t
 fields for:
 
 * the unique tag of the device
-* the recording date / time
+* the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
@@ -41,6 +41,9 @@ scs_dev/scheduler
 scs_mfr/schedule
 scs_mfr/sht_conf
 scs_mfr/system_id
+
+RESOURCES
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

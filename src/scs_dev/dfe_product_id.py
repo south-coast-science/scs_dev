@@ -6,13 +6,12 @@ Created on 26 Sep 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The dfe_product_id utility is used to read the vendor, product ID and product UUID fields from the EEPROM on the
-South Coast Science digital front-end (DFE) board.
+The dfe_product_id utility reports the vendor, product ID and product universally unique ID (UUID) fields, as held in
+the EEPROM on the South Coast Science digital front-end (DFE) board. Data from the EEPROM is normally read by
+the operating system at boot time.
 
 DFE boards conform to Raspberry Pi HAT and BeagleBone Cape standards, as appropriate, and have differing fields, as
 required by the respective standards.
-
-Note: the utility is not currently functional on BeagleBone systems.
 
 SYNOPSIS
 dfe_product_id.py
@@ -26,6 +25,9 @@ DOCUMENT EXAMPLE
 SEE ALSO
 scs_mfr/eeprom_read
 scs_mfr/eeprom_write
+
+BUGS
+The utility is not currently functional on BeagleBone systems.
 """
 
 from scs_core.data.json import JSONify

@@ -25,8 +25,11 @@ EXAMPLES
 FILES
 ~/SCS/conf/psu_conf.json
 
-DOCUMENT EXAMPLE
-xx
+SEE ALSO
+scs_mfr/psu_conf
+
+BUGS
+The psu utility is typically locked by the status_sampler utility, and is therefore not available to other processes.
 """
 
 import sys

@@ -46,6 +46,7 @@ DOCUMENT EXAMPLE - OUTPUT
 SEE ALSO
 scs_dev/osio_mqtt_client
 scs_mfr/osio_project
+scs_mfr/system_id
 """
 
 import json

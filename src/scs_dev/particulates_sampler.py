@@ -28,7 +28,7 @@ The particulates_sampler writes its output to stdout. As for all sensing utiliti
 with fields for:
 
 * the unique tag of the device
-* the recording date / time
+* the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
@@ -60,6 +60,9 @@ scs_mfr/system_id
 
 BUGS
 The particulates_sampler utility is not process-safe - it should therefore be run by only one process at a time.
+
+RESOURCES
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

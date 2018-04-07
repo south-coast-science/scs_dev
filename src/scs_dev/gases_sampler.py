@@ -7,7 +7,8 @@ Created on 5 Dec 2016
 
 DESCRIPTION
 The gases_sampler utility reads a set of values from a South Coast Science digital front-end (DFE) board hosting an
-Alphasense analogue front-end (AFE) board.
+Alphasense analogue front-end (AFE) board. The also utility reads an NDIR CO2 sensor, if the appropriate configuration
+document is present.
 
 The gases_sampler utility reports raw electrode voltages, temperature-compensated voltages, and gas concentrations
 (in parts per billion) derived according to the relevant Alphasense application notes. If the AFE board includes a
@@ -36,7 +37,7 @@ The gases_sampler writes its output to stdout. As for all sensing utilities, the
 fields for:
 
 * the unique tag of the device
-* the recording date / time
+* the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
@@ -52,6 +53,8 @@ FILES
 ~/SCS/conf/afe_baseline.json
 ~/SCS/conf/afe_calib.json
 ~/SCS/conf/dfe_conf.json
+~/SCS/conf/ndir_conf.json
+~/SCS/conf/pt1000_calib.json
 ~/SCS/conf/sht_conf.json
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
@@ -69,12 +72,15 @@ scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
 scs_mfr/dfe_conf
+scs_mfr/ndir_conf
+scs_mfr/pt1000_calib
 scs_mfr/schedule
 scs_mfr/sht_conf
 scs_mfr/system_id
 
 RESOURCES
 Alphasense Application Note AAN 803-02
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

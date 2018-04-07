@@ -25,7 +25,7 @@ The status_sampler writes its output to stdout. As for all sensing utilities, th
 fields for:
 
 * the unique tag of the device
-* the recording date / time
+* the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
@@ -51,11 +51,17 @@ DOCUMENT EXAMPLE - OUTPUT
 
 SEE ALSO
 scs_dev/scheduler
+scs_mfr/gps_conf
+scs_mfr/psu_conf
 scs_mfr/schedule
 scs_mfr/system_id
+scs_mfr/timezone
 
 BUGS
-problem with GPS / PSU monitors?
+If status_sampler is run in single-shot mode, GPS and PSU monitors may time out before being able to supply data.
+
+RESOURCES
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys
@@ -82,6 +88,8 @@ try:
 except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
+
+# TODO: deal with the case of slow-to-start subsystem monitors
 
 # --------------------------------------------------------------------------------------------------------------------
 
