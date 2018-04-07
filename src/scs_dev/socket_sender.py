@@ -6,24 +6,28 @@ Created on 18 Aug 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The socket_sender utility is used to transmit data over a network socket. The recipient may be the same host
+(identified as localhost) or another host on the same local area network.
+
+The socket_sender utility should be started after the socket_receiver has been started. When the socket_sender
+utility terminates, the socket_receiver utility terminates automatically.
+
+The recipient may be identified by IP address or - if the environment supports ZeroConf / Bonjour - by hostname.local.
+
+If a port number is not specified, then port 2000 is used.
+
+SYNOPSIS
+socket_sender.py HOSTNAME [-p PORT] [-e] [-v]
 
 EXAMPLES
-xx
-
-FILES
-~/SCS/aws/
-
-DOCUMENT EXAMPLE
-xx
+./status_sampler.py -n 10 | ./socket_sender.py bruno.local -e -p 2002
 
 SEE ALSO
-scs_dev/
+scs_analysis/socket_receiver
 
-
-
-command line example:
-./status_sampler.py -n 10 | ./socket_sender.py bruno.local -e
+BUGS
+It is possible to create scenarios where a port becomes orphaned. Depending on host operating systems, orphaned ports
+may take time to be garbage collected.
 """
 
 import sys

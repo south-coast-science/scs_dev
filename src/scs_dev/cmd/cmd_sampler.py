@@ -16,7 +16,7 @@ class CmdSampler(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES]}] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]",
                                               version="%prog 1.0")
 
         # optional...

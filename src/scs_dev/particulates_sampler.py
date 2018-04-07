@@ -6,27 +6,63 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The particulates_sampler utility reads a set of values from the Alphasense optical particle counter (OPC). The reported
+values are:
+
+* per - the period of time between the previous reading and this reading
+* pm1, pm2p5, pm10 - particulate densities of PM1, PM2.5 and PM10 in ug/m3
+* bins - the particle count, for particles of increasing size
+* mtf1, mtf3, mtf5, mtf7 - time taken for particle movement between system points
+
+The particulates_sampler utility operates by launching a background process. This OPCMonitor process reads the OPC
+values at specified intervals (which may be different from the intervals used by the parent process). In addition,
+the process power cycles the OPC if its laser safety control has tripped.
+
+The scs_mfr/opc_conf utility is used to specify the OPC model, background process sampling time, and OPC control
+power saving mode.
+
+When the particulates_sampler utility starts, it power cycles the OPC. When the utility stops, it stops operations
+on the OPC, and stops the OPC fan.
+
+The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
+with fields for:
+
+* the unique tag of the device
+* the recording date / time in ISO 8601 format
+* a value field containing the sensed values
+
+Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
+controlled by an independent scheduling process via a Unix semaphore.
+
+SYNOPSIS
+particulates_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-xx
+./particulates_sampler.py -v -s scs-particulates
 
 FILES
-~/SCS/aws/
+~/SCS/conf/opc_conf.json
+~/SCS/conf/schedule.json
+~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE
-xx
+{"tag": "scs-bgx-122", "rec": "2018-04-05T10:57:49.178+00:00",
+"val": {"per": 10.0, "pm1": 4.4, "pm2p5": 6.6, "pm10": 11.1,
+"bins": {"0": 265, "1": 38, "2": 45, "3": 18, "4": 7, "5": 9, "6": 11, "7": 3, "8": 3, "9": 1,
+"10": 0, "11": 0, "12": 0, "13": 0, "14": 0, "15": 0},
+"mtf1": 19, "mtf3": 27, "mtf5": 29, "mtf7": 29}}
 
 SEE ALSO
-scs_dev/
+scs_dev/scheduler
+scs_mfr/opc_conf
+scs_mfr/schedule
+scs_mfr/system_id
 
+BUGS
+The particulates_sampler utility is not process-safe - it should therefore be run by only one process at a time.
 
-
-Requires SystemID document.
-
-command line example:
-./particulates_sampler.py -i 10 | \
-./osio_topic_publisher.py -e /users/southcoastscience-dev/test/particulates
+RESOURCES
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

@@ -6,29 +6,47 @@ Created on 18 Nov 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The osio_topic_subscriber utility is used to select subscribed data from the output of the osio_mqtt_client script, and
+make it available to a listening process.
+
+The osio_topic_subscriber script is needed because the - given that only one instance per host may be running - the
+osio_mqtt_client may be subscribing to multiple topics. The osio_topic_subscriber only responds to one specific
+topic. It expects a JSON document of the form provided by osio_mqtt_client. It acts by returning the value of the field
+whose field name matches the topic name.
+
+Messaging topics can be specified either by a project channel name, or by an explicit topic path.
+
+SYNOPSIS
+osio_topic_subscriber.py { -t TOPIC | -c { C | G | P | S | X } } [-v]
 
 EXAMPLES
-xx
+( cat ~/SCS/pipes/control_subscription_pipe & ) | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v
 
 FILES
-~/SCS/aws/
+~/SCS/osio/osio_project.json
+~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - INPUT
+{"south-coast-science-dev/production-test/loc/1/gases":
+{"tag": "scs-be2-2", "rec": "2018-04-04T13:05:52.675+00:00",
+"val": {"NO2": {"weV": 0.316192, "aeV": 0.310317, "weC": 0.002991, "cnc": 22.6},
+"CO": {"weV": 0.286567, "aeV": 0.258941, "weC": 0.043378, "cnc": 181.5},
+"SO2": {"weV": 0.263879, "aeV": 0.267942, "weC": -0.01022, "cnc": -12.8},
+"H2S": {"weV": 0.209753, "aeV": 0.255191, "weC": -0.031478, "cnc": 11.9},
+"sht": {"hmd": 57.0, "tmp": 21.3}}}}
+
+DOCUMENT EXAMPLE - OUTPUT
+{"tag": "scs-be2-2", "rec": "2018-04-04T13:05:52.675+00:00",
+"val": {"NO2": {"weV": 0.316192, "aeV": 0.310317, "weC": 0.002991, "cnc": 22.6},
+"CO": {"weV": 0.286567, "aeV": 0.258941, "weC": 0.043378, "cnc": 181.5},
+"SO2": {"weV": 0.263879, "aeV": 0.267942, "weC": -0.01022, "cnc": -12.8},
+"H2S": {"weV": 0.209753, "aeV": 0.255191, "weC": -0.031478, "cnc": 11.9},
+"sht": {"hmd": 57.0, "tmp": 21.3}}}
 
 SEE ALSO
-scs_dev/
-
-
-
-https://opensensorsio.helpscoutdocs.com/article/84-overriding-timestamp-information-in-message-payload
-
-Requires SystemID and Project documents.
-
-command line example:
-./osio_mqtt_client.py /orgs/south-coast-science-dev/development/device/alpha-bb-eng-000003/control | \
-./osio_topic_subscriber.py -cX
+scs_dev/osio_mqtt_client
+scs_mfr/osio_project
+scs_mfr/system_id
 """
 
 import json

@@ -6,24 +6,23 @@ Created on 26 Mar 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The opc_power utility is used to apply or remove power to the Alphasense optical particle counter (OPC). The utility
+may be used to save power, or to cycle an OPC whose laser safety system has tripped.
+
+Note: Power to the OPC is also under the control of the OPC monitor process launched by the particulates_sampler
+utility. If running, the OPC monitor process will override the action of this script.
+
+Note: Raspberry Pi systems do not have the ability to control the OPC power. For these systems, the OPC is simply
+commanded to stop or start operations.
+
+SYNOPSIS
+opc_power.py { 1 | 0 } [-v]
 
 EXAMPLES
-xx
-
-FILES
-~/SCS/aws/
-
-DOCUMENT EXAMPLE
-xx
+./opc_power.py 1
 
 SEE ALSO
-scs_dev/
-
-
-
-command line example:
-./opc_power.py -v 0
+scs_dev/dfe_power
 """
 
 import sys
@@ -57,7 +56,6 @@ if __name__ == '__main__':
         # resources...
 
         I2C.open(Host.I2C_SENSORS)
-
 
         opc = OPCN2(Host.opc_spi_bus(), Host.opc_spi_device())
 

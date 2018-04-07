@@ -14,8 +14,18 @@ The path into the JSON document is used to name the column in the header row, wi
 All the leaf nodes of the first JSON document are included in the CSV. If subsequent JSON documents in the input stream
 contain fields that were not in this first document, these extra fields are ignored.
 
+SYNOPSIS
+csv_writer.py [-c] [-a] [-e] [-v] [FILENAME]
+
 EXAMPLES
 ./socket_receiver.py | ./csv_writer.py temp.csv -e
+
+DOCUMENT EXAMPLE - INPUT
+{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}
+
+DOCUMENT EXAMPLE - OUTPUT
+tag,rec,val.hmd,val.tmp
+scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 SEE ALSO
 scs_dev/csv_reader

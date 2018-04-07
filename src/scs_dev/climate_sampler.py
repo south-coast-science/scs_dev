@@ -6,25 +6,44 @@ Created on 18 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The xx utility .
+The climate_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
+temperature and relative humidity. Output values are in degrees centigrade and percentage, respectively.
+
+The climate_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
+fields for:
+
+* the unique tag of the device
+* the recording date / time in ISO 8601 format
+* a value field containing the sensed values
+
+Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
+controlled by an independent scheduling process via a Unix semaphore.
+
+South Coast Science equipment may carry one or two SHT sensors. The configuration is specified by the
+scs_mfr/sht_conf utility.
+
+SYNOPSIS
+climate_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-./status_sampler.py -i10 | ./aws_topic_publisher.py -e -cS
+./climate_sampler.py -i10
 
 FILES
-~/SCS/xx
+~/SCS/conf/schedule.json
+~/SCS/conf/sht_conf.json
+~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
-{"api-key": "de92c5ff-b47a-4cc4-a04c-62d684d74a1f"}
+DOCUMENT EXAMPLE - OUTPUT
+{"tag": "scs-ap1-6", "rec": "2018-04-04T13:09:49.648+00:00", "val": {"hmd": 66.2, "tmp": 21.7}}
 
 SEE ALSO
-scs_dev/aws_topic_subscriber
+scs_dev/scheduler
+scs_mfr/schedule
+scs_mfr/sht_conf
+scs_mfr/system_id
 
-
-Requires SystemID document.
-
-command line example:
-./climate_sampler.py -i 5 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/climate
+RESOURCES
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

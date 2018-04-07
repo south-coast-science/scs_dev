@@ -6,35 +6,31 @@ Created on 29 May 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The uptime utility is used to run the Unix uptime command. The utility present the output of the uptime command
+as a JSON document, making it suitable for analysis by a remote device management system.
+
+The uptime report is included in the status_sampler report.
+
+SYNOPSIS
+uptime.py
 
 EXAMPLES
-xx
+./uptime.py
 
-FILES
-~/SCS/aws/
-
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - OUTPUT
+{"time": "2018-04-05T14:27:00.877+00:00", "period": "00-00:18:00.000", "users": 3,
+"load": {"av1": 0.14, "av5": 0.09, "av15": 0.09}}
 
 SEE ALSO
-scs_dev/
-
-
-
-command line example:
-./uptime.py
+scs_dev/ps
 """
 
 import subprocess
-import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.uptime_datum import UptimeDatum
-
-from scs_dev.cmd.cmd_sampler import CmdSampler
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -42,31 +38,13 @@ from scs_dev.cmd.cmd_sampler import CmdSampler
 if __name__ == '__main__':
 
     # ----------------------------------------------------------------------------------------------------------------
-    # cmd...
+    # run...
 
-    cmd = CmdSampler()
+    now = LocalizedDatetime.now()
 
-    if cmd.verbose:
-        print(cmd, file=sys.stderr)
+    raw = subprocess.check_output('uptime')
+    report = raw.decode()
 
-    try:
-        # ------------------------------------------------------------------------------------------------------------
-        # run...
+    datum = UptimeDatum.construct_from_report(now, report)
 
-        now = LocalizedDatetime.now()
-
-        raw = subprocess.check_output('uptime')
-        report = raw.decode()
-
-        datum = UptimeDatum.construct_from_report(now, report)
-
-        print(JSONify.dumps(datum))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # end...
-
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("uptime: KeyboardInterrupt", file=sys.stderr)
-
+    print(JSONify.dumps(datum))

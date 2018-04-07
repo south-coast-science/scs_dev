@@ -6,27 +6,81 @@ Created on 5 Dec 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The gases_sampler utility reads a set of values from a South Coast Science digital front-end (DFE) board hosting an
+Alphasense analogue front-end (AFE) board. The also utility reads an NDIR CO2 sensor, if the appropriate configuration
+document is present.
+
+The gases_sampler utility reports raw electrode voltages, temperature-compensated voltages, and gas concentrations
+(in parts per billion) derived according to the relevant Alphasense application notes. If the AFE board includes a
+Pt1000 temperature sensor, then the gases_sampler utility may also report the Pt1000 voltage and temperature.
+
+The DFE board supports AFEs with up to four electrochemical sensors, or three electrochemical sensors plus one
+photo-ionisation detector (PID). Before using the gases_sampler utility, the configuration of the AFE must be
+specified using the scs_mfr/afe_calib utility.
+
+Temperature must be known in order to perform a simple data interpretation. The gases_sampler utility applies an
+order of precedence for temperature sources, depending on availability:
+
+1. Sensirion SHT in A4 package
+2. Free-to-air Sensirion SHT
+3. AFE Pt1000 sensor
+
+The presence of the DFE subsystem, and the availability of the Pt1000 sensor on the AFE is specified using the
+scs_mfr/dfe_conf utility. The configuration of Sensirion SHT sensor(s) is specified using the scs_mfr/dfe_conf
+utility.
+
+Gas concentrations for each sensor are adjusted according to a baseline value, which is specified using the
+scs_mfr/afe_baseline utility. This provides a simple way of managing zero-offset drift for each sensor
+expressed in parts per billion.
+
+The gases_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
+fields for:
+
+* the unique tag of the device
+* the recording date / time in ISO 8601 format
+* a value field containing the sensed values
+
+Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
+controlled by an independent scheduling process via a Unix semaphore.
+
+SYNOPSIS
+gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-xx
+./gases_sampler.py -i10
 
 FILES
-~/SCS/aws/
+~/SCS/conf/afe_baseline.json
+~/SCS/conf/afe_calib.json
+~/SCS/conf/dfe_conf.json
+~/SCS/conf/ndir_conf.json
+~/SCS/conf/pt1000_calib.json
+~/SCS/conf/sht_conf.json
+~/SCS/conf/schedule.json
+~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
-xx
+DOCUMENT EXAMPLE - OUTPUT
+{"tag": "scs-ap1-6", "rec": "2018-04-05T09:16:12.751+00:00",
+"val": {"CO": {"weV": 0.34863, "aeV": 0.268817, "weC": 0.064464, "cnc": 237.0},
+"SO2": {"weV": 0.277004, "aeV": 0.276129, "weC": -0.000801, "cnc": 2.2},
+"H2S": {"weV": 0.258504, "aeV": 0.222316, "weC": -0.091086, "cnc": 7.2},
+"VOC": {"weV": 0.102127, "weC": 0.101793, "cnc": 1294.8},
+"sht": {"hmd": 54.4, "tmp": 21.6}}}
 
 SEE ALSO
-scs_dev/
+scs_dev/scheduler
+scs_mfr/afe_baseline
+scs_mfr/afe_calib
+scs_mfr/dfe_conf
+scs_mfr/ndir_conf
+scs_mfr/pt1000_calib
+scs_mfr/schedule
+scs_mfr/sht_conf
+scs_mfr/system_id
 
-
-Requires SystemID document.
-
-Note: this script uses the internal SHT temp sensor for temperature compensation.
-
-command line example:
-./gases_sampler.py -i 5 | ./osio_topic_publisher.py -e /users/southcoastscience-dev/test/gases
+RESOURCES
+Alphasense Application Note AAN 803-02
+https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys

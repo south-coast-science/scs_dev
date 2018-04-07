@@ -14,8 +14,18 @@ The names of columns given in the header row indicate paths into the JSON docume
 The first row of the CSV file (or stdin input) is assumed to be a header row. If there are more columns in the body of
 the CSV than in the header, excess values are ignored.
 
+SYNOPSIS
+csv_reader.py [-v] [FILENAME]
+
 EXAMPLES
 ./csv_reader.py temp.csv
+
+DOCUMENT EXAMPLE - INPUT
+tag,rec,val.hmd,val.tmp
+scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
+
+DOCUMENT EXAMPLE - OUTPUT
+{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}
 
 SEE ALSO
 scs_dev/csv_writer

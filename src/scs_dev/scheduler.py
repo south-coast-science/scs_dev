@@ -6,26 +6,40 @@ Created on 30 Jun 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The scheduler utility is used to provide timing and synchronisation to the sampling processes: climate_sampler,
+gases_sampler, particulates_sampler, and status_sampler.
+
+When started (typically as a background process) the scheduler utility launches one sub-process for each of the items
+in the schedule configuration. On the given interval for each item, the sub-process releases a Posix semaphore to
+the sampler, then regains it. The name of the semaphore is the name of the tag. By convention, the following
+names are used:
+
+* scs-climate
+* scs-gases
+* scs-particulates
+* scs-status
+
+The schedule configuration is specified using the scs_mfr/schedule utility.
+
+SYNOPSIS
+scheduler.py [-v]
 
 EXAMPLES
-xx
+scheduler.py
 
 FILES
-~/SCS/aws/
+~/SCS/conf/schedule.json
 
 DOCUMENT EXAMPLE
-xx
+{"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 5.0, "tally": 1},
+"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}}
 
 SEE ALSO
-scs_dev/
-
-
-
-Requires Schedule document.
-
-command line example:
-./scheduler.py -v
+scs_dev/climate_sampler
+scs_dev/gases_sampler
+scs_dev/particulates_sampler
+scs_dev/status_sampler
+scs_mfr/schedule
 """
 
 import sys

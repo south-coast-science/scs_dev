@@ -6,24 +6,17 @@ Created on 28 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The XX utility is used to .
+The modem_power utility is used to apply or remove power to the South Coast Science 2G modem board for BeagleBone.
+
+Note: in some operating system configurations, the modem board is under control of the Debian modem manager. In these
+cases, the modem manager may override the operation of this utility. The modem_power utility is not available on
+Raspberry Pi systems.
+
+SYNOPSIS
+modem_power.py { 1 | 0 } [-v]
 
 EXAMPLES
-xx
-
-FILES
-~/SCS/aws/
-
-DOCUMENT EXAMPLE
-xx
-
-SEE ALSO
-scs_dev/
-
-
-
-command line example:
-./modem_power.py -v 0
+./modem_power.py 1
 """
 
 import sys
