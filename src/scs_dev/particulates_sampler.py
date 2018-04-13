@@ -86,6 +86,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: check for very low values on second reading after OPC start
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
