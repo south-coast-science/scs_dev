@@ -52,6 +52,8 @@ from scs_host.sys.host import Host
 from scs_host.sync.scheduler import Scheduler
 
 
+# TODO: test the case where the scheduling service is stopped and the restarted
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
