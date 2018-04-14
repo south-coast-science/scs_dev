@@ -24,8 +24,8 @@ power saving mode.
 When the particulates_sampler utility starts, it power cycles the OPC. When the utility stops, it stops operations
 on the OPC, and stops the OPC fan.
 
-The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
-with fields for:
+The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON
+document with fields for:
 
 * the unique tag of the device
 * the recording date / time in ISO 8601 format
@@ -59,7 +59,8 @@ scs_mfr/schedule
 scs_mfr/system_id
 
 BUGS
-The particulates_sampler utility is not process-safe - it should therefore be run by only one process at a time.
+Because readings are time-sensitive, the particulates_sampler utility is not process-safe - it should therefore be run
+by only one process at a time.
 
 RESOURCES
 https://en.wikipedia.org/wiki/ISO_8601
@@ -85,6 +86,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
+
+# TODO: see Experiments/System Technical Issues/Weird particulates startup/syslog Apr 13 14:33:51
 
 # --------------------------------------------------------------------------------------------------------------------
 
