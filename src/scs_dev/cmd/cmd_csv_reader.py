@@ -16,11 +16,11 @@ class CmdCSVReader(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [FILENAME] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] [FILENAME]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
-                                 help="report narrative to stderr")
+                                 help="report sent samples to stderr")
 
         self.__opts, self.__args = self.__parser.parse_args()
 
@@ -28,13 +28,13 @@ class CmdCSVReader(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def filename(self):
-        return self.__args[0] if len(self.__args) > 0 else None
+    def verbose(self):
+        return self.__opts.verbose
 
 
     @property
-    def verbose(self):
-        return self.__opts.verbose
+    def filename(self):
+        return self.__args[0] if len(self.__args) > 0 else None
 
 
     @property
@@ -49,5 +49,4 @@ class CmdCSVReader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVReader:{filename:%s, verbose:%s, args:%s}" % \
-                    (self.filename, self.verbose, self.args)
+        return "CmdCSVReader:{verbose:%s, filename:%s, args:%s}" % (self.verbose, self.filename, self.args)
