@@ -16,7 +16,7 @@ class CmdCSVLogger(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] SUBJECT", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] TOPIC", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,

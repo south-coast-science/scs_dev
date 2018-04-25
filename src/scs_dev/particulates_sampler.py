@@ -87,6 +87,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: an absent system ID should result in an absent tag field.
+
 # TODO: see Experiments/System Technical Issues/Weird particulates startup/syslog Apr 13 14:33:51
 
 # --------------------------------------------------------------------------------------------------------------------

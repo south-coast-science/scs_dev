@@ -20,8 +20,8 @@ date / time of the first JSON document reception. Log files are closed - and a n
 directories named for the year and month. Files are flushed on every write - this immunises the logging system from
 power failures or un-managed reboots.
 
-The log file names are prepended with the messaging tag specified for the host system. This must be set by the
-scs_mfr/system_id utility.
+If the system ID is set (using the scs_mfr/system_id utility) then log files are prepended with the device tag.
+Otherwise, the log file name begins with the date / time.
 
 Like the csv_writer utility, the csv_logger converts data from JSON format to comma-separated value (CSV) format.
 The path into the JSON document is used to name the column in the header row, with JSON nodes separated by a period
@@ -85,7 +85,7 @@ if __name__ == '__main__':
             exit(2)
 
         if cmd.verbose:
-            print(cmd, file=sys.stderr)
+            print("csv_logger: %s" % cmd, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -94,11 +94,8 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id is None:
-            print("csv_logger: warning: SystemID not available.", file=sys.stderr)
-
         if system_id and cmd.verbose:
-            print(system_id, file=sys.stderr)
+            print("csv_logger: %s" % system_id, file=sys.stderr)
 
         tag = None if system_id is None else system_id.message_tag()
 
@@ -106,19 +103,19 @@ if __name__ == '__main__':
         conf = CSVLoggerConf.load(Host)
 
         if conf and cmd.verbose:
-            print(conf, file=sys.stderr)
+            print("csv_logger: %s" % conf, file=sys.stderr)
 
         # CSVLog...
-        log = None if conf is None else CSVLog(conf.root_path, tag, cmd.topic)
+        log = None if conf is None else CSVLog(conf.root_path, cmd.topic, tag)
 
         if log and cmd.verbose:
-            print(log, file=sys.stderr)
+            print("csv_logger: %s" % log, file=sys.stderr)
 
         # CSVLogger...
         logger = None if log is None else CSVLogger(Host, log, conf.delete_oldest)
 
         if logger and cmd.verbose:
-            print(logger, file=sys.stderr)
+            print("csv_logger: %s" % logger, file=sys.stderr)
             sys.stderr.flush()
 
 

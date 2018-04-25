@@ -89,6 +89,8 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
+# TODO: an absent system ID should result in an absent tag field.
+
 # TODO: deal with the case of slow-to-start subsystem monitors
 
 # --------------------------------------------------------------------------------------------------------------------

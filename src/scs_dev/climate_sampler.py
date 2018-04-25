@@ -65,6 +65,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: an absent system ID should result in an absent tag field.
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

@@ -44,6 +44,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
+# TODO: add flashing mode, and add to cmd list for remote device identification
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -76,7 +78,7 @@ if __name__ == '__main__':
         if cmd.set():
             led.colour = cmd.colour
 
-        print(led.colour)
+        print(led.colour)       # TODO: led.colour as JSON
 
 
     # ----------------------------------------------------------------------------------------------------------------

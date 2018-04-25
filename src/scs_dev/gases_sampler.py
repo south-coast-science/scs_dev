@@ -108,6 +108,8 @@ except ImportError:
     from scs_core.gas.ndir_conf import NDIRConf
 
 
+# TODO: an absent system ID should result in an absent tag field.
+
 # TODO: remove timestamps from logging for all samplers / mqtt service
 
 # TODO: needs flag to keep NDIR switched on?
