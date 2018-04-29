@@ -48,9 +48,9 @@ tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 SEE ALSO
-scs_analysis/csv_logger_conf
-scs_analysis/csv_reader
-scs_analysis/csv_writer
+scs_dev/csv_reader
+scs_dev/csv_writer
+scs_mfr/csv_logger_conf
 scs_mfr/system_id
 """
 
