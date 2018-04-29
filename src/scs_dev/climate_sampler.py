@@ -12,7 +12,7 @@ temperature and relative humidity. Output values are in degrees centigrade and p
 The climate_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
 fields for:
 
-* the unique tag of the device
+* the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
@@ -65,8 +65,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: an absent system ID should result in an absent tag field.
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -89,11 +87,9 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id is None:
-            print("climate_sampler: SystemID not available.", file=sys.stderr)
-            exit(1)
+        tag = None if system_id is None else system_id.message_tag()
 
-        if cmd.verbose:
+        if system_id and cmd.verbose:
             print(system_id, file=sys.stderr)
 
         # SHTConf...
@@ -113,7 +109,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = ClimateSampler(runner, system_id.message_tag(), sht)
+        sampler = ClimateSampler(runner, tag, sht)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)

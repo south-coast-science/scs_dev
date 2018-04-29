@@ -24,7 +24,7 @@ Fields which may be reported include:
 The status_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
 fields for:
 
-* the unique tag of the device
+* the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
@@ -89,8 +89,6 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
-# TODO: an absent system ID should result in an absent tag field.
-
 # TODO: deal with the case of slow-to-start subsystem monitors
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -116,11 +114,9 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id is None:
-            print("status_sampler: SystemID not available.", file=sys.stderr)
-            exit(1)
+        tag = None if system_id is None else system_id.message_tag()
 
-        if cmd.verbose:
+        if system_id and cmd.verbose:
             print(system_id, file=sys.stderr)
 
         # board...
@@ -149,7 +145,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = StatusSampler(runner, system_id.message_tag(), board, gps_monitor, psu_monitor)
+        sampler = StatusSampler(runner, tag, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print(sampler, file=sys.stderr)
