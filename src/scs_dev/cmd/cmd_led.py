@@ -18,12 +18,18 @@ class CmdLED(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-s { R | G | O | 0 }] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -s { R | A | G | 0 } | "
+                                                    "-f { R | A | G | 0 } { R | A | G | 0 } } [-v]",
+                                              version="%prog 1.0")
+
+        # compulsory...
+        self.__parser.add_option("--solid", "-s", type="string", nargs=1, action="store", dest="solid",
+                                 help="continuous colour")
+
+        self.__parser.add_option("--flash", "-f", type="string", nargs=2, action="store", dest="flash",
+                                 help="flashing colours")
 
         # optional...
-        self.__parser.add_option("--set", "-s", type="string", nargs=1, action="store", dest="colour",
-                                 help="colour")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -33,23 +39,28 @@ class CmdLED(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.colour is not None:
-            return self.colour in LED.STATES
+        if bool(self.solid) ==  bool(self.flash):
+            return False
+
+        if self.solid is not None:
+            return LED.is_valid_colour(self.solid)
+
+        if self.flash is not None:
+            return LED.is_valid_colour(self.flash[0]) and LED.is_valid_colour(self.flash[1])
 
         return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def set(self):
-        return self.colour is not None
+    @property
+    def solid(self):
+        return self.__opts.solid
 
-
-    # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def colour(self):
-        return self.__opts.colour
+    def flash(self):
+        return self.__opts.flash
 
 
     @property
@@ -69,5 +80,5 @@ class CmdLED(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLED:{colour:%s, verbose:%s, args:%s}" % \
-                    (self.colour, self.verbose, self.args)
+        return "CmdLED:{solid:%s, flash:%s, verbose:%s, args:%s}" % \
+                    (self.solid, self.flash, self.verbose, self.args)
