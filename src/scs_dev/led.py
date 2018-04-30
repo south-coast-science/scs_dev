@@ -36,6 +36,8 @@ EXAMPLES
 
 import sys
 
+from scs_core.data.json import JSONify
+
 from scs_dev.cmd.cmd_led import CmdLED
 
 from scs_dfe.display.led import LED
@@ -78,7 +80,7 @@ if __name__ == '__main__':
         if cmd.set():
             led.colour = cmd.colour
 
-        print(led.colour)       # TODO: led.colour as JSON
+        print("%s" % led.colour)
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -17,8 +17,7 @@ for logging, together with the logging mode of operation.
 The csv_logger receives JSON data on stdin and writes this to the log file. The log file is named for its topic and the
 date / time of the first JSON document reception. Log files are closed - and a new log file opened - each day after
 00:00 UTC. All logging date / times are UTC, irrespective of the system or application timezone. Log files are stored in
-directories named for the year and month. Files are flushed on every write - this immunises the logging system from
-power failures or un-managed reboots.
+directories named for the year and month.
 
 If the system ID is set (using the scs_mfr/system_id utility) then log files are prepended with the device tag.
 Otherwise, the log file name begins with the date / time.
