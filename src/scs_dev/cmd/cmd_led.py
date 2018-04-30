@@ -39,7 +39,7 @@ class CmdLED(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.solid) ==  bool(self.flash):
+        if bool(self.solid) == bool(self.flash):
             return False
 
         if self.solid is not None:
