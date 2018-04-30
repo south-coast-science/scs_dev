@@ -80,5 +80,4 @@ class CmdLED(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLED:{solid:%s, flash:%s, verbose:%s, args:%s}" % \
-                    (self.solid, self.flash, self.verbose, self.args)
+        return "CmdLED:{solid:%s, flash:%s, verbose:%s, args:%s}" % (self.solid, self.flash, self.verbose, self.args)
