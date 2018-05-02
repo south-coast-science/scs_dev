@@ -46,6 +46,10 @@ DOCUMENT EXAMPLE - FILE CONTENTS
 tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
+BUGS
+If a filesystem problem is encountered then logging is inhibited, and no further attempt is made to re-establish
+access to the storage medium.
+
 SEE ALSO
 scs_dev/csv_reader
 scs_dev/csv_writer
@@ -132,6 +136,8 @@ if __name__ == '__main__':
                     logger.write(datum)
 
                 except OSError as ex:
+                    logger.writing_inhibited = True
+
                     print("csv_logger: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
 
