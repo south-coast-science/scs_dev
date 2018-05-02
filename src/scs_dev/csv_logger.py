@@ -46,15 +46,15 @@ DOCUMENT EXAMPLE - FILE CONTENTS
 tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
-BUGS
-If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to re-establish
-access to the storage medium.
-
 SEE ALSO
 scs_dev/csv_reader
 scs_dev/csv_writer
 scs_mfr/csv_logger_conf
 scs_mfr/system_id
+
+BUGS
+If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to re-establish
+access to the storage medium.
 """
 
 import sys
