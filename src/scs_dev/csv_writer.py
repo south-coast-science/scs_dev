@@ -43,7 +43,7 @@ from scs_dev.cmd.cmd_csv_writer import CmdCSVWriter
 if __name__ == '__main__':
 
     cmd = None
-    csv = None
+    writer = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -52,16 +52,16 @@ if __name__ == '__main__':
         cmd = CmdCSVWriter()
 
         if cmd.verbose:
-            print(cmd, file=sys.stderr)
+            print("csv_writer: %s" % cmd, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        csv = CSVWriter(cmd.filename, cmd.append)
+        writer = CSVWriter(cmd.filename, cmd.append)
 
         if cmd.verbose:
-            print(csv, file=sys.stderr)
+            print("csv_writer: %s" % writer, file=sys.stderr)
             sys.stderr.flush()
 
         # ------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             if datum is None:
                 break
 
-            csv.write(datum)
+            writer.write(datum)
 
             # echo...
             if cmd.echo:
@@ -89,5 +89,5 @@ if __name__ == '__main__':
             print("csv_writer: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if csv is not None:
-            csv.close()
+        if writer is not None:
+            writer.close()

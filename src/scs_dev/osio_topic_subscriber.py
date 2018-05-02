@@ -79,7 +79,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("osio_topic_subscriber: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         # TODO: check if topic exists?
 
         if cmd.verbose:
-            print(topic, file=sys.stderr)
+            print("osio_topic_subscriber: %s" % topic, file=sys.stderr)
             sys.stderr.flush()
 
 

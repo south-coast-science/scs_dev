@@ -107,7 +107,7 @@ class AWSMQTTHandler(object):
             sys.stdout.flush()
 
         if self.__verbose:
-            print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
+            print("aws_mqtt_client: received: %s" % JSONify.dumps(pub), file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("aws_mqtt_client: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(auth, file=sys.stderr)
+            print("aws_mqtt_client: %s" % auth, file=sys.stderr)
 
         # comms...
         pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
@@ -167,7 +167,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if cmd.verbose:
-                print(system_id, file=sys.stderr)
+                print("aws_mqtt_client: %s" % system_id, file=sys.stderr)
 
             # Project...
             project = Project.load(Host)
@@ -193,7 +193,7 @@ if __name__ == '__main__':
                 handler = AWSMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
 
                 if cmd.verbose:
-                    print(handler, file=sys.stderr)
+                    print("aws_mqtt_client: %s" % handler, file=sys.stderr)
 
                 subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
 
         if cmd.verbose:
-            print(client, file=sys.stderr)
+            print("aws_mqtt_client: %s" % client, file=sys.stderr)
             sys.stderr.flush()
 
 

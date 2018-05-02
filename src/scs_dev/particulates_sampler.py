@@ -101,7 +101,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("particulates_sampler: %s" % cmd, file=sys.stderr)
 
 
     try:
@@ -116,7 +116,7 @@ if __name__ == '__main__':
         tag = None if system_id is None else system_id.message_tag()
 
         if system_id and cmd.verbose:
-            print(system_id, file=sys.stderr)
+            print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
         # OPCConf...
         opc_conf = OPCConf.load(Host)
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         sampler = ParticulatesSampler(runner, tag, opc_monitor)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -162,7 +162,7 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.verbose:
-            print(opc_monitor.firmware(), file=sys.stderr)
+            print("particulates_sampler: %s" % opc_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
 
         for sample in sampler.samples():

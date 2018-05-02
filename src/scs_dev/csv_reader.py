@@ -43,7 +43,7 @@ from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 if __name__ == '__main__':
 
     cmd = None
-    csv = None
+    reader = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -52,21 +52,21 @@ if __name__ == '__main__':
         cmd = CmdCSVReader()
 
         if cmd.verbose:
-            print(cmd, file=sys.stderr)
+            print("csv_reader: %s" % cmd, file=sys.stderr)
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        csv = CSVReader(cmd.filename)
+        reader = CSVReader(cmd.filename)
 
         if cmd.verbose:
-            print(csv, file=sys.stderr)
+            print("csv_reader: %s" % reader, file=sys.stderr)
             sys.stderr.flush()
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        for datum in csv.rows:
+        for datum in reader.rows:
             print(datum)
             sys.stdout.flush()
 
@@ -79,5 +79,5 @@ if __name__ == '__main__':
             print("csv_reader: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if csv is not None:
-            csv.close()
+        if reader is not None:
+            reader.close()

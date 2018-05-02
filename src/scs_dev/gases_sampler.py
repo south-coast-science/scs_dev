@@ -122,7 +122,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("gases_sampler: %s" % cmd, file=sys.stderr)
 
     try:
         I2C.open(Host.I2C_SENSORS)
@@ -137,28 +137,28 @@ if __name__ == '__main__':
         tag = None if system_id is None else system_id.message_tag()
 
         if system_id and cmd.verbose:
-            print(system_id, file=sys.stderr)
+            print("gases_sampler: %s" % system_id, file=sys.stderr)
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
         if cmd.verbose and ndir_conf:
-            print(ndir_conf, file=sys.stderr)
+            print("gases_sampler: %s" % ndir_conf, file=sys.stderr)
 
         # SHT...
         sht_conf = SHTConf.load(Host)
         sht = None if sht_conf is None else sht_conf.int_sht()
 
         if cmd.verbose and sht_conf:
-            print(sht_conf, file=sys.stderr)
+            print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
         # AFE...
         dfe_conf = DFEConf.load(Host)
         afe = None if dfe_conf is None else dfe_conf.afe(Host)
 
         if cmd.verbose and dfe_conf:
-            print(dfe_conf, file=sys.stderr)
+            print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -168,7 +168,7 @@ if __name__ == '__main__':
         sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("gases_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -178,7 +178,7 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.verbose and ndir_conf:
-            print(ndir_monitor.firmware(), file=sys.stderr)
+            print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
 
         for sample in sampler.samples():

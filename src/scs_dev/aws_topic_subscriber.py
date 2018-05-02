@@ -79,7 +79,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("aws_topic_subscriber: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -95,7 +95,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if cmd.verbose:
-                print(system_id, file=sys.stderr)
+                print("aws_topic_subscriber: %s" % system_id, file=sys.stderr)
 
             # Project...
             project = Project.load(Host)
@@ -110,7 +110,7 @@ if __name__ == '__main__':
             topic = cmd.topic
 
         if cmd.verbose:
-            print(topic, file=sys.stderr)
+            print("aws_topic_subscriber: %s" % topic, file=sys.stderr)
             sys.stderr.flush()
 
 

@@ -61,7 +61,7 @@ if __name__ == '__main__':
     cmd = CmdVerbose()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("led_controller: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
     try:

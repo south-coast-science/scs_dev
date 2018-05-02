@@ -75,7 +75,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("climate_sampler: %s" % cmd, file=sys.stderr)
 
     try:
         I2C.open(Host.I2C_SENSORS)
@@ -90,7 +90,7 @@ if __name__ == '__main__':
         tag = None if system_id is None else system_id.message_tag()
 
         if system_id and cmd.verbose:
-            print(system_id, file=sys.stderr)
+            print("climate_sampler: %s" % system_id, file=sys.stderr)
 
         # SHTConf...
         sht_conf = SHTConf.load(Host)
@@ -100,7 +100,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(sht_conf, file=sys.stderr)
+            print("climate_sampler: %s" % sht_conf, file=sys.stderr)
 
         # SHT...
         sht = sht_conf.ext_sht()
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         sampler = ClimateSampler(runner, tag, sht)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("climate_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 

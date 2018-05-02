@@ -103,7 +103,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("status_sampler: %s" % cmd, file=sys.stderr)
 
     try:
         I2C.open(Host.I2C_SENSORS)
@@ -117,28 +117,28 @@ if __name__ == '__main__':
         tag = None if system_id is None else system_id.message_tag()
 
         if system_id and cmd.verbose:
-            print(system_id, file=sys.stderr)
+            print("status_sampler: %s" % system_id, file=sys.stderr)
 
         # board...
         dfe_conf = DFEConf.load(Host)
         board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
 
         if cmd.verbose and dfe_conf:
-            print(dfe_conf, file=sys.stderr)
+            print("status_sampler: %s" % dfe_conf, file=sys.stderr)
 
         # GPS...
         gps_conf = GPSConf.load(Host)
         gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
 
         if cmd.verbose and gps_monitor:
-            print(gps_monitor, file=sys.stderr)
+            print("status_sampler: %s" % gps_monitor, file=sys.stderr)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
         psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host)
 
         if cmd.verbose and psu_monitor:
-            print(psu_monitor, file=sys.stderr)
+            print("status_sampler: %s" % psu_monitor, file=sys.stderr)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -148,7 +148,7 @@ if __name__ == '__main__':
         sampler = StatusSampler(runner, tag, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("status_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 

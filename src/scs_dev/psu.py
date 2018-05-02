@@ -59,7 +59,7 @@ if __name__ == '__main__':
             exit(2)
 
         if cmd.verbose:
-            print(cmd, file=sys.stderr)
+            print("psu: %s" % cmd, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(psu, file=sys.stderr)
+            print("psu: %s" % psu, file=sys.stderr)
             sys.stderr.flush()
 
 

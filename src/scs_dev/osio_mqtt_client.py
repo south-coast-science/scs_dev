@@ -110,7 +110,7 @@ class OSIOMQTTHandler(object):
             sys.stdout.flush()
 
         if self.__verbose:
-            print("received: %s" % JSONify.dumps(pub), file=sys.stderr)
+            print("osio_mqtt_client: received: %s" % JSONify.dumps(pub), file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("osio_mqtt_client: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -187,7 +187,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(api_auth, file=sys.stderr)
+            print("osio_mqtt_client: %s" % api_auth, file=sys.stderr)
 
         # ClientAuth...
         client_auth = ClientAuth.load(Host)
@@ -197,7 +197,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(client_auth, file=sys.stderr)
+            print("osio_mqtt_client: %s" % client_auth, file=sys.stderr)
 
         # comms...
         pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
@@ -227,7 +227,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if cmd.verbose:
-                print(system_id, file=sys.stderr)
+                print("osio_mqtt_client: %s" % system_id, file=sys.stderr)
 
             # Project...
             project = Project.load(Host)
@@ -253,7 +253,7 @@ if __name__ == '__main__':
                 handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
 
                 if cmd.verbose:
-                    print(handler, file=sys.stderr)
+                    print("osio_mqtt_client: %s" % handler, file=sys.stderr)
                     sys.stderr.flush()
 
                 subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
