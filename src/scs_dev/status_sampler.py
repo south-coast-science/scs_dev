@@ -160,7 +160,7 @@ if __name__ == '__main__':
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s:       status: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
+                print("%s:       status: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
             print(JSONify.dumps(sample))

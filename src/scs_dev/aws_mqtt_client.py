@@ -223,7 +223,7 @@ if __name__ == '__main__':
             client.publish(publication)     # TODO: handle return value of False
 
             if cmd.verbose:
-                print("%s:         mqtt: done" % LocalizedDatetime.now().as_iso8601(), file=sys.stderr)
+                print("%s:         mqtt: done" % LocalizedDatetime.now().as_time(), file=sys.stderr)
                 sys.stderr.flush()
 
             if cmd.echo:

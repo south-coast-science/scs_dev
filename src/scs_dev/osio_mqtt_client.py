@@ -145,7 +145,7 @@ class OSIOMQTTReporter(object):
             return
 
         now = LocalizedDatetime.now()
-        print("%s:         mqtt: %s" % (now.as_iso8601(), status), file=sys.stderr)
+        print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
         sys.stderr.flush()
 
 
