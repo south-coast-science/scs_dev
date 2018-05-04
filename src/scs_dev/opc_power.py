@@ -49,7 +49,7 @@ if __name__ == '__main__':
         exit(1)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("opc_power: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ if __name__ == '__main__':
             opc.power_off()
 
         if cmd.verbose:
-            print(opc, file=sys.stderr)
+            print("opc_power: %s" % opc, file=sys.stderr)
             sys.stderr.flush()
 
 

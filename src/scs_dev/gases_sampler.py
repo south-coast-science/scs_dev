@@ -36,7 +36,7 @@ expressed in parts per billion.
 The gases_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
 fields for:
 
-* the unique tag of the device
+* the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("gases_sampler: %s" % cmd, file=sys.stderr)
 
     try:
         I2C.open(Host.I2C_SENSORS)
@@ -134,43 +134,41 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id is None:
-            print("gases_sampler: SystemID not available.", file=sys.stderr)
-            exit(1)
+        tag = None if system_id is None else system_id.message_tag()
 
-        if cmd.verbose:
-            print(system_id, file=sys.stderr)
+        if system_id and cmd.verbose:
+            print("gases_sampler: %s" % system_id, file=sys.stderr)
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
         if cmd.verbose and ndir_conf:
-            print(ndir_conf, file=sys.stderr)
+            print("gases_sampler: %s" % ndir_conf, file=sys.stderr)
 
         # SHT...
         sht_conf = SHTConf.load(Host)
         sht = None if sht_conf is None else sht_conf.int_sht()
 
         if cmd.verbose and sht_conf:
-            print(sht_conf, file=sys.stderr)
+            print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
         # AFE...
         dfe_conf = DFEConf.load(Host)
         afe = None if dfe_conf is None else dfe_conf.afe(Host)
 
         if cmd.verbose and dfe_conf:
-            print(dfe_conf, file=sys.stderr)
+            print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = GasesSampler(runner, system_id.message_tag(), ndir_monitor, sht, afe)
+        sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("gases_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -180,13 +178,13 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.verbose and ndir_conf:
-            print(ndir_monitor.firmware(), file=sys.stderr)
+            print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
 
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s:        gases: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
+                print("%s:        gases: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
             print(JSONify.dumps(sample))

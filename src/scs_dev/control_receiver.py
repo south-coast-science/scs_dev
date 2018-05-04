@@ -105,7 +105,7 @@ if __name__ == '__main__':
     cmd = CmdControlReceiver()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("control_receiver: %s" % cmd, file=sys.stderr)
 
 
     # ------------------------------------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ if __name__ == '__main__':
         exit(1)
 
     if cmd.verbose:
-        print(system_id, file=sys.stderr)
+        print("control_receiver: %s" % system_id, file=sys.stderr)
 
     # SharedSecret...
     secret = SharedSecret.load(Host)
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         exit(1)
 
     if cmd.verbose:
-        print(secret, file=sys.stderr)
+        print("control_receiver: %s" % secret, file=sys.stderr)
         sys.stderr.flush()
 
     system_tag = system_id.message_tag()
@@ -156,7 +156,7 @@ if __name__ == '__main__':
                 continue
 
             if cmd.verbose:
-                print(datum, file=sys.stderr)
+                print("control_receiver: %s" % datum, file=sys.stderr)
                 sys.stderr.flush()
 
             if not datum.is_valid(key):

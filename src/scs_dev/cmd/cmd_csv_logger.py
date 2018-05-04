@@ -1,5 +1,5 @@
 """
-Created on 2 Aug 2016
+Created on 16 Apr 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,19 +9,16 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdCSVWriter(object):
+class CmdCSVLogger(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-a] [-e] [-v] [FILENAME]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] TOPIC", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--append", "-a", action="store_true", dest="append", default=False,
-                                 help="append rows to existing file")
-
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 
@@ -33,10 +30,14 @@ class CmdCSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    @property
-    def append(self):
-        return self.__opts.append
+    def is_valid(self):
+        if len(self.__args) < 1:
+            return False
 
+        return True
+
+
+    # ----------------------------------------------------------------------------------------------------------------
 
     @property
     def echo(self):
@@ -49,7 +50,7 @@ class CmdCSVWriter(object):
 
 
     @property
-    def filename(self):
+    def topic(self):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
@@ -60,6 +61,10 @@ class CmdCSVWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    def print_help(self, file):
+        self.__parser.print_help(file)
+
+
     def __str__(self, *args, **kwargs):
-        return "CmdCSVWriter:{append:%s, echo:%s, verbose:%s, filename:%s, args:%s}" % \
-                    (self.append, self.echo, self.verbose, self.filename, self.args)
+        return "CmdCSVLogger:{echo:%s, verbose:%s, topic:%s, args:%s}" % \
+                    (self.echo, self.verbose, self.topic, self.args)

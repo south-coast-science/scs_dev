@@ -10,38 +10,46 @@ The led utility is used to control a two-colour (red / green) LED mounted on the
 SHT board.
 
 On some Praxis device configurations, a free-to-air temperature and humidity board is mounted in the air intake of the
-optical particle counter (OPC). Since the board is visible from outside the unit, it is useful to mount an indicator
-LED in this position.
+optical particle counter (OPC). Since the board is visible from outside the unit, it is useful to mount indicator
+LEDs in this position.
 
 LED options are as follows:
 
-* R - red
-* G - green
-* O - orange
-* 0 - off
+* R - Red
+* A - Amber
+* G - Green
+* 0 - Off
 
-The led utility writes the state of the LED to stdout.
+In practice, the led utility does a very simple job: it validates its parameters, then presents these on stdout in a
+format that is compatible with the led_controller utility. Because the led_controller is typically running as an
+independent process, it is appropriate to use a named pipe to send this communication.
 
-When the system powers up, the LED defaults to orange.
+If the led_controller is not running, the led utility will simply buffer commands in whatever communications pipe is
+being used.
 
-Note: the led utility is not available on Raspberry Pi systems.
+Note: the led utility is not currently supported on Raspberry Pi systems.
 
 SYNOPSIS
-led.py [-s { R | G | O | 0 }] [-v]
+led.py { -s { R | A | G | 0 } | -f { R | A | G | 0 } { R | A | G | 0 } } [-v]
 
 EXAMPLES
-./led.py -s R
+./led.py -f R 0 > ~/SCS/pipes/led_control_pipe
 
+DOCUMENT EXAMPLE
+["R", "0"]
+
+SEE ALSO
+scs_dev/led_controller
+
+RESOURCES
+https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
 """
 
 import sys
 
+from scs_core.data.json import JSONify
+
 from scs_dev.cmd.cmd_led import CmdLED
-
-from scs_dfe.display.led import LED
-
-from scs_host.bus.i2c import I2C
-from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -58,29 +66,17 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
-        sys.stderr.flush()
-
-    try:
-        # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
-        I2C.open(Host.I2C_SENSORS)
-
-        led = LED()
-
-
-        # ------------------------------------------------------------------------------------------------------------
-        # run...
-
-        if cmd.set():
-            led.colour = cmd.colour
-
-        print(led.colour)
+        print("led: %s" % cmd, file=sys.stderr)
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # end...
+    # run...
 
-    finally:
-        I2C.close()
+    specification = (cmd.solid, cmd.solid) if cmd.solid is not None else cmd.flash
+
+    print(JSONify.dumps(specification))
+    sys.stdout.flush()
+
+    if cmd.verbose:
+        print(JSONify.dumps(specification), file=sys.stderr)
+        sys.stderr.flush()

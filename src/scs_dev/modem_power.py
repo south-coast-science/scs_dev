@@ -45,7 +45,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("modem_power: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         io = IO()
 
         if cmd.verbose:
-            print(io, file=sys.stderr)
+            print("modem_power: %s" % io, file=sys.stderr)
             sys.stderr.flush()
 
 

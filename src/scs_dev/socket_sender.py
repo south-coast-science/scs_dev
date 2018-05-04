@@ -53,7 +53,7 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("socket_sender: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         sender = NetworkSocket(cmd.hostname, cmd.port)
 
         if cmd.verbose:
-            print(sender, file=sys.stderr)
+            print("socket_sender: %s" % sender, file=sys.stderr)
             sys.stderr.flush()
 
 

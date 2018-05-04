@@ -68,7 +68,7 @@ if __name__ == '__main__':
         cmd = CmdVerbose()
 
         if cmd.verbose:
-            print(cmd, file=sys.stderr)
+            print("scheduler: %s" % cmd, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ if __name__ == '__main__':
             exit(1)
 
         if cmd.verbose:
-            print(schedule, file=sys.stderr)
+            print("scheduler: %s" % schedule, file=sys.stderr)
             sys.stderr.flush()
 
         # Scheduler...

@@ -44,7 +44,7 @@ if __name__ == '__main__':
     cmd = CmdNode()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("node: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
 

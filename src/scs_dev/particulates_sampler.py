@@ -27,7 +27,7 @@ on the OPC, and stops the OPC fan.
 The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON
 document with fields for:
 
-* the unique tag of the device
+* the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
@@ -101,7 +101,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print(cmd, file=sys.stderr)
+        print("particulates_sampler: %s" % cmd, file=sys.stderr)
 
 
     try:
@@ -113,12 +113,10 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id is None:
-            print("particulates_sampler: SystemID not available.", file=sys.stderr)
-            exit(1)
+        tag = None if system_id is None else system_id.message_tag()
 
-        if cmd.verbose:
-            print(system_id, file=sys.stderr)
+        if system_id and cmd.verbose:
+            print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
         # OPCConf...
         opc_conf = OPCConf.load(Host)
@@ -135,10 +133,10 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore, False)
 
         # sampler...
-        sampler = ParticulatesSampler(runner, system_id.message_tag(), opc_monitor)
+        sampler = ParticulatesSampler(runner, tag, opc_monitor)
 
         if cmd.verbose:
-            print(sampler, file=sys.stderr)
+            print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -164,7 +162,7 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.verbose:
-            print(opc_monitor.firmware(), file=sys.stderr)
+            print("particulates_sampler: %s" % opc_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
 
         for sample in sampler.samples():
@@ -173,7 +171,7 @@ if __name__ == '__main__':
 
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s: particulates: %s" % (now.as_iso8601(), sample.rec.as_iso8601()), file=sys.stderr)
+                print("%s: particulates: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
             print(JSONify.dumps(sample))

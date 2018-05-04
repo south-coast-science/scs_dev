@@ -84,5 +84,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{runner:%s, tag:%s, ndir_monitor:%s, sht:%s, afe:%s}" % \
-                    (self.runner, self.__tag, self.__ndir_monitor, self.__sht, self.__afe)
+        return "GasesSampler:{runner:%s, tag:%s, ndir_monitor:%s, sht:%s}" % \
+                    (self.runner, self.__tag, self.__ndir_monitor, self.__sht)
