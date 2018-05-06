@@ -18,7 +18,7 @@ class CmdMQTTClient(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-p UDS_PUB] "
                                                     "[-s] { -c { C | G | P | S | X } (UDS_SUB_1) | "
-                                                    "[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] }"
+                                                    "[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] } "
                                                     "[-e] [-l PIPE] [-v]", version="%prog 1.0")
 
         # optional...
@@ -103,8 +103,8 @@ class CmdMQTTClient(object):
 
 
     @property
-    def led(self):
-        return self.__opts.led
+    def led_pipe(self):
+        return self.__opts.led_pipe
 
 
     @property
@@ -127,7 +127,7 @@ class CmdMQTTClient(object):
         subscriptions = '[' + ', '.join(str(subscription) for subscription in self.subscriptions) + ']'
 
         return "CmdMQTTClient:{subscriptions:%s, channel:%s, uds_pub_addr:%s, echo:%s, led:%s, verbose:%s, args:%s}" % \
-               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.led, self.verbose, self.args)
+               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.led_pipe, self.verbose, self.args)
 
 
 # --------------------------------------------------------------------------------------------------------------------

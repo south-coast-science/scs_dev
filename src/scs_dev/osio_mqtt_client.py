@@ -61,6 +61,8 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 
+from scs_dfe.display.led_state import LEDState
+
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
 
@@ -69,6 +71,8 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
+
+# TODO: only open pipe when needed
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -159,6 +163,7 @@ class OSIOMQTTReporter(object):
 
 if __name__ == '__main__':
 
+    led_fifo = None
     client = None
     pub_comms = None
 
@@ -178,6 +183,12 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # LED pipe...
+        led_fifo = None if cmd.led_pipe is None else open(cmd.led_pipe, "w")
+
+        if cmd.verbose:
+            print("osio_mqtt_client: led fifo: %s" % cmd.led_pipe, file=sys.stderr)
 
         # APIAuth...
         api_auth = APIAuth.load(Host)
@@ -290,6 +301,9 @@ if __name__ == '__main__':
                     if not success:
                         reporter.print_status("abandoned")
 
+                        if led_fifo:
+                            print(JSONify.dumps(LEDState("R", "R")), file=led_fifo)
+
                     break
 
                 except Exception as ex:
@@ -301,6 +315,9 @@ if __name__ == '__main__':
 
             if success:
                 reporter.print_status("done")
+
+                if led_fifo:
+                    print(JSONify.dumps(LEDState("G", "G")), file=led_fifo)
 
             if cmd.echo:
                 print(message)
@@ -320,3 +337,7 @@ if __name__ == '__main__':
 
         if pub_comms:
             pub_comms.close()
+
+        if led_fifo:
+            print(JSONify.dumps(LEDState("A", "A")), file=led_fifo)
+            led_fifo.close()

@@ -49,6 +49,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
+# TODO: test for absent LED driver
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
