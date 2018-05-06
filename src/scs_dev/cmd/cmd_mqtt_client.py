@@ -19,7 +19,7 @@ class CmdMQTTClient(object):
         self.__parser = optparse.OptionParser(usage="%prog [-p UDS_PUB] "
                                                     "[-s] { -c { C | G | P | S | X } (UDS_SUB_1) | "
                                                     "[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] }"
-                                                    "[-e] [-v]", version="%prog 1.0")
+                                                    "[-e] [-l PIPE] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--pub-addr", "-p", type="string", nargs=1, action="store", dest="uds_pub_addr",
@@ -33,6 +33,9 @@ class CmdMQTTClient(object):
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo input to stdout (if not writing subscriptions to stdout)")
+
+        self.__parser.add_option("--led", "-l", type="string", nargs=1, action="store", dest="led_pipe",
+                                 help="send LED commands to PIPE")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -100,6 +103,11 @@ class CmdMQTTClient(object):
 
 
     @property
+    def led(self):
+        return self.__opts.led
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -118,8 +126,8 @@ class CmdMQTTClient(object):
     def __str__(self, *args, **kwargs):
         subscriptions = '[' + ', '.join(str(subscription) for subscription in self.subscriptions) + ']'
 
-        return "CmdMQTTClient:{subscriptions:%s, channel:%s, uds_pub_addr:%s, echo:%s, verbose:%s, args:%s}" % \
-               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.verbose, self.args)
+        return "CmdMQTTClient:{subscriptions:%s, channel:%s, uds_pub_addr:%s, echo:%s, led:%s, verbose:%s, args:%s}" % \
+               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.led, self.verbose, self.args)
 
 
 # --------------------------------------------------------------------------------------------------------------------

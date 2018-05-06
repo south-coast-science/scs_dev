@@ -16,7 +16,7 @@ LEDs in this position.
 LED options are as follows:
 
 * R - Red
-* A - Amber
+* A - Amber (Red + Green)
 * G - Green
 * 0 - Off
 
@@ -30,13 +30,13 @@ being used.
 Note: the led utility is not currently supported on Raspberry Pi systems.
 
 SYNOPSIS
-led.py { -s { R | A | G | 0 } | -f { R | A | G | 0 } { R | A | G | 0 } } [-v]
+led.py { -s { R | A | G | 0 } | -f { R | A | G | 0 } { R | A | G | 0 } } [-v] PIPE
 
 EXAMPLES
 ./led.py -f R 0 > ~/SCS/pipes/led_control_pipe
 
 DOCUMENT EXAMPLE
-["R", "0"]
+{"colour0": "R", "colour1": "G"}
 
 SEE ALSO
 scs_dev/led_controller
@@ -45,16 +45,21 @@ RESOURCES
 https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
 """
 
+import os
 import sys
 
 from scs_core.data.json import JSONify
 
 from scs_dev.cmd.cmd_led import CmdLED
 
+from scs_dfe.display.led_state import LEDState
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    fifo = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -68,15 +73,27 @@ if __name__ == '__main__':
     if cmd.verbose:
         print("led: %s" % cmd, file=sys.stderr)
 
+    try:
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
-    # ----------------------------------------------------------------------------------------------------------------
-    # run...
+        if not os.path.exists(cmd.pipe):
+            print("led: fifo does not exist: %s" % cmd.pipe, file=sys.stderr)
+            exit(1)
 
-    specification = (cmd.solid, cmd.solid) if cmd.solid is not None else cmd.flash
+        fifo = open(cmd.pipe, "w")
 
-    print(JSONify.dumps(specification))
-    sys.stdout.flush()
 
-    if cmd.verbose:
-        print(JSONify.dumps(specification), file=sys.stderr)
-        sys.stderr.flush()
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
+
+        state = LEDState(cmd.solid, cmd.solid) if cmd.solid is not None else LEDState(cmd.flash[0], cmd.flash[1])
+
+        print(JSONify.dumps(state), file=fifo)
+
+        if cmd.verbose:
+            print(JSONify.dumps(state), file=sys.stderr)
+
+    finally:
+        if fifo:
+            fifo.close()
