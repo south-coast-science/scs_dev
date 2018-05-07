@@ -135,14 +135,33 @@ class OSIOMQTTReporter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, verbose):
+    def __init__(self, led_pipe, verbose):
         """
         Constructor
         """
+        self.__led_pipe = led_pipe
         self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def set_led(self, colour):
+        if self.__led_pipe is None:
+            return
+
+        led_fifo = None
+
+        try:
+            led_fifo = open(cmd.led_pipe, "w")
+            print(JSONify.dumps(LEDState(colour, colour)), file=led_fifo)
+
+        except OSError:
+            pass
+
+        finally:
+            if led_fifo:
+                led_fifo.close()
+
 
     def print_status(self, status):
         if not self.__verbose:
@@ -163,10 +182,9 @@ class OSIOMQTTReporter(object):
 
 if __name__ == '__main__':
 
-    led_fifo = None
     client = None
     pub_comms = None
-
+    reporter = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -185,10 +203,8 @@ if __name__ == '__main__':
         # resources...
 
         # LED pipe...
-        led_fifo = None if cmd.led_pipe is None else open(cmd.led_pipe, "w")
-
-        if cmd.verbose:
-            print("osio_mqtt_client: led fifo: %s" % cmd.led_pipe, file=sys.stderr)
+        if cmd.led_pipe and cmd.verbose:
+            print("osio_mqtt_client: led pipe: %s" % cmd.led_pipe, file=sys.stderr)
 
         # APIAuth...
         api_auth = APIAuth.load(Host)
@@ -274,11 +290,13 @@ if __name__ == '__main__':
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         # reporter...
-        reporter = OSIOMQTTReporter(cmd.verbose)
+        reporter = OSIOMQTTReporter(cmd.led_pipe, cmd.verbose)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        reporter.set_led("A")
 
         # publish...
         pub_comms.connect()
@@ -300,9 +318,7 @@ if __name__ == '__main__':
 
                     if not success:
                         reporter.print_status("abandoned")
-
-                        if led_fifo:
-                            print(JSONify.dumps(LEDState("R", "R")), file=led_fifo)
+                        reporter.set_led("R")
 
                     break
 
@@ -315,9 +331,7 @@ if __name__ == '__main__':
 
             if success:
                 reporter.print_status("done")
-
-                if led_fifo:
-                    print(JSONify.dumps(LEDState("G", "G")), file=led_fifo)
+                reporter.set_led("G")
 
             if cmd.echo:
                 print(message)
@@ -338,6 +352,5 @@ if __name__ == '__main__':
         if pub_comms:
             pub_comms.close()
 
-        if led_fifo:
-            print(JSONify.dumps(LEDState("A", "A")), file=led_fifo)
-            led_fifo.close()
+        if reporter:
+            reporter.set_led("A")
