@@ -61,6 +61,8 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 
+from scs_dfe.display.led_state import LEDState
+
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
 
@@ -69,6 +71,8 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
+
+# TODO: only open pipe when needed
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -131,14 +135,33 @@ class OSIOMQTTReporter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, verbose):
+    def __init__(self, led_pipe, verbose):
         """
         Constructor
         """
+        self.__led_pipe = led_pipe
         self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def set_led(self, colour):
+        if self.__led_pipe is None:
+            return
+
+        led_fifo = None
+
+        try:
+            led_fifo = open(cmd.led_pipe, "w")
+            print(JSONify.dumps(LEDState(colour, colour)), file=led_fifo)
+
+        except OSError:
+            pass
+
+        finally:
+            if led_fifo:
+                led_fifo.close()
+
 
     def print_status(self, status):
         if not self.__verbose:
@@ -161,7 +184,7 @@ if __name__ == '__main__':
 
     client = None
     pub_comms = None
-
+    reporter = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -178,6 +201,10 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # LED pipe...
+        if cmd.led_pipe and cmd.verbose:
+            print("osio_mqtt_client: led pipe: %s" % cmd.led_pipe, file=sys.stderr)
 
         # APIAuth...
         api_auth = APIAuth.load(Host)
@@ -263,11 +290,13 @@ if __name__ == '__main__':
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         # reporter...
-        reporter = OSIOMQTTReporter(cmd.verbose)
+        reporter = OSIOMQTTReporter(cmd.led_pipe, cmd.verbose)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        reporter.set_led("A")
 
         # publish...
         pub_comms.connect()
@@ -289,6 +318,7 @@ if __name__ == '__main__':
 
                     if not success:
                         reporter.print_status("abandoned")
+                        reporter.set_led("R")
 
                     break
 
@@ -301,6 +331,7 @@ if __name__ == '__main__':
 
             if success:
                 reporter.print_status("done")
+                reporter.set_led("G")
 
             if cmd.echo:
                 print(message)
@@ -320,3 +351,6 @@ if __name__ == '__main__':
 
         if pub_comms:
             pub_comms.close()
+
+        if reporter:
+            reporter.set_led("A")

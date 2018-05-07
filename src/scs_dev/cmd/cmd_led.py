@@ -19,7 +19,7 @@ class CmdLED(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -s { R | A | G | 0 } | "
-                                                    "-f { R | A | G | 0 } { R | A | G | 0 } } [-v]",
+                                                    "-f { R | A | G | 0 } { R | A | G | 0 } } [-v] PIPE",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -39,6 +39,9 @@ class CmdLED(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
+        if self.pipe is None:
+            return False
+
         if bool(self.solid) == bool(self.flash):
             return False
 
@@ -69,6 +72,11 @@ class CmdLED(object):
 
 
     @property
+    def pipe(self):
+        return self.__args[0] if self.__args else None
+
+
+    @property
     def args(self):
         return self.__args
 
@@ -80,4 +88,5 @@ class CmdLED(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLED:{solid:%s, flash:%s, verbose:%s, args:%s}" % (self.solid, self.flash, self.verbose, self.args)
+        return "CmdLED:{solid:%s, flash:%s, verbose:%s, pipe:%s, args:%s}" % \
+               (self.solid, self.flash, self.verbose, self.pipe, self.args)

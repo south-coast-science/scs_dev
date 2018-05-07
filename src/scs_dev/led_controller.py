@@ -14,17 +14,17 @@ The led_controller waits for data on stdin, then updates the state of the LEDs a
 of a JSON array containing two single-character strings - the first represents 80% of the duty cycle, the second 20%.
 If a steady state is required, the two values should be the same.
 
-When the led_controller starts, the LEDs are set to off. When the led_controller terminates, the LEDs are left in
-their last state.
+When the led_controller starts, the LEDs remain in their previous state. When the led_controller terminates,
+the LEDs remain in their last state.
 
 SYNOPSIS
 led_controller -v
 
 EXAMPLES
-tail -f ~/SCS/pipes/led_control_pipe | ./led_controller.py -v &
+( tail -f ~/SCS/pipes/led_control_pipe & ) | ./led_controller.py -v &
 
 DOCUMENT EXAMPLE
-["R", "0"]
+{"colour0": "R", "colour1": "G"}
 
 SEE ALSO
 scs_dev/led
@@ -42,8 +42,8 @@ from scs_core.data.json import JSONify
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
 
-from scs_dfe.display.led import LED
 from scs_dfe.display.led_controller import LEDController
+from scs_dfe.display.led_state import LEDState
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -80,21 +80,23 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             try:
-                specification = json.loads(line, object_pairs_hook=OrderedDict)
+                jdict = json.loads(line, object_pairs_hook=OrderedDict)
             except ValueError:
                 continue
 
-            state0 = specification[0]
-            state1 = specification[1]
+            state = LEDState.construct_from_jdict(jdict)
 
-            if cmd.verbose:
-                print(JSONify.dumps(specification), file=sys.stderr)
-                sys.stderr.flush()
-
-            if not LED.is_valid_colour(state0) or not LED.is_valid_colour(state1):
+            if state is None:
                 continue
 
-            supervisor.set_states(state0, state1)
+            if cmd.verbose:
+                print("led_controller: %s" % JSONify.dumps(state), file=sys.stderr)
+                sys.stderr.flush()
+
+            if not state.is_valid():
+                continue
+
+            supervisor.set_state(state)
 
 
     # ----------------------------------------------------------------------------------------------------------------
