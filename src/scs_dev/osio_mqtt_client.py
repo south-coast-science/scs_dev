@@ -72,7 +72,7 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
-# TODO: only open pipe when needed
+# TODO: what happens if there is no LED listener?
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
