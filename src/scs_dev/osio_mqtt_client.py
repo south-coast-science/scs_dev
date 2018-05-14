@@ -17,11 +17,13 @@ gained by subscription may be delivered either to stdout, or to a specified Unix
 
 The osio_mqtt_client utility requires both the OpenSensors.io API key and client authorisation to operate.
 
+On some system configurations, the success or failure of each message send attempt can be signalled to a two-colour LED.
+
 Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 osio_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | [SUB_TOPIC_1 (UDS_SUB_1) ..
-SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-v]
+SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-l LED_UDS] [-v]
 
 EXAMPLES
 ( cat < ~/SCS/pipes/mqtt_publication_pipe & ) | ./osio_mqtt_client.py -v -cX  > ./control_subscription_pipe
@@ -32,6 +34,7 @@ FILES
 ~/SCS/aws/osio_project.json
 
 SEE ALSO
+scs_dev/led_controller
 scs_mfr/osio_api_auth
 scs_mfr/osio_client_auth
 scs_mfr/osio_host_project
@@ -71,8 +74,6 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-
-# TODO: what happens if there is no LED listener?
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -135,32 +136,29 @@ class OSIOMQTTReporter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, led_pipe, verbose):
+    def __init__(self, led_uds_name, verbose):
         """
         Constructor
         """
-        self.__led_pipe = led_pipe
+        self.__led_uds = DomainSocket(led_uds_name) if led_uds_name else None
         self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def set_led(self, colour):
-        if self.__led_pipe is None:
+        if self.__led_uds is None:
             return
 
-        led_fifo = None
-
         try:
-            led_fifo = open(cmd.led_pipe, "w")
-            print(JSONify.dumps(LEDState(colour, colour)), file=led_fifo)
+            self.__led_uds.connect(False)
+            self.__led_uds.write(JSONify.dumps(LEDState(colour, colour)), False)
 
         except OSError:
             pass
 
         finally:
-            if led_fifo:
-                led_fifo.close()
+            self.__led_uds.close()
 
 
     def print_status(self, status):
@@ -202,9 +200,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # LED pipe...
-        if cmd.led_pipe and cmd.verbose:
-            print("osio_mqtt_client: led pipe: %s" % cmd.led_pipe, file=sys.stderr)
+        # LED UDS...
+        if cmd.led_uds and cmd.verbose:
+            print("osio_mqtt_client: led UDS: %s" % cmd.led_uds, file=sys.stderr)
 
         # APIAuth...
         api_auth = APIAuth.load(Host)
@@ -290,7 +288,7 @@ if __name__ == '__main__':
         client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         # reporter...
-        reporter = OSIOMQTTReporter(cmd.led_pipe, cmd.verbose)
+        reporter = OSIOMQTTReporter(cmd.led_uds, cmd.verbose)
 
 
         # ------------------------------------------------------------------------------------------------------------
