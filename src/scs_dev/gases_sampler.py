@@ -160,6 +160,9 @@ if __name__ == '__main__':
         if cmd.verbose and dfe_conf:
             print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
 
+        if cmd.verbose and afe:
+            print("gases_sampler: %s" % afe, file=sys.stderr)
+
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
