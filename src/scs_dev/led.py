@@ -38,9 +38,6 @@ DOCUMENT EXAMPLE
 
 SEE ALSO
 scs_dev/led_controller
-
-RESOURCES
-https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
 """
 
 import sys
