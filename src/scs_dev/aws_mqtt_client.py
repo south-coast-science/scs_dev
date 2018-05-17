@@ -61,6 +61,9 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
+# TODO: add LED support
+# TODO: add MQTTConf support
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 

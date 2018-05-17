@@ -31,8 +31,7 @@ SEE ALSO
 scs_dev/led
 
 RESOURCES
-https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
-"""
+https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f"""
 
 import os
 import json
