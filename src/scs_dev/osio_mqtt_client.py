@@ -50,6 +50,8 @@ import time
 
 from collections import OrderedDict
 
+from scs_core.comms.mqtt_conf import MQTTConf
+
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
@@ -200,6 +202,13 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # MQTTConf
+
+        conf = MQTTConf.load(Host)
+
+        if cmd.verbose:
+            print("osio_mqtt_client: conf: %s" % conf, file=sys.stderr)
+
         # LED UDS...
         if cmd.led_uds and cmd.verbose:
             print("osio_mqtt_client: led UDS: %s" % cmd.led_uds, file=sys.stderr)
@@ -306,6 +315,13 @@ if __name__ == '__main__':
                 reporter.print_status("bad datum: %s" % message)
                 continue
 
+            if cmd.echo:
+                print(message)
+                sys.stdout.flush()
+
+            if conf.inhibit_publishing:
+                continue
+
             success = False
 
             while True:
@@ -330,10 +346,6 @@ if __name__ == '__main__':
             if success:
                 reporter.print_status("done")
                 reporter.set_led("G")
-
-            if cmd.echo:
-                print(message)
-                sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
