@@ -117,7 +117,7 @@ if __name__ == '__main__':
         # CSVLogger...
         logger = None if log is None else CSVLogger(Host, log, conf.delete_oldest, conf.write_interval)
 
-        if logger and cmd.verbose:
+        if cmd.verbose:
             print("csv_logger: %s" % logger, file=sys.stderr)
             sys.stderr.flush()
 

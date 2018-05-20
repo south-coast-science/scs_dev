@@ -77,6 +77,8 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
+# TODO: handle the no-comms case when inhibit on
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
