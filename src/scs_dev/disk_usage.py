@@ -9,6 +9,8 @@ DESCRIPTION
 The disk_usage utility is used to determine free and used space on the specified volume. The volume is identified by
 any filesystem path within the volume.
 
+The disk_usage utility is normally included in the commands accepted by the control_receiver utility.
+
 SYNOPSIS
 disk_usage.py [-v] VOLUME
 
