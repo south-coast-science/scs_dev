@@ -77,8 +77,6 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
-# TODO: handle the no-comms case when inhibit on
-
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
@@ -205,7 +203,6 @@ if __name__ == '__main__':
         # resources...
 
         # MQTTConf
-
         conf = MQTTConf.load(Host)
 
         if cmd.verbose:
@@ -290,27 +287,31 @@ if __name__ == '__main__':
 
                 if cmd.verbose:
                     print("osio_mqtt_client: %s" % handler, file=sys.stderr)
-                    sys.stderr.flush()
 
                 subscribers.append(MQTTSubscriber(subscription.topic, handler.handle))
 
         # client...
         client = MQTTClient(*subscribers)
-        client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id, client_auth.client_password)
 
         # reporter...
         reporter = OSIOMQTTReporter(cmd.led_uds, cmd.verbose)
 
+        if cmd.verbose:
+            sys.stderr.flush()
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         reporter.set_led("A")
 
-        # publish...
         pub_comms.connect()
 
+        if not conf.inhibit_publishing:
+            client.connect(ClientAuth.MQTT_HOST, client_auth.client_id, client_auth.user_id,
+                           client_auth.client_password)
+
         for message in pub_comms.read():
+            # receive...
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
@@ -324,6 +325,7 @@ if __name__ == '__main__':
             if conf.inhibit_publishing:
                 continue
 
+            # publish...
             success = False
 
             while True:

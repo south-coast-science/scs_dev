@@ -6,16 +6,19 @@ Created on 20 May 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The disk_usage utility is used to determine free and used space on the specified volume.
+The disk_usage utility is used to determine free and used space on the specified volume. The volume is identified by
+any filesystem path within the volume.
+
+The disk_usage utility is normally included in the commands accepted by the control_receiver utility.
 
 SYNOPSIS
-node.py [-v] VOLUME
+disk_usage.py [-v] VOLUME
 
 EXAMPLES
-./disk_usage.py /etc
+./disk_usage.py /srv/removable_data_storage
 
 DOCUMENT EXAMPLE
-{"volume": "/etc", "free": 2375217152, "used": 4958257152, "total": 7710990336}
+{"volume": "/srv/removable_data_storage", "free": 2375217152, "used": 4958257152, "total": 7710990336}
 """
 
 import sys
