@@ -35,6 +35,7 @@ FILES
 
 SEE ALSO
 scs_dev/led_controller
+scs_mfr/mqtt_conf
 scs_mfr/osio_api_auth
 scs_mfr/osio_client_auth
 scs_mfr/osio_host_project
