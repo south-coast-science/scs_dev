@@ -108,6 +108,8 @@ except ImportError:
     from scs_core.gas.ndir_conf import NDIRConf
 
 
+# TODO: test gases service restart - semaphore problem?
+
 # TODO: needs flag to keep NDIR switched on?
 
 # --------------------------------------------------------------------------------------------------------------------
