@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Created on 18 Feb 2017
+Created on 21 Jun 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
@@ -31,7 +31,7 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-ap1-6", "rec": "2018-04-04T13:09:49.648+00:00", "val": {"hmd": 66.2, "tmp": 21.7}}
+{"tag": "scs-be2-3", "rec": "2018-06-21T16:13:52.675+00:00", "val": {"pA": 102.2, "p0": 113.8, "tmp": 25.6}}
 
 SEE ALSO
 scs_dev/scheduler
