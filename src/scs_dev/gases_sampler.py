@@ -165,11 +165,10 @@ if __name__ == '__main__':
         if cmd.verbose and afe:
             print("gases_sampler: %s" % afe, file=sys.stderr)
 
-        # runner...
+        # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        # sampler...
         sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
 
         if cmd.verbose:

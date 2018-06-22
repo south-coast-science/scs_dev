@@ -109,7 +109,7 @@ if __name__ == '__main__':
         # MPL115A2...
         barometer = MPL115A2.construct(barometer_calib)
 
-        # runner...
+        # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
@@ -128,7 +128,7 @@ if __name__ == '__main__':
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s:      pressure: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
+                print("%s:     pressure: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
             print(JSONify.dumps(sample))

@@ -140,11 +140,10 @@ if __name__ == '__main__':
         if cmd.verbose and psu_monitor:
             print("status_sampler: %s" % psu_monitor, file=sys.stderr)
 
-        # runner...
+        # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        # sampler...
         sampler = StatusSampler(runner, tag, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
