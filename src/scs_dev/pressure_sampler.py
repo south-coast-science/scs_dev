@@ -35,8 +35,9 @@ DOCUMENT EXAMPLE - OUTPUT
 
 SEE ALSO
 scs_dev/scheduler
+scs_mfr/mpl115a2_calib
+scs_mfr/mpl115a2_conf
 scs_mfr/schedule
-scs_mfr/sht_conf
 scs_mfr/system_id
 
 RESOURCES
