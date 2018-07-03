@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 
 """
-Created on 18 Feb 2017
+Created on 21 Jun 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The climate_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
+The pressure_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
 temperature and relative humidity. Output values are in degrees centigrade and percentage, respectively.
 
-The climate_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
-fields for:
+The pressure_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
+with fields for:
 
 * the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
@@ -19,14 +19,11 @@ fields for:
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
 controlled by an independent scheduling process via a Unix semaphore.
 
-South Coast Science equipment may carry one or two SHT sensors. The configuration is specified by the
-scs_mfr/sht_conf utility.
-
 SYNOPSIS
-climate_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+pressure_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-./climate_sampler.py -i10
+./pressure_sampler.py -i10
 
 FILES
 ~/SCS/conf/schedule.json
@@ -34,12 +31,13 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-ap1-6", "rec": "2018-04-04T13:09:49.648+00:00", "val": {"hmd": 66.2, "tmp": 21.7}}
+{"tag": "scs-be2-3", "rec": "2018-06-21T16:13:52.675+00:00", "val": {"pA": 102.2, "p0": 113.8, "tmp": 25.6}}
 
 SEE ALSO
 scs_dev/scheduler
+scs_mfr/mpl115a2_calib
+scs_mfr/mpl115a2_conf
 scs_mfr/schedule
-scs_mfr/sht_conf
 scs_mfr/system_id
 
 RESOURCES
@@ -47,6 +45,8 @@ https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys
+
+from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -56,9 +56,10 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
-from scs_dev.sampler.climate_sampler import ClimateSampler
+from scs_dev.sampler.pressure_sampler import PressureSampler
 
-from scs_dfe.climate.sht_conf import SHTConf
+from scs_dfe.climate.mpl115a2_conf import MPL115A2Conf
+from scs_dfe.climate.mpl115a2 import MPL115A2
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -75,7 +76,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     if cmd.verbose:
-        print("climate_sampler: %s" % cmd, file=sys.stderr)
+        print("pressure_sampler: %s" % cmd, file=sys.stderr)
 
     try:
         I2C.open(Host.I2C_SENSORS)
@@ -90,39 +91,45 @@ if __name__ == '__main__':
         tag = None if system_id is None else system_id.message_tag()
 
         if system_id and cmd.verbose:
-            print("climate_sampler: %s" % system_id, file=sys.stderr)
+            print("pressure_sampler: %s" % system_id, file=sys.stderr)
 
-        # SHTConf...
-        sht_conf = SHTConf.load(Host)
+        # MPL115A2Conf...
+        barometer_conf = MPL115A2Conf.load(Host)
 
-        if sht_conf is None:
-            print("climate_sampler: SHTConf not available.", file=sys.stderr)
-            exit(1)
+        altitude = None if barometer_conf is None else barometer_conf.altitude
 
-        if cmd.verbose:
-            print("climate_sampler: %s" % sht_conf, file=sys.stderr)
+        if cmd.verbose and barometer_conf is not None:
+            print("pressure_sampler: %s" % barometer_conf, file=sys.stderr)
 
-        # SHT...
-        sht = sht_conf.ext_sht()
+        # MPL115A2Calib...
+        barometer_calib = MPL115A2Calib.load(Host)
+
+        if cmd.verbose and barometer_calib is not None:
+            print("pressure_sampler: %s" % barometer_calib, file=sys.stderr)
+
+        # MPL115A2...
+        barometer = MPL115A2.construct(barometer_calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = ClimateSampler(runner, tag, sht)
+        sampler = PressureSampler(runner, tag, barometer, altitude)
 
         if cmd.verbose:
-            print("climate_sampler: %s" % sampler, file=sys.stderr)
+            print("pressure_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        sampler.init()
+
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s:      climate: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
+                print("%s:     pressure: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
             print(JSONify.dumps(sample))
@@ -134,7 +141,7 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         if cmd.verbose:
-            print("climate_sampler: KeyboardInterrupt", file=sys.stderr)
+            print("pressure_sampler: KeyboardInterrupt", file=sys.stderr)
 
     finally:
         I2C.close()
