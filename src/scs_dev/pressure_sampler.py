@@ -6,8 +6,10 @@ Created on 21 Jun 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The pressure_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
-temperature and relative humidity. Output values are in degrees centigrade and percentage, respectively.
+The pressure_sampler utility reads a MPL115A2 digital barometer. It reports pressure in kilopascals and temperature
+in Centigrade. The utility always reports the actual atmospheric pressure ("pA"). It additionally reports temperature
+and equivalent pressure at sea level depending on whether the host device's  altitude has been configured and the
+MPL115A2 temperature sensor has been calibrated.
 
 The pressure_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
 with fields for:
@@ -26,8 +28,9 @@ EXAMPLES
 ./pressure_sampler.py -i10
 
 FILES
+~/SCS/conf/mpl115a2_calib.json
+~/SCS/conf/mpl115a2_conf.json
 ~/SCS/conf/schedule.json
-~/SCS/conf/sht_conf.json
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
