@@ -23,7 +23,7 @@ Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 osio_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | [SUB_TOPIC_1 (UDS_SUB_1) ..
-SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-l LED_UDS] [-v]
+SUB_TOPIC_N (UDS_SUB_N)] } [-e] [-l LED_UDS] [-v]
 
 EXAMPLES
 ( cat < ~/SCS/pipes/mqtt_publication_pipe & ) | ./osio_mqtt_client.py -v -cX  > ./control_subscription_pipe
@@ -54,7 +54,6 @@ from collections import OrderedDict
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.osio.client.api_auth import APIAuth
@@ -66,8 +65,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
-
-from scs_dfe.display.led_state import LEDState
+from scs_dev.reporter.mqtt_reporter import MQTTReporter
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
@@ -130,62 +128,13 @@ class OSIOMQTTHandler(object):
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# reporter...
-
-class OSIOMQTTReporter(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, led_uds_name, verbose):
-        """
-        Constructor
-        """
-        self.__led_uds = DomainSocket(led_uds_name) if led_uds_name else None
-        self.__verbose = verbose
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def set_led(self, colour):
-        if self.__led_uds is None:
-            return
-
-        try:
-            self.__led_uds.connect(False)
-            self.__led_uds.write(JSONify.dumps(LEDState(colour, colour)), False)
-
-        except OSError:
-            pass
-
-        finally:
-            self.__led_uds.close()
-
-
-    def print_status(self, status):
-        if not self.__verbose:
-            return
-
-        now = LocalizedDatetime.now()
-        print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
-        sys.stderr.flush()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "OSIOMQTTReporter:{verbose:%s}" % self.__verbose
-
-
-# --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
     client = None
     pub_comms = None
     reporter = None
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -294,11 +243,15 @@ if __name__ == '__main__':
         # client...
         client = MQTTClient(*subscribers)
 
+        if cmd.verbose:
+            print("aws_mqtt_client: %s" % client, file=sys.stderr)
+
         # reporter...
-        reporter = OSIOMQTTReporter(cmd.led_uds, cmd.verbose)
+        reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
 
         if cmd.verbose:
             sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -346,7 +299,7 @@ if __name__ == '__main__':
                         print(JSONify.dumps(ExceptionReport.construct(ex)))
                         sys.stderr.flush()
 
-                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
+                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
             if success:
                 reporter.print_status("done")

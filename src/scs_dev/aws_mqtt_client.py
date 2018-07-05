@@ -21,7 +21,7 @@ Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 aws_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) |
-[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-v]
+[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] } [-e] [-l LED_UDS] [-v]
 
 EXAMPLES
 ( cat < /home/pi/SCS/pipes/mqtt_publication_pipe & ) | \
@@ -31,6 +31,8 @@ FILES
 ~/SCS/aws/aws_client_auth.json
 
 SEE ALSO
+scs_dev/led_controller
+scs_mfr/mqtt_conf
 scs_mfr/aws_client_auth
 scs_mfr/aws_project
 
@@ -47,22 +49,21 @@ from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 from scs_core.aws.config.project import Project
 
+from scs_core.comms.mqtt_conf import MQTTConf
+
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
+from scs_dev.reporter.mqtt_reporter import MQTTReporter
 
 from scs_host.comms.domain_socket import DomainSocket
 from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-
-# TODO: add LED support
-# TODO: add MQTTConf support
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -127,6 +128,7 @@ if __name__ == '__main__':
 
     client = None
     pub_comms = None
+    reporter = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -144,6 +146,16 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # MQTTConf
+        conf = MQTTConf.load(Host)
+
+        if cmd.verbose:
+            print("aws_mqtt_client: conf: %s" % conf, file=sys.stderr)
+
+        # LED UDS...
+        if cmd.led_uds and cmd.verbose:
+            print("aws_mqtt_client: led UDS: %s" % cmd.led_uds, file=sys.stderr)
 
         # ClientAuth...
         auth = ClientAuth.load(Host)
@@ -205,33 +217,51 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("aws_mqtt_client: %s" % client, file=sys.stderr)
+
+        # reporter...
+        reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
+
+        if cmd.verbose:
             sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        client.connect(auth)
+        reporter.set_led("A")
 
         pub_comms.connect()
 
+        if not conf.inhibit_publishing:
+            client.connect(auth)
+
         for message in pub_comms.read():
+            # receive...
             try:
                 jdict = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
+                reporter.print_status("bad datum: %s" % message)
                 continue
-
-            publication = Publication.construct_from_jdict(jdict)
-
-            client.publish(publication)     # TODO: handle return value of False
-
-            if cmd.verbose:
-                print("%s:         mqtt: done" % LocalizedDatetime.now().as_time(), file=sys.stderr)
-                sys.stderr.flush()
 
             if cmd.echo:
                 print(message)
                 sys.stdout.flush()
+
+            if conf.inhibit_publishing:
+                continue
+
+            # publish...
+            publication = Publication.construct_from_jdict(jdict)
+
+            success = client.publish(publication)
+
+            if success:
+                reporter.print_status("done")
+                reporter.set_led("G")
+
+            else:
+                reporter.print_status("abandoned")
+                reporter.set_led("R")
 
 
         # ----------------------------------------------------------------------------------------------------------------
@@ -244,3 +274,9 @@ if __name__ == '__main__':
     finally:
         if client:
             client.disconnect()
+
+        if pub_comms:
+            pub_comms.close()
+
+        if reporter:
+            reporter.set_led("A")
