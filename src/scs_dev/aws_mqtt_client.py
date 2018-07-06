@@ -99,7 +99,7 @@ class AWSMQTTHandler(object):
             self.__comms.write(JSONify.dumps(pub), False)
 
         except ConnectionRefusedError:
-            reporter.print("connection refused for %s" % self.__comms.address)
+            self.__reporter.print("connection refused for %s" % self.__comms.address)
 
         finally:
             self.__comms.close()
@@ -108,7 +108,7 @@ class AWSMQTTHandler(object):
             print(JSONify.dumps(pub))
             sys.stdout.flush()
 
-        reporter.print("received: %s" % JSONify.dumps(pub))
+            self.__reporter.print("received: %s" % JSONify.dumps(pub))
 
 
     # ----------------------------------------------------------------------------------------------------------------
