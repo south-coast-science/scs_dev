@@ -23,7 +23,7 @@ Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 osio_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | [SUB_TOPIC_1 (UDS_SUB_1) ..
-SUB_TOPIC_N (UDS_SUB_N)] }[-e] [-l LED_UDS] [-v]
+SUB_TOPIC_N (UDS_SUB_N)] } [-e] [-l LED_UDS] [-v]
 
 EXAMPLES
 ( cat < ~/SCS/pipes/mqtt_publication_pipe & ) | ./osio_mqtt_client.py -v -cX  > ./control_subscription_pipe
@@ -54,7 +54,6 @@ from collections import OrderedDict
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.data.publication import Publication
 
 from scs_core.osio.client.api_auth import APIAuth
@@ -66,8 +65,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
-
-from scs_dfe.display.led_state import LEDState
+from scs_dev.reporter.mqtt_reporter import MQTTReporter
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
@@ -88,14 +86,13 @@ class OSIOMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, comms, echo, verbose):
+    def __init__(self, mqtt_reporter, comms=None, echo=False):
         """
         Constructor
         """
+        self.__reporter = mqtt_reporter
         self.__comms = comms
-
         self.__echo = echo
-        self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -106,9 +103,7 @@ class OSIOMQTTHandler(object):
             self.__comms.write(JSONify.dumps(pub), False)
 
         except ConnectionRefusedError:
-            if self.__verbose:
-                print("OSIOMQTTHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
-                sys.stderr.flush()
+            self.__reporter.print("connection refused for %s" % self.__comms.address)
 
         finally:
             self.__comms.close()
@@ -117,66 +112,14 @@ class OSIOMQTTHandler(object):
             print(JSONify.dumps(pub))
             sys.stdout.flush()
 
-        if self.__verbose:
-            print("osio_mqtt_client: received: %s" % JSONify.dumps(pub), file=sys.stderr)
-            sys.stderr.flush()
+        self.__reporter.print("received: %s" % JSONify.dumps(pub))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
-               (self.__comms, self.__echo, self.__verbose)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-# reporter...
-
-class OSIOMQTTReporter(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, led_uds_name, verbose):
-        """
-        Constructor
-        """
-        self.__led_uds = DomainSocket(led_uds_name) if led_uds_name else None
-        self.__verbose = verbose
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def set_led(self, colour):
-        if self.__led_uds is None:
-            return
-
-        try:
-            self.__led_uds.connect(False)
-            self.__led_uds.write(JSONify.dumps(LEDState(colour, colour)), False)
-
-        except OSError:
-            pass
-
-        finally:
-            self.__led_uds.close()
-
-
-    def print_status(self, status):
-        if not self.__verbose:
-            return
-
-        now = LocalizedDatetime.now()
-        print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
-        sys.stderr.flush()
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "OSIOMQTTReporter:{verbose:%s}" % self.__verbose
+        return "OSIOMQTTHandler:{reporter:%s, comms:%s, echo:%s}" % \
+               (self.__reporter, self.__comms, self.__echo)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -186,6 +129,7 @@ if __name__ == '__main__':
     client = None
     pub_comms = None
     reporter = None
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -249,6 +193,9 @@ if __name__ == '__main__':
         if unavailable:
             exit(1)
 
+        # reporter...
+        reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
+
         # subscribers...
         subscribers = []
 
@@ -275,7 +222,7 @@ if __name__ == '__main__':
             # handler...
             sub_comms = DomainSocket(cmd.channel_uds) if cmd.channel_uds else StdIO()
 
-            handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+            handler = OSIOMQTTHandler(reporter, sub_comms, cmd.echo)
 
             subscribers.append(MQTTSubscriber(topic, handler.handle))
 
@@ -284,7 +231,7 @@ if __name__ == '__main__':
                 sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
 
                 # handler...
-                handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+                handler = OSIOMQTTHandler(reporter, sub_comms, cmd.echo)
 
                 if cmd.verbose:
                     print("osio_mqtt_client: %s" % handler, file=sys.stderr)
@@ -294,11 +241,12 @@ if __name__ == '__main__':
         # client...
         client = MQTTClient(*subscribers)
 
-        # reporter...
-        reporter = OSIOMQTTReporter(cmd.led_uds, cmd.verbose)
+        if cmd.verbose:
+            print("osio_mqtt_client: %s" % client, file=sys.stderr)
 
         if cmd.verbose:
             sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -316,7 +264,7 @@ if __name__ == '__main__':
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
-                reporter.print_status("bad datum: %s" % message)
+                reporter.print("bad datum: %s" % message)
                 continue
 
             if cmd.echo:
@@ -336,7 +284,7 @@ if __name__ == '__main__':
                     success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
                     if not success:
-                        reporter.print_status("abandoned")
+                        reporter.print("abandoned")
                         reporter.set_led("R")
 
                     break
@@ -346,10 +294,10 @@ if __name__ == '__main__':
                         print(JSONify.dumps(ExceptionReport.construct(ex)))
                         sys.stderr.flush()
 
-                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the client!
+                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
             if success:
-                reporter.print_status("done")
+                reporter.print("done")
                 reporter.set_led("G")
 
 
