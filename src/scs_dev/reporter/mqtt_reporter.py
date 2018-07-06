@@ -28,11 +28,20 @@ class MQTTReporter(object):
         """
         Constructor
         """
-        self.__led_uds = DomainSocket(led_uds_name) if led_uds_name else None
         self.__verbose = verbose
+        self.__led_uds = DomainSocket(led_uds_name) if led_uds_name else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def print(self, status):
+        if not self.__verbose:
+            return
+
+        now = LocalizedDatetime.now()
+        print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
+        sys.stderr.flush()
+
 
     def set_led(self, colour):
         if self.__led_uds is None:
@@ -47,15 +56,6 @@ class MQTTReporter(object):
 
         finally:
             self.__led_uds.close()
-
-
-    def print_status(self, status):
-        if not self.__verbose:
-            return
-
-        now = LocalizedDatetime.now()
-        print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
-        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------

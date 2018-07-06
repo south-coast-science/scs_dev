@@ -86,14 +86,13 @@ class OSIOMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, comms, echo, verbose):
+    def __init__(self, mqtt_reporter, comms=None, echo=False):
         """
         Constructor
         """
+        self.__reporter = mqtt_reporter
         self.__comms = comms
-
         self.__echo = echo
-        self.__verbose = verbose
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -104,9 +103,7 @@ class OSIOMQTTHandler(object):
             self.__comms.write(JSONify.dumps(pub), False)
 
         except ConnectionRefusedError:
-            if self.__verbose:
-                print("OSIOMQTTHandler: connection refused for %s" % self.__comms.address, file=sys.stderr)
-                sys.stderr.flush()
+            reporter.print("connection refused for %s" % self.__comms.address)
 
         finally:
             self.__comms.close()
@@ -115,16 +112,14 @@ class OSIOMQTTHandler(object):
             print(JSONify.dumps(pub))
             sys.stdout.flush()
 
-        if self.__verbose:
-            print("osio_mqtt_client: received: %s" % JSONify.dumps(pub), file=sys.stderr)
-            sys.stderr.flush()
+        reporter.print("received: %s" % JSONify.dumps(pub))
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "OSIOMQTTHandler:{comms:%s, echo:%s, verbose:%s}" % \
-               (self.__comms, self.__echo, self.__verbose)
+        return "OSIOMQTTHandler:{reporter:%s, comms:%s, echo:%s}" % \
+               (self.__reporter, self.__comms, self.__echo)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -198,6 +193,9 @@ if __name__ == '__main__':
         if unavailable:
             exit(1)
 
+        # reporter...
+        reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
+
         # subscribers...
         subscribers = []
 
@@ -224,7 +222,7 @@ if __name__ == '__main__':
             # handler...
             sub_comms = DomainSocket(cmd.channel_uds) if cmd.channel_uds else StdIO()
 
-            handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+            handler = OSIOMQTTHandler(reporter, sub_comms, cmd.echo)
 
             subscribers.append(MQTTSubscriber(topic, handler.handle))
 
@@ -233,7 +231,7 @@ if __name__ == '__main__':
                 sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
 
                 # handler...
-                handler = OSIOMQTTHandler(sub_comms, cmd.echo, cmd.verbose)
+                handler = OSIOMQTTHandler(reporter, sub_comms, cmd.echo)
 
                 if cmd.verbose:
                     print("osio_mqtt_client: %s" % handler, file=sys.stderr)
@@ -244,10 +242,7 @@ if __name__ == '__main__':
         client = MQTTClient(*subscribers)
 
         if cmd.verbose:
-            print("aws_mqtt_client: %s" % client, file=sys.stderr)
-
-        # reporter...
-        reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
+            print("osio_mqtt_client: %s" % client, file=sys.stderr)
 
         if cmd.verbose:
             sys.stderr.flush()
@@ -269,7 +264,7 @@ if __name__ == '__main__':
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
-                reporter.print_status("bad datum: %s" % message)
+                reporter.print("bad datum: %s" % message)
                 continue
 
             if cmd.echo:
@@ -289,7 +284,7 @@ if __name__ == '__main__':
                     success = client.publish(publication, ClientAuth.MQTT_TIMEOUT)
 
                     if not success:
-                        reporter.print_status("abandoned")
+                        reporter.print("abandoned")
                         reporter.set_led("R")
 
                     break
@@ -302,7 +297,7 @@ if __name__ == '__main__':
                 time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
             if success:
-                reporter.print_status("done")
+                reporter.print("done")
                 reporter.set_led("G")
 
 
