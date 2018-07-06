@@ -86,7 +86,9 @@ class AWSMQTTHandler(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def handle(self, *_):                       # params: client, userdata, message
+    # noinspection PyShadowingNames,PyUnusedLocal
+
+    def handle(self, client, userdata, message):
         payload = message.payload.decode()
         payload_jdict = json.loads(payload, object_pairs_hook=OrderedDict)
 
