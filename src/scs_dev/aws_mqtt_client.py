@@ -66,7 +66,6 @@ from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
 
-
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
@@ -253,28 +252,29 @@ if __name__ == '__main__':
                 continue
 
             # publish...
-            while True:
-                publication = Publication.construct_from_jdict(datum)
+            publication = Publication.construct_from_jdict(datum)
 
+            while True:
                 try:
                     success = client.publish(publication)
 
-                    if not success:
+                    if success:
+                        reporter.print("done")
+                        reporter.set_led("G")
+
+                    else:
                         reporter.print("abandoned")
                         reporter.set_led("R")
 
                     break
 
-                except Exception as ex:
+                except TimeoutError:
                     if cmd.verbose:
-                        print("aws_mqtt_client: publish: %s" % ex, file=sys.stderr)
-                        sys.stderr.flush()
+                        reporter.print("postponed")
+                        reporter.set_led("R")
 
                 time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
-            if success:
-                reporter.print("done")
-                reporter.set_led("G")
 
 
         # ----------------------------------------------------------------------------------------------------------------
