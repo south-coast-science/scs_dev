@@ -41,7 +41,9 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 """
 
 import json
+import random
 import sys
+import time
 
 from collections import OrderedDict
 
@@ -229,12 +231,16 @@ if __name__ == '__main__':
         pub_comms.connect()
 
         if not conf.inhibit_publishing:
-            client.connect(auth)
+            try:
+                client.connect(auth)
+            except OSError as ex:
+                print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
+                exit(1)
 
         for message in pub_comms.read():
             # receive...
             try:
-                jdict = json.loads(message, object_pairs_hook=OrderedDict)
+                datum = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
                 reporter.print("bad datum: %s" % message)
                 continue
@@ -247,17 +253,28 @@ if __name__ == '__main__':
                 continue
 
             # publish...
-            publication = Publication.construct_from_jdict(jdict)
+            while True:
+                publication = Publication.construct_from_jdict(datum)
 
-            success = client.publish(publication)
+                try:
+                    success = client.publish(publication)
+
+                    if not success:
+                        reporter.print("abandoned")
+                        reporter.set_led("R")
+
+                    break
+
+                except Exception as ex:
+                    if cmd.verbose:
+                        print("aws_mqtt_client: publish: %s" % ex, file=sys.stderr)
+                        sys.stderr.flush()
+
+                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
             if success:
                 reporter.print("done")
                 reporter.set_led("G")
-
-            else:
-                reporter.print("abandoned")
-                reporter.set_led("R")
 
 
         # ----------------------------------------------------------------------------------------------------------------
