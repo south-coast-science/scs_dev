@@ -270,9 +270,8 @@ if __name__ == '__main__':
                     break
 
                 except TimeoutError:
-                    if cmd.verbose:
-                        reporter.print("postponed")
-                        reporter.set_led("R")
+                    reporter.print("postponed")
+                    reporter.set_led("R")
 
                 time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
 
