@@ -264,7 +264,7 @@ if __name__ == '__main__':
                         break
 
                     else:
-                        reporter.print("fail")
+                        reporter.print("abandoned")             # TODO: MQTT client needs recovery from this state
                         reporter.set_led("R")
 
                 except TimeoutError:
@@ -272,6 +272,7 @@ if __name__ == '__main__':
                     reporter.set_led("R")
 
                 time.sleep(1)
+
 
         # ----------------------------------------------------------------------------------------------------------------
         # end...
@@ -288,4 +289,5 @@ if __name__ == '__main__':
             pub_comms.close()
 
         if reporter:
+            reporter.print("exiting")
             reporter.set_led("A")
