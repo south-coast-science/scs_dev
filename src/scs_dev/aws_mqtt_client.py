@@ -41,7 +41,6 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 """
 
 import json
-import random
 import sys
 import time
 
@@ -237,6 +236,14 @@ if __name__ == '__main__':
                 print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
                 exit(1)
 
+            # time.sleep(1)
+            #
+            # if client.publish(Publication('test', 'test')):
+            #     reporter.print("test pub success")
+            # else:
+            #     reporter.print("test pub failure")
+            #     exit(1)
+
         for message in pub_comms.read():
             # receive...
             try:
@@ -262,20 +269,18 @@ if __name__ == '__main__':
                     if success:
                         reporter.print("done")
                         reporter.set_led("G")
+                        break
 
                     else:
                         reporter.print("abandoned")
                         reporter.set_led("R")
-
-                    break
+                        exit(1)
 
                 except TimeoutError:
                     reporter.print("postponed")
                     reporter.set_led("R")
 
-                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
-
-
+                time.sleep(1)
 
         # ----------------------------------------------------------------------------------------------------------------
         # end...
