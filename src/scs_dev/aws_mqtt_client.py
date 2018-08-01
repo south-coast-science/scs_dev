@@ -41,7 +41,6 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 """
 
 import json
-import random
 import sys
 import time
 
@@ -65,6 +64,7 @@ from scs_host.comms.domain_socket import DomainSocket
 from scs_host.comms.stdio import StdIO
 
 from scs_host.sys.host import Host
+
 
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
@@ -261,20 +261,18 @@ if __name__ == '__main__':
                     if success:
                         reporter.print("done")
                         reporter.set_led("G")
+                        break
 
                     else:
-                        reporter.print("abandoned")
+                        reporter.print("abandoned")             # TODO: MQTT client needs recovery from this state
                         reporter.set_led("R")
-
-                    break
+                        exit(1)
 
                 except TimeoutError:
-                    if cmd.verbose:
-                        reporter.print("postponed")
-                        reporter.set_led("R")
+                    reporter.print("timeout")
+                    reporter.set_led("R")
 
-                time.sleep(random.uniform(1.0, 2.0))        # Don't hammer the broker!
-
+                time.sleep(2)
 
 
         # ----------------------------------------------------------------------------------------------------------------
@@ -292,4 +290,5 @@ if __name__ == '__main__':
             pub_comms.close()
 
         if reporter:
+            reporter.print("exiting")
             reporter.set_led("A")
