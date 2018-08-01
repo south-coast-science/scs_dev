@@ -236,14 +236,6 @@ if __name__ == '__main__':
                 print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
                 exit(1)
 
-            # time.sleep(1)
-            #
-            # if client.publish(Publication('test', 'test')):
-            #     reporter.print("test pub success")
-            # else:
-            #     reporter.print("test pub failure")
-            #     exit(1)
-
         for message in pub_comms.read():
             # receive...
             try:
@@ -272,12 +264,11 @@ if __name__ == '__main__':
                         break
 
                     else:
-                        reporter.print("abandoned")
+                        reporter.print("fail")
                         reporter.set_led("R")
-                        exit(1)
 
                 except TimeoutError:
-                    reporter.print("postponed")
+                    reporter.print("timeout")
                     reporter.set_led("R")
 
                 time.sleep(1)
