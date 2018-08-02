@@ -225,6 +225,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        comms_established = False
+
         reporter.set_led("A")
 
         pub_comms.connect()
@@ -259,13 +261,18 @@ if __name__ == '__main__':
                     success = client.publish(publication)
 
                     if success:
+                        comms_established = True
+
                         reporter.print("done")
                         reporter.set_led("G")
                         break
 
                     else:
-                        reporter.print("abandoned")             # TODO: MQTT client needs recovery from this state
+                        reporter.print("failed")
                         reporter.set_led("R")
+
+                        if comms_established:
+                            exit(1)                         # TODO: MQTT client needs recovery from this state
 
                 except TimeoutError:
                     reporter.print("timeout")
