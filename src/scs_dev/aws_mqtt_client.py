@@ -237,15 +237,16 @@ if __name__ == '__main__':
             while True:
                 try:
                     client.connect(auth)
-                    reporter.print("aws_mqtt_client: connect: done")
+                    reporter.print("connect: done")
+                    break
 
                 except TimeoutError:
-                    reporter.print("aws_mqtt_client: connect: timeout")
+                    reporter.print("connect: timeout")
                     time.sleep(2)
 
-                # except OSError as ex:
-                #     print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
-                #     exit(1)
+                except OSError as ex:
+                    reporter.print("connect: %s" % ex)
+                    exit(1)
 
         for message in pub_comms.read():
             # receive...
