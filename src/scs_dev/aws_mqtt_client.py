@@ -229,22 +229,23 @@ if __name__ == '__main__':
 
         reporter.set_led("A")
 
-        # connect...
-        while True:
-            try:
-                pub_comms.connect()
-                break
+        # data source...
+        pub_comms.connect()
 
-            except TimeoutError:
-                reporter.print("connect timeout")
-                time.sleep(2)
-
+        # MQTT connect...
         if not conf.inhibit_publishing:
-            try:
-                client.connect(auth)
-            except OSError as ex:
-                print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
-                exit(1)
+            while True:
+                try:
+                    client.connect(auth)
+                    reporter.print("aws_mqtt_client: connect: done")
+
+                except TimeoutError:
+                    reporter.print("aws_mqtt_client: connect: timeout")
+                    time.sleep(2)
+
+                # except OSError as ex:
+                #     print("aws_mqtt_client: connect: %s" % ex, file=sys.stderr)
+                #     exit(1)
 
         for message in pub_comms.read():
             # receive...
