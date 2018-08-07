@@ -229,7 +229,15 @@ if __name__ == '__main__':
 
         reporter.set_led("A")
 
-        pub_comms.connect()
+        # connect...
+        while True:
+            try:
+                pub_comms.connect()
+                break
+
+            except TimeoutError:
+                reporter.print("connect timeout")
+                time.sleep(2)
 
         if not conf.inhibit_publishing:
             try:
