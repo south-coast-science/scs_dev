@@ -225,8 +225,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        comms_established = False
-
         reporter.set_led("A")
 
         # data source...
@@ -272,8 +270,6 @@ if __name__ == '__main__':
                     success = client.publish(publication)
 
                     if success:
-                        comms_established = True
-
                         reporter.print("done")
                         reporter.set_led("G")
                         break
@@ -286,7 +282,7 @@ if __name__ == '__main__':
                     reporter.print("timeout")
                     reporter.set_led("R")
 
-                time.sleep(2)
+                time.sleep(2)                           # wait for auto-reconnect
 
 
         # ----------------------------------------------------------------------------------------------------------------
