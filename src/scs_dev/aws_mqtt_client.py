@@ -225,8 +225,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        comms_established = False
-
         reporter.set_led("A")
 
         # data source...
@@ -238,11 +236,12 @@ if __name__ == '__main__':
                 try:
                     client.connect(auth)
                     reporter.print("connect: done")
+                    time.sleep(2)                           # wait for broker to become available
                     break
 
                 except TimeoutError:
                     reporter.print("connect: timeout")
-                    time.sleep(2)
+                    time.sleep(2)                           # wait for retry
 
                 except OSError as ex:
                     reporter.print("connect: %s" % ex)
@@ -271,8 +270,6 @@ if __name__ == '__main__':
                     success = client.publish(publication)
 
                     if success:
-                        comms_established = True
-
                         reporter.print("done")
                         reporter.set_led("G")
                         break
@@ -285,7 +282,7 @@ if __name__ == '__main__':
                     reporter.print("timeout")
                     reporter.set_led("R")
 
-                time.sleep(2)
+                time.sleep(2)                           # wait for auto-reconnect
 
 
         # ----------------------------------------------------------------------------------------------------------------
