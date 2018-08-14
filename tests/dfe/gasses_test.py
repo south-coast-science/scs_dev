@@ -35,7 +35,7 @@ try:
 
     # NDIR...
     ndir_conf = NDIRConf.load(Host)
-    ndir = ndir_conf.ndir(Host)
+    ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
 
     # SHT...
     sht_conf = SHTConf.load(Host)
@@ -48,7 +48,7 @@ try:
     # runner...
     runner = TimedRunner(0)
 
-    sampler = GasesSampler(runner, tag, ndir, sht, afe)
+    sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
     print(sampler)
     print("-")
 
