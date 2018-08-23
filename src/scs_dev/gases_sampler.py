@@ -179,11 +179,11 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        sampler.start()
-
         if cmd.verbose and ndir_conf:
             print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
+
+        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
