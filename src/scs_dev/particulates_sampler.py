@@ -87,7 +87,7 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: see Experiments/System Technical Issues/Weird particulates startup/syslog Apr 13 14:33:51
+# TODO: get firmware version and abandon if not as expected - OPC not present
 
 # --------------------------------------------------------------------------------------------------------------------
 
