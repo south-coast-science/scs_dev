@@ -1,33 +1,38 @@
 #!/usr/bin/env python3
 
 """
-Created on 26 Mar 2017
+Created on 4 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The opc_power utility is used to apply or remove power to the Alphasense optical particle counter (OPC). The utility
-may be used to save power, or to cycle an OPC whose laser safety system has tripped.
+The opc_version utility requests the firmware version from the Alphasense optical particle counter (OPC).
+The reported string is written to stdout.
 
-Note: Power to the OPC is also under the control of the OPC monitor process launched by the particulates_sampler
-utility. If running, the OPC monitor process will override the action of this script.
-
-Note: Raspberry Pi systems do not have the ability to control the OPC power. For these systems, the OPC is simply
-commanded to stop or start operations.
+The opc_version utility exits with 1 if no version string could be read, and exits with 0 if a string was read. The
+command can therefore be used to test for the presence / operability of an OPC.
 
 SYNOPSIS
-opc_power.py { 1 | 0 } [-v]
+opc_version.py [-v]
 
 EXAMPLES
-./opc_power.py 1
+./opc_version.py -v
+
+FILES
+~/SCS/conf/opc_conf.json
+
+DOCUMENT EXAMPLE - OUTPUT
+"OPC-N2 FirmwareVer=OPC-018.2..............................BD"
 
 SEE ALSO
-scs_dev/dfe_power
+scs_dev/opc_power
+scs_dev/particulates_sampler
+scs_mfr/opc_conf
 """
 
 import sys
 
-from scs_dev.cmd.cmd_power import CmdPower
+from scs_dev.cmd.cmd_verbose import CmdVerbose
 
 from scs_dfe.particulate.opc_conf import OPCConf
 
@@ -42,14 +47,10 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdPower()
-
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(1)
+    cmd = CmdVerbose()
 
     if cmd.verbose:
-        print("opc_power: %s" % cmd, file=sys.stderr)
+        print("opc_version: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -74,20 +75,17 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if cmd.power:
-            # OPC...
-            opc.power_on()
-            opc.operations_on()
+        opc.power_on()
 
-        else:
-            # OPC...
-            opc.operations_off()
-            opc.power_off()
+        version = opc.firmware()
 
-        if cmd.verbose:
-            print("opc_power: %s" % opc, file=sys.stderr)
-            sys.stderr.flush()
+        if not version:
+            print("opc_version: OPC not available", file=sys.stderr)
+            exit(1)
 
+        print("opc_version: %s" % version, file=sys.stderr)
+
+        opc.power_off()
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
