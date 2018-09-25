@@ -54,6 +54,8 @@ DOCUMENT EXAMPLE
 
 SEE ALSO
 scs_dev/scheduler
+scs_dev/opc_power
+scs_dev/opc_version
 scs_mfr/opc_conf
 scs_mfr/schedule
 scs_mfr/system_id
@@ -86,8 +88,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
-# TODO: see Experiments/System Technical Issues/Weird particulates startup/syslog Apr 13 14:33:51
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -160,10 +160,6 @@ if __name__ == '__main__':
         # run...
 
         sampler.start()
-
-        if cmd.verbose:
-            print("particulates_sampler: %s" % opc_monitor.firmware(), file=sys.stderr)
-            sys.stderr.flush()
 
         for sample in sampler.samples():
             if sample is None:
