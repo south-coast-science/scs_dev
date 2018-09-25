@@ -66,6 +66,8 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
+# TODO: catch network exceptions and continue to retry
+
 # --------------------------------------------------------------------------------------------------------------------
 # subscription handler...
 
@@ -234,19 +236,19 @@ if __name__ == '__main__':
         if not conf.inhibit_publishing:
             while True:
                 try:
-                    client.connect(auth)
-                    reporter.print("connect: done")
-                    time.sleep(2)                           # wait for broker to become available
-                    break
+                    if client.connect(auth):
+                        break
 
-                except TimeoutError:
-                    reporter.print("connect: timeout")
-                    time.sleep(2)                           # wait for retry
+                    reporter.print("connect: failed")
 
                 except OSError as ex:
                     reporter.print("connect: %s" % ex)
-                    exit(1)
 
+                time.sleep(2)                           # wait for retry
+
+        reporter.print("connect: done")
+
+        # process input...
         for message in pub_comms.read():
             # receive...
             try:
@@ -266,21 +268,13 @@ if __name__ == '__main__':
             publication = Publication.construct_from_jdict(datum)
 
             while True:
-                try:
-                    success = client.publish(publication)
+                if client.publish(publication):
+                    reporter.print("done")
+                    reporter.set_led("G")
+                    break
 
-                    if success:
-                        reporter.print("done")
-                        reporter.set_led("G")
-                        break
-
-                    else:
-                        reporter.print("failed")
-                        reporter.set_led("R")
-
-                except TimeoutError:
-                    reporter.print("timeout")
-                    reporter.set_led("R")
+                reporter.print("failed")
+                reporter.set_led("R")
 
                 time.sleep(2)                           # wait for auto-reconnect
 
