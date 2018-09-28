@@ -15,7 +15,6 @@ from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# reporter...
 
 class MQTTReporter(object):
     """
