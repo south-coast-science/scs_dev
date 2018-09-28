@@ -42,7 +42,6 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 
 import json
 import sys
-import time
 
 from collections import OrderedDict
 
@@ -52,13 +51,15 @@ from scs_core.aws.config.project import Project
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
-from scs_core.data.json import JSONify
-from scs_core.data.publication import Publication
+from scs_core.data.message_queue import MessageQueue
 
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
-from scs_dev.reporter.mqtt_reporter import MQTTReporter
+
+from scs_dev.handler.mqtt_reporter import MQTTReporter
+from scs_dev.handler.aws_mqtt_publisher import AWSMQTTPublisher
+from scs_dev.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 
 from scs_host.comms.domain_socket import DomainSocket
 from scs_host.comms.stdio import StdIO
@@ -67,65 +68,13 @@ from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
-# subscription handler...
-
-class AWSMQTTHandler(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, mqtt_reporter, comms=None, echo=False):
-        """
-        Constructor
-        """
-        self.__reporter = mqtt_reporter
-        self.__comms = comms
-        self.__echo = echo
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    # noinspection PyShadowingNames,PyUnusedLocal
-
-    def handle(self, client, userdata, message):
-        payload = message.payload.decode()
-        payload_jdict = json.loads(payload, object_pairs_hook=OrderedDict)
-
-        pub = Publication(message.topic, payload_jdict)
-
-        try:
-            self.__comms.connect()
-            self.__comms.write(JSONify.dumps(pub), False)
-
-        except ConnectionRefusedError:
-            self.__reporter.print("connection refused for %s" % self.__comms.address)
-
-        finally:
-            self.__comms.close()
-
-        if self.__echo:
-            print(JSONify.dumps(pub))
-            sys.stdout.flush()
-
-            self.__reporter.print("received: %s" % JSONify.dumps(pub))
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AWSMQTTHandler:{reporter:%s, comms:%s, echo:%s}" % \
-               (self.__reporter, self.__comms, self.__echo)
-
-
-# --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    client = None
-    pub_comms = None
+    source = None
     reporter = None
+    queue = None
+    publisher = None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -165,7 +114,7 @@ if __name__ == '__main__':
             print("aws_mqtt_client: %s" % auth, file=sys.stderr)
 
         # comms...
-        pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
+        source = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
 
         # reporter...
         reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
@@ -193,10 +142,10 @@ if __name__ == '__main__':
 
             topic = project.channel_path(cmd.channel, system_id)
 
-            # handler...
+            # subscriber...
             sub_comms = DomainSocket(cmd.channel_uds) if cmd.channel_uds else StdIO()
 
-            handler = AWSMQTTHandler(reporter, sub_comms, cmd.echo)
+            handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
 
             subscribers.append(MQTTSubscriber(topic, handler.handle))
 
@@ -204,8 +153,8 @@ if __name__ == '__main__':
             for subscription in cmd.subscriptions:
                 sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
 
-                # handler...
-                handler = AWSMQTTHandler(reporter, sub_comms, cmd.echo)
+                # subscriber...
+                handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
 
                 if cmd.verbose:
                     print("aws_mqtt_client: %s" % handler, file=sys.stderr)
@@ -218,6 +167,17 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("aws_mqtt_client: %s" % client, file=sys.stderr)
 
+        # message buffer...
+        queue = MessageQueue(conf.queue_size)
+        queue.start()
+
+        # message listener...
+        publisher = AWSMQTTPublisher(conf, auth, queue, client, reporter)
+        publisher.start()
+
+        if cmd.verbose:
+            print("aws_mqtt_client: %s" % publisher, file=sys.stderr)
+
         if cmd.verbose:
             sys.stderr.flush()
 
@@ -228,26 +188,10 @@ if __name__ == '__main__':
         reporter.set_led("A")
 
         # data source...
-        pub_comms.connect()
-
-        # MQTT connect...
-        if not conf.inhibit_publishing:
-            while True:
-                try:
-                    if client.connect(auth):
-                        break
-
-                    reporter.print("connect: failed")
-
-                except OSError as ex:
-                    reporter.print("connect: %s" % ex)
-
-                time.sleep(2)                           # wait for retry
-
-        reporter.print("connect: done")
+        source.connect()
 
         # process input...
-        for message in pub_comms.read():
+        for message in source.read():
             # receive...
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
@@ -262,34 +206,25 @@ if __name__ == '__main__':
             if conf.inhibit_publishing:
                 continue
 
-            # publish...
-            publication = Publication.construct_from_jdict(datum)
-
-            while True:
-                if client.publish(publication):
-                    reporter.print("done")
-                    reporter.set_led("G")
-                    break
-
-                reporter.print("failed")
-                reporter.set_led("R")
-
-                time.sleep(2)                           # wait for auto-reconnect
+            queue.enqueue(message)
 
 
-        # ----------------------------------------------------------------------------------------------------------------
-        # end...
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
 
     except KeyboardInterrupt:
         if cmd.verbose:
             print("aws_mqtt_client: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if client:
-            client.disconnect()
+        if source:
+            source.close()
 
-        if pub_comms:
-            pub_comms.close()
+        if publisher:
+            publisher.stop()
+
+        if queue:
+            queue.stop()
 
         if reporter:
             reporter.print("exiting")

@@ -65,7 +65,7 @@ from scs_core.sys.exception_report import ExceptionReport
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
-from scs_dev.reporter.mqtt_reporter import MQTTReporter
+from scs_dev.handler.mqtt_reporter import MQTTReporter
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
