@@ -64,6 +64,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         while True:
             try:
                 if self.__client.connect(self.__auth):
+                    time.sleep(2.0)                             # wait for stabilisation
                     break
 
                 self.__reporter.print("connect: failed")
@@ -71,7 +72,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             except OSError as ex:
                 self.__reporter.print("connect: %s" % ex)
 
-            time.sleep(2.0)                             # wait for retry
+            time.sleep(2.0)                                     # wait for retry
 
         self.__reporter.print("connect: done")
 
