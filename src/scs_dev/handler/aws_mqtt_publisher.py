@@ -85,8 +85,10 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
 
     def __publish_messages(self):
-        if self.__conf.inhibit_publishing:
+        if self.__conf.inhibit_publishing:              # TODO: don't do this here!!
             return
+
+        self.__reporter.print("queue: %s" % self.__queue)
 
         while self.__queue.length() > 0:
             # retrieve message...
