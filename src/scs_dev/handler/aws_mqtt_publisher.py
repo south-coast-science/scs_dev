@@ -43,7 +43,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__connect()
 
             while True:
-                time.sleep(0.1)                                 # don't thrash the CPU
                 self.__publish_messages()
 
         except KeyboardInterrupt:
@@ -108,6 +107,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
+
+                        time.sleep(0.1)                         # don't thrash the CPU
                         break
 
                     self.__reporter.print("failed")
@@ -118,6 +119,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                     self.__reporter.set_led("R")
 
                 time.sleep(2.0)                                 # wait for auto-reconnect
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
