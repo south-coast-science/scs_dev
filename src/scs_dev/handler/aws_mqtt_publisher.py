@@ -89,8 +89,13 @@ class AWSMQTTPublisher(SynchronisedProcess):
         if self.__conf.inhibit_publishing:
             return
 
-        while self.__queue.length() > 0:
-            self.__reporter.print("queue length: %s" % self.__queue.length())
+        while True:
+            queue_length = self.__queue.length()
+
+            if queue_length < 1:
+                break
+
+            self.__reporter.print("queue: %s" % queue_length)
 
             # retrieve message...
             message = self.__queue.oldest()
