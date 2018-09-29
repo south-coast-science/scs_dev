@@ -88,9 +88,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
         if self.__conf.inhibit_publishing:              # TODO: don't do this here!!
             return
 
-        self.__reporter.print("queue: %s" % self.__queue)
-
         while self.__queue.length() > 0:
+            self.__reporter.print("queue: %s" % self.__queue)
+
             # retrieve message...
             message = self.__queue.oldest()
             datum = json.loads(message, object_pairs_hook=OrderedDict)
