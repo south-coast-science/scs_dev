@@ -43,7 +43,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__connect()
 
             while True:
-                time.sleep(0.1)                                 # don't thrash the CPU
                 self.__publish_messages()
 
         except KeyboardInterrupt:
@@ -105,6 +104,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                         elapsed_time = time.time() - start_time
 
                         self.__queue.remove_oldest()
+                        time.sleep(0.1)                         # wait for the queue to catch up
 
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
