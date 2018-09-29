@@ -104,10 +104,11 @@ class AWSMQTTPublisher(SynchronisedProcess):
                         elapsed_time = time.time() - start_time
 
                         self.__queue.remove_oldest()
-                        time.sleep(0.1)                         # wait for the queue to catch up
 
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
+
+                        time.sleep(0.1)                         # don't thrash the CPU
                         break
 
                     self.__reporter.print("failed")
@@ -118,6 +119,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                     self.__reporter.set_led("R")
 
                 time.sleep(2.0)                                 # wait for auto-reconnect
+
 
 
     # ----------------------------------------------------------------------------------------------------------------
