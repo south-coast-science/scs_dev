@@ -44,7 +44,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             while True:
                 self.__publish_messages()
-                time.sleep(1.0)                                 # don't hammer the CPU
+                time.sleep(2.0)                                 # don't hammer the CPU
 
         except KeyboardInterrupt:
             pass
@@ -98,7 +98,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__reporter.print("queue: %s" % queue_length)
 
             # retrieve message...
-            message = self.__queue.oldest()
+            message = self.__queue.next()
             datum = json.loads(message, object_pairs_hook=OrderedDict)
 
             # MQTT publish...
@@ -111,7 +111,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                     if self.__client.publish(publication):
                         elapsed_time = time.time() - start_time
 
-                        self.__queue.remove_oldest()
+                        self.__queue.dequeue()
 
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
@@ -125,7 +125,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
                     self.__reporter.set_led("R")
 
                 time.sleep(2.0)                                 # wait for auto-reconnect
-
 
 
     # ----------------------------------------------------------------------------------------------------------------
