@@ -15,6 +15,9 @@ Likewise, documents gained from subscription are written to stdout, or a specifi
 Subscriptions can be specified either by a project channel name, or by an explicit messaging topic path. Documents
 gained by subscription may be delivered either to stdout, or to a specified Unix domain socket.
 
+In order to operate effectively in environments with unreliable communications, the aws_mqtt_client buffers messages
+prior to publication. The size of the buffer is set by the scs_mfr/mqtt_conf utility.
+
 The aws_mqtt_client utility requires the AWS client authorisation to operate.
 
 Only one MQTT client should run at any one time, per TCP/IP host.
@@ -29,6 +32,10 @@ EXAMPLES
 
 FILES
 ~/SCS/aws/aws_client_auth.json
+~/SCS/aws/certs/NNNNNNNNNN-certificate.pem.crt
+~/SCS/aws/certs/NNNNNNNNNN-private.pem.key
+~/SCS/aws/certs/NNNNNNNNNN-public.pem.key
+~/SCS/aws/certs/root-CA.crt
 
 SEE ALSO
 scs_dev/led_controller
@@ -42,6 +49,7 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 
 import json
 import sys
+import time
 
 from collections import OrderedDict
 

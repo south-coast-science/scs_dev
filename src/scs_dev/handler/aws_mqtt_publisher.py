@@ -43,6 +43,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__connect()
 
             while True:
+                time.sleep(0.1)                                 # don't thrash the CPU
                 self.__publish_messages()
 
         except KeyboardInterrupt:
@@ -64,6 +65,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         while True:
             try:
                 if self.__client.connect(self.__auth):
+                    time.sleep(2.0)                             # wait for stabilisation
                     break
 
                 self.__reporter.print("connect: failed")
@@ -71,7 +73,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             except OSError as ex:
                 self.__reporter.print("connect: %s" % ex)
 
-            time.sleep(2.0)                             # wait for retry
+            time.sleep(2.0)                                     # wait for retry
 
         self.__reporter.print("connect: done")
 
@@ -115,9 +117,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                     self.__reporter.print("publish: %s" % ex)
                     self.__reporter.set_led("R")
 
-                time.sleep(2.0)                         # wait for auto-reconnect
-
-            time.sleep(0.1)                             # wait for queue to synchronize
+                time.sleep(2.0)                                 # wait for auto-reconnect
 
 
     # ----------------------------------------------------------------------------------------------------------------
