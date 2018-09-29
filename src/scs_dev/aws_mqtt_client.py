@@ -49,7 +49,6 @@ When run as a background process, aws_mqtt_client will exit if it has no stdin s
 
 import json
 import sys
-import time
 
 from collections import OrderedDict
 
