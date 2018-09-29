@@ -44,7 +44,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             while True:
                 self.__publish_messages()
-                time.sleep(0.2)                                 # don't hammer the CPU
+                time.sleep(1.0)                                 # don't hammer the CPU
 
         except KeyboardInterrupt:
             pass
