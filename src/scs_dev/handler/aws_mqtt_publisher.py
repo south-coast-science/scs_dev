@@ -44,7 +44,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             while True:
                 self.__publish_messages()
-                time.sleep(0.1)                                 # don't hammer the CPU
+                time.sleep(0.2)                                 # don't hammer the CPU
 
         except KeyboardInterrupt:
             pass
@@ -90,7 +90,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             return
 
         while self.__queue.length() > 0:
-            self.__reporter.print("queue: %s" % self.__queue)
+            self.__reporter.print("queue length: %s" % self.__queue.length())
 
             # retrieve message...
             message = self.__queue.oldest()
