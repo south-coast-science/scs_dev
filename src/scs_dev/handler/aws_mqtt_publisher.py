@@ -108,7 +108,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
 
-                        time.sleep(0.1)                         # don't thrash the CPU
+                        time.sleep(0.2)                         # wait for the queue
                         break
 
                     self.__reporter.print("failed")
