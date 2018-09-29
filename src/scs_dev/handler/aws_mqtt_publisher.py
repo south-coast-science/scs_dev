@@ -44,6 +44,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             while True:
                 self.__publish_messages()
+                time.sleep(0.1)                                 # don't hammer the CPU
 
         except KeyboardInterrupt:
             pass
@@ -85,7 +86,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
 
     def __publish_messages(self):
-        if self.__conf.inhibit_publishing:              # TODO: don't do this here!!
+        if self.__conf.inhibit_publishing:
             return
 
         while self.__queue.length() > 0:
@@ -109,8 +110,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
                         self.__reporter.print("done: %0.3f" % elapsed_time)
                         self.__reporter.set_led("G")
-
-                        time.sleep(0.2)                         # wait for the queue
                         break
 
                     self.__reporter.print("failed")
