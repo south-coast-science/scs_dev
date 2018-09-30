@@ -184,8 +184,6 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("aws_mqtt_client: %s" % publisher, file=sys.stderr)
-
-        if cmd.verbose:
             sys.stderr.flush()
 
 
