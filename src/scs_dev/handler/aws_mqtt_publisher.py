@@ -9,6 +9,8 @@ import time
 
 from collections import OrderedDict
 
+from multiprocessing import Manager
+
 from scs_core.data.publication import Publication
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
@@ -26,7 +28,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
         """
         Constructor
         """
-        SynchronisedProcess.__init__(self)
+        manager = Manager()
+
+        SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
 
         self.__conf = conf
         self.__auth = auth
@@ -132,3 +136,55 @@ class AWSMQTTPublisher(SynchronisedProcess):
     def __str__(self, *args, **kwargs):
         return "AWSMQTTPublisher:{conf:%s, auth:%s, queue:%s, client:%s, reporter:%s}" % \
                (self.__conf, self.__auth, self.__queue, self.__client, self.__reporter)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AWSMQTTReport(object):
+    """
+    classdocs
+    """
+
+    __PUB_TIME =            'pub_time'
+    __QUEUE_LENGTH =        'queue_length'
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, value):
+        """
+        Constructor
+        """
+        self.__value = value
+
+        self.pub_time = 0
+        self.queue_length = 0
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def pub_time(self):
+        return self.__value[self.__PUB_TIME]
+
+
+    @pub_time.setter
+    def pub_time(self, pub_time):
+        self.__value[self.__PUB_TIME] = pub_time
+
+
+    @property
+    def queue_length(self):
+        return self.__value[self.__QUEUE_LENGTH]
+
+
+    @queue_length.setter
+    def queue_length(self, queue_length):
+        self.__value[self.__QUEUE_LENGTH] = queue_length
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AWSMQTTReport:{pub_time:%s, queue_length:%s}}" % \
+               (self.pub_time, self.queue_length)
