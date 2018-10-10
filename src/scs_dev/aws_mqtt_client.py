@@ -200,8 +200,9 @@ if __name__ == '__main__':
             # receive...
             try:
                 datum = json.loads(message, object_pairs_hook=OrderedDict)
-            except ValueError:
-                reporter.print("bad datum: %s" % message)
+
+            except (TypeError, ValueError) as ex:
+                reporter.print("datum: %s" % message)
                 continue
 
             if cmd.echo:
