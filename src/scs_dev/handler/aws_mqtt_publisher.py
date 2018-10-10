@@ -97,13 +97,20 @@ class AWSMQTTPublisher(SynchronisedProcess):
             queue_length = self.__queue.length()
 
             if queue_length < 1:
-                break
+                return
 
             self.__reporter.print("queue: %s" % queue_length)
 
-            # retrieve message...
+            # retrieve...
             message = self.__queue.next()
-            datum = json.loads(message, object_pairs_hook=OrderedDict)
+
+            try:
+                datum = json.loads(message, object_pairs_hook=OrderedDict)
+
+            except (TypeError, ValueError) as ex:
+                self.__reporter.print("datum: %s" % ex)
+                self.__queue.dequeue()
+                return
 
             # MQTT publish...
             publication = Publication.construct_from_jdict(datum)
