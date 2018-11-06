@@ -12,7 +12,8 @@ The path into the JSON document is used to name the column in the header row, wi
 ('.') character.
 
 All the leaf nodes of the first JSON document are included in the CSV. If subsequent JSON documents in the input stream
-contain fields that were not in this first document, these extra fields are ignored.
+contain fields that were not in this first document, these extra fields are ignored. If subsequent JSON documents
+do not contain a field in the header, then this field is given the null value.
 
 SYNOPSIS
 csv_writer.py [-c] [-a] [-e] [-v] [FILENAME]
