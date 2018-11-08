@@ -128,7 +128,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                         self.__reporter.set_led("G")
                         break
 
-                    self.__reporter.print("failed")
+                    self.__reporter.print("failed")     # TODO: attempt a reconnect (at least for diagnostic purposes)
                     self.__reporter.set_led("R")
 
                 except OSError as ex:
