@@ -20,7 +20,7 @@ class CmdCSVReader(object):
 
         # optional...
         self.__parser.add_option("--array", "-a", action="store_true", dest="array", default=False,
-                                 help="output JSON documents as array instead of sequence")
+                                 help="output JSON documents as array instead of a sequence")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
