@@ -30,12 +30,12 @@ scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 DOCUMENT EXAMPLE - OUTPUT
 Sequence mode:
-{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}
-{"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}
+{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:38.394+00:00", "val": {"hmd": 59.7, "tmp": 23.8}}
+{"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:38.394+00:00", "val": {"hmd": 59.8, "tmp": 23.9}}
 
 Array mode:
-[{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}},
-{"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}]
+[{"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:38.394+00:00", "val": {"hmd": 59.7, "tmp": 23.8}},
+{"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:38.394+00:00", "val": {"hmd": 59.8, "tmp": 23.9}}]
 
 SEE ALSO
 scs_dev/csv_writer
@@ -78,18 +78,19 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        if cmd.array:
+            print('[', end='')
+
         first = True
 
         for datum in reader.rows:
             if cmd.array:
                 if first:
-                    prefix = '['
+                    print(datum, end='')
                     first = False
 
                 else:
-                    prefix = ','
-
-                print("%s%s" % (prefix, datum), end='')
+                    print(",%s" % datum, end='')
 
             else:
                 print(datum)
@@ -105,8 +106,9 @@ if __name__ == '__main__':
             print("csv_reader: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if cmd and cmd.array:
-            print(']')
 
         if reader is not None:
+            if cmd is not None and cmd.array:
+                print(']')
+
             reader.close()
