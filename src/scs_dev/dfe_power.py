@@ -27,7 +27,7 @@ import sys
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.board.io import IO
-from scs_dfe.particulate.opc_n2 import OPCN2
+from scs_dfe.particulate.opc_n2.opc_n2 import OPCN2
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
