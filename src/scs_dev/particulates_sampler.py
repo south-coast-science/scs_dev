@@ -29,6 +29,7 @@ The particulates_sampler writes its output to stdout. As for all sensing utiliti
 document with fields for:
 
 * the unique tag of the device (if the system ID is set)
+* a source identifier ("N2" or "N3")
 * the recording date / time in ISO 8601 format
 * a value field containing the sensed values
 
