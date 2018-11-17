@@ -45,11 +45,19 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
+DOCUMENT EXAMPLES
+OPC-N2:
 {"tag": "scs-be2-2", "src": "N2", "rec": "2018-11-11T09:05:10.424+00:00",
 "val": {"per": 10.0, "pm1": 8.1, "pm2p5": 12.1, "pm10": 12.9,
 "bins": [142, 63, 48, 28, 10, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 "mtf1": 42, "mtf3": 44, "mtf5": 46, "mtf7": 59}}
+
+OPC-N3:
+{"tag": "scs-be2-3", "src": "N3", "rec": "2018-11-17T12:06:45.605+00:00",
+"val": {"per": 4.5, "pm1": 12.0, "pm2p5": 19.6, "pm10": 79.0,
+"bins": [708, 27, 8, 3, 3, 3, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+"mtf1": 81, "mtf3": 98, "mtf5": 97, "mtf7": 118,
+"sht": {"hmd": 37.3, "tmp": 24.7}}}
 
 SEE ALSO
 scs_dev/scheduler
