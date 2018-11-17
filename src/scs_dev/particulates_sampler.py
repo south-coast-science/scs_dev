@@ -13,6 +13,7 @@ values are:
 * pm1, pm2p5, pm10 - particulate densities of PM1, PM2.5 and PM10 in ug/m3
 * bins - the particle count, for particles of increasing size
 * mtf1, mtf3, mtf5, mtf7 - time taken for particle movement between system points
+* temperature and humidity at point of sampling (OPC-N3 only)
 
 The particulates_sampler utility operates by launching a background process. This OPCMonitor process reads the OPC
 values at specified intervals (which may be different from the intervals used by the parent process). In addition,
