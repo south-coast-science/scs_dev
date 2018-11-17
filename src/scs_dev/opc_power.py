@@ -61,14 +61,14 @@ if __name__ == '__main__':
         opc_conf = OPCConf.load(Host)
 
         if opc_conf is None:
-            print("opc_version: OPCConf not available.", file=sys.stderr)
+            print("opc_power: OPCConf not available.", file=sys.stderr)
             exit(1)
 
         # OPC...
         opc = opc_conf.opc(Host)
 
         if cmd.verbose:
-            print("opc_version: %s" % opc, file=sys.stderr)
+            print("opc_power: %s" % opc, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
