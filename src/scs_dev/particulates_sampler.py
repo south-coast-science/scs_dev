@@ -13,6 +13,7 @@ values are:
 * pm1, pm2p5, pm10 - particulate densities of PM1, PM2.5 and PM10 in ug/m3
 * bins - the particle count, for particles of increasing size
 * mtf1, mtf3, mtf5, mtf7 - time taken for particle movement between system points
+* temperature and humidity at point of sampling (OPC-N3 only)
 
 The particulates_sampler utility operates by launching a background process. This OPCMonitor process reads the OPC
 values at specified intervals (which may be different from the intervals used by the parent process). In addition,
@@ -45,11 +46,19 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE
+DOCUMENT EXAMPLES
+OPC-N2:
 {"tag": "scs-be2-2", "src": "N2", "rec": "2018-11-11T09:05:10.424+00:00",
 "val": {"per": 10.0, "pm1": 8.1, "pm2p5": 12.1, "pm10": 12.9,
 "bins": [142, 63, 48, 28, 10, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 "mtf1": 42, "mtf3": 44, "mtf5": 46, "mtf7": 59}}
+
+OPC-N3:
+{"tag": "scs-be2-3", "src": "N3", "rec": "2018-11-17T12:06:45.605+00:00",
+"val": {"per": 4.5, "pm1": 12.0, "pm2p5": 19.6, "pm10": 79.0,
+"bins": [708, 27, 8, 3, 3, 3, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+"mtf1": 81, "mtf3": 98, "mtf5": 97, "mtf7": 118,
+"sht": {"hmd": 37.3, "tmp": 24.7}}}
 
 SEE ALSO
 scs_dev/scheduler
@@ -87,6 +96,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
+
+# TODO: make the OPC stop when this process is terminated by systemd
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -141,8 +152,6 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # wait until needed...
-
-        # TODO: why wait for a schedule item?
 
         if cmd.semaphore:
             while True:

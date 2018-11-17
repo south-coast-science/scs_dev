@@ -15,6 +15,8 @@ from scs_core.data.publication import Publication
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 
+# TODO: manually reconnect... if outside keep-alive period?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSMQTTPublisher(SynchronisedProcess):
