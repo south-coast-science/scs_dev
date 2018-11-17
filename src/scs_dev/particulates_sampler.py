@@ -114,7 +114,6 @@ if __name__ == '__main__':
     if cmd.verbose:
         print("particulates_sampler: %s" % cmd, file=sys.stderr)
 
-
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
