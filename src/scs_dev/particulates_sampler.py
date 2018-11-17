@@ -144,8 +144,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # wait until needed...
 
-        # TODO: why wait for a schedule item?
-
         if cmd.semaphore:
             while True:
                 schedule = Schedule.load(Host)
