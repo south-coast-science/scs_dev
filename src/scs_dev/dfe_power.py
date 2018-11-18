@@ -27,11 +27,13 @@ import sys
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.board.io import IO
-from scs_dfe.particulate.opc_n2.opc_n2 import OPCN2
+# from scs_dfe.particulate.opc_n2.opc_n2 import OPCN2
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
+
+# TODO: shut down OPC and NDIR if confs are available
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ if __name__ == '__main__':
             print("dfe_power: %s" % io, file=sys.stderr)
             sys.stderr.flush()
 
-        opc = OPCN2(Host.opc_spi_bus(), Host.opc_spi_device())
+        # opc = OPCN2(Host.opc_spi_bus(), Host.opc_spi_device())
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -78,7 +80,7 @@ if __name__ == '__main__':
 
         else:
             # OPC...
-            opc.operations_off()         # needed because some DFEs do not have OPC power control
+            # opc.operations_off()         # needed because some DFEs do not have OPC power control
 
             # DFE...
             io.gps_power = IO.HIGH
