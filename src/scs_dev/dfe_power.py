@@ -74,7 +74,7 @@ if __name__ == '__main__':
             print("dfe_power: %s" % opc_conf, file=sys.stderr)
 
         # NDIR...
-        ndir_conf = OPCConf.load(Host)
+        ndir_conf = NDIRConf.load(Host)
         ndir = None if ndir_conf is None else ndir_conf.ndir(Host)
 
         if cmd.verbose and ndir_conf:
