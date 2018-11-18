@@ -10,7 +10,7 @@ The dfe_power utility is used to simultaneously switch on and off the power to G
 
 Note: the command is fully-functional only with the South Coast Science digital front-end (DFE) board for BeagleBone.
 For other DFE boards - such as that for Raspberry Pi - the utility is only able to command a operation start / stop to
-the OPC.
+the NDIR and OPC.
 
 SYNOPSIS
 dfe_power.py { 1 | 0 } [-v]
@@ -27,10 +27,15 @@ import sys
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.board.io import IO
-from scs_dfe.particulate.opc_n2.opc_n2 import OPCN2
+from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
+
+try:
+    from scs_ndir.gas.ndir_conf import NDIRConf
+except ImportError:
+    from scs_core.gas.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -61,7 +66,19 @@ if __name__ == '__main__':
             print("dfe_power: %s" % io, file=sys.stderr)
             sys.stderr.flush()
 
-        opc = OPCN2(Host.opc_spi_bus(), Host.opc_spi_device())
+        # OPC...
+        opc_conf = OPCConf.load(Host)
+        opc = None if opc_conf is None else opc_conf.opc(Host)
+
+        if cmd.verbose and opc_conf:
+            print("dfe_power: %s" % opc_conf, file=sys.stderr)
+
+        # NDIR...
+        ndir_conf = OPCConf.load(Host)
+        ndir = None if ndir_conf is None else ndir_conf.ndir(Host)
+
+        if cmd.verbose and ndir_conf:
+            print("dfe_power: %s" % ndir_conf, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -78,7 +95,12 @@ if __name__ == '__main__':
 
         else:
             # OPC...
-            opc.operations_off()         # needed because some DFEs do not have OPC power control
+            if opc:
+                opc.operations_off()         # needed because some DFEs do not have power control
+
+            # NDIR...
+            if ndir:
+                ndir.lamp_run(False)         # needed because some DFEs do not have power control
 
             # DFE...
             io.gps_power = IO.HIGH

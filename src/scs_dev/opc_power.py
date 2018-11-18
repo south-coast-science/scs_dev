@@ -50,6 +50,7 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print("opc_power: %s" % cmd, file=sys.stderr)
+        sys.stderr.flush()
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -66,9 +67,6 @@ if __name__ == '__main__':
 
         # OPC...
         opc = opc_conf.opc(Host)
-
-        if cmd.verbose:
-            print("opc_power: %s" % opc, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
