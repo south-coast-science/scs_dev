@@ -34,12 +34,19 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    # TODO: find a better work-around for OPC-N3 failures
+
     def start(self):
         self.__opc_monitor.start()
 
         # wait for data...
-        while self.__opc_monitor.sample() is None:
-            time.sleep(1.0)
+        while True:
+            time.sleep(10.0)
+
+            if self.__opc_monitor.sample() is None:
+                break
+
+        time.sleep(11.0)
 
 
     def stop(self):
