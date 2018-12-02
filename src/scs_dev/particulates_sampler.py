@@ -98,8 +98,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: make the OPC stop when this process is terminated by systemd
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
