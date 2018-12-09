@@ -11,11 +11,18 @@ from collections import OrderedDict
 
 from multiprocessing import Manager
 
+from scs_core.aws.client.client_auth import ClientAuth
+from scs_core.aws.client.mqtt_client import MQTTClient
+
+from scs_core.comms.mqtt_conf import MQTTConf
+
+from scs_core.data.message_queue import MessageQueue
 from scs_core.data.publication import Publication
+
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
+from scs_dev.handler.mqtt_reporter import MQTTReporter
 
-# TODO: manually reconnect... if outside keep-alive period?
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -24,15 +31,26 @@ class AWSMQTTPublisher(SynchronisedProcess):
     classdocs
     """
 
+    __RETRY_TIME =              2.0         # seconds
+    __CONNECT_TIME =            3.0         # seconds
+    __POST_PUBLISH_TIME =       0.2         # seconds
+
+    __TIMEOUT =                 300.0        # seconds
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, conf, auth, queue, client, reporter):
+    def __init__(self, conf: MQTTConf, auth: ClientAuth, queue: MessageQueue, client: MQTTClient,
+                 reporter: MQTTReporter):
         """
         Constructor
         """
         manager = Manager()
 
         SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
+
+        initial_state = AWSMQTTState.INHIBITED if conf.inhibit_publishing else AWSMQTTState.DISCONNECTED
+        self.__state = AWSMQTTState(initial_state, self.__TIMEOUT, reporter)
 
         self.__conf = conf
         self.__auth = auth
@@ -46,11 +64,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def run(self):
         try:
-            self.__connect()
-
             while True:
-                self.__publish_messages()
-                time.sleep(2.0)                                 # don't hammer the CPU
+                self.__process_messages()
+                time.sleep(self.__RETRY_TIME)                   # don't hammer the CPU
 
         except KeyboardInterrupt:
             pass
@@ -58,43 +74,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def stop(self):
         self.__disconnect()
+        self.__state.set_disconnected()
+
         super().stop()
 
 
     # ----------------------------------------------------------------------------------------------------------------
+    # state management...
 
-    def __connect(self):
-        if self.__conf.inhibit_publishing:
-            return
-
-        # MQTT connect...
-        while True:
-            try:
-                if self.__client.connect(self.__auth):
-                    time.sleep(2.0)                             # wait for stabilisation
-                    break
-
-                self.__reporter.print("connect: failed")
-
-            except OSError as ex:
-                self.__reporter.print("connect: %s" % ex)
-
-            time.sleep(2.0)                                     # wait for retry
-
-        self.__reporter.print("connect: done")
-
-
-    def __disconnect(self):
-        if self.__conf.inhibit_publishing:
-            return
-
-        self.__client.disconnect()
-
-
-    def __publish_messages(self):
-        if self.__conf.inhibit_publishing:
-            return
-
+    def __process_messages(self):
         while True:
             queue_length = self.__queue.length()
 
@@ -103,48 +91,178 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             self.__reporter.print("queue: %s" % queue_length)
 
-            # retrieve...
-            message = self.__queue.next()
+            self.__process_message(self.__next_message())
 
-            try:
-                datum = json.loads(message, object_pairs_hook=OrderedDict)
 
-            except (TypeError, ValueError) as ex:
-                self.__reporter.print("datum: %s" % ex)
+    def __process_message(self, publication):
+        if publication is None:
+            self.__queue.dequeue()
+            return
+
+        state = self.__state.state
+
+        if state == AWSMQTTState.INHIBITED:
+            # discard...
+            self.__queue.dequeue()
+            return
+
+        if state == AWSMQTTState.DISCONNECTED:
+            # connect...
+            if self.__connect():
+                self.__state.set_connected()
+
+                time.sleep(self.__CONNECT_TIME)
+
+            return
+
+        if state == AWSMQTTState.CONNECTED:
+            # publish...
+            if self.__publish_message(publication):
+                self.__state.set_connected()
                 self.__queue.dequeue()
-                return
 
-            # MQTT publish...
-            publication = Publication.construct_from_jdict(datum)
+                time.sleep(self.__POST_PUBLISH_TIME)
 
-            while True:
-                try:
-                    start_time = time.time()
+            else:
+                time.sleep(self.__RETRY_TIME)
 
-                    if self.__client.publish(publication):
-                        elapsed_time = time.time() - start_time
+            return
 
-                        self.__queue.dequeue()
+        else:
+            raise ValueError("unknown AWSMQTTState: %s" % state)
 
-                        self.__reporter.print("done: %0.3f" % elapsed_time)
-                        self.__reporter.set_led("G")
-                        break
 
-                    self.__reporter.print("failed")     # TODO: attempt a reconnect (at least for diagnostic purposes)
-                    self.__reporter.set_led("R")
+    # ----------------------------------------------------------------------------------------------------------------
+    # connection management...
 
-                except OSError as ex:
-                    self.__reporter.print("publish: %s" % ex)
-                    self.__reporter.set_led("R")
+    def __connect(self):
+        try:
+            if self.__client.connect(self.__auth):
+                self.__reporter.print("connect: done")
+                return True
 
-                time.sleep(2.0)                                 # wait for auto-reconnect
+            self.__reporter.print("connect: failed")
+            return False
+
+        except OSError as ex:
+            self.__reporter.print("connect: %s" % ex)
+            return False
+
+
+    def __disconnect(self):
+        self.__client.disconnect()
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # message management...
+
+    def __next_message(self):
+        message = self.__queue.next()
+
+        try:
+            datum = json.loads(message, object_pairs_hook=OrderedDict)
+
+            return Publication.construct_from_jdict(datum)
+
+        except (TypeError, ValueError) as ex:
+            self.__reporter.print("next_message: %s" % ex)
+
+            return None
+
+
+    def __publish_message(self, publication):
+        try:
+            start_time = time.time()
+
+            if self.__client.publish(publication):
+                elapsed_time = time.time() - start_time
+
+                self.__reporter.print("done: %0.3f" % elapsed_time)
+                self.__reporter.set_led("G")
+
+                return True
+
+            self.__reporter.print("failed")
+            self.__reporter.set_led("R")
+
+            return False
+
+        except OSError as ex:
+            self.__reporter.print("publish_message: %s" % ex)
+            self.__reporter.set_led("R")
+
+            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTPublisher:{conf:%s, auth:%s, queue:%s, client:%s, reporter:%s}" % \
-               (self.__conf, self.__auth, self.__queue, self.__client, self.__reporter)
+        return "AWSMQTTPublisher:{state:%s, conf:%s, auth:%s, queue:%s, client:%s, reporter:%s}" % \
+               (self.__state, self.__conf, self.__auth, self.__queue, self.__client, self.__reporter)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+class AWSMQTTState(object):
+    """
+    classdocs
+    """
+
+    INHIBITED =         1
+    DISCONNECTED =      2
+    CONNECTED =         3
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __init__(self, state, timeout, reporter):
+        """
+        Constructor
+        """
+        self.__state = state
+        self.__timeout = timeout
+        self.__reporter = reporter
+
+        self.__latest_success = None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def set_connected(self):
+        self.__latest_success = time.time()
+
+        if self.__state == self.CONNECTED:
+            return
+
+        self.__state = self.CONNECTED
+        self.__reporter.print("-> CONNECTED")
+
+
+    def set_disconnected(self):
+        self.__latest_success = None
+
+        self.__state = self.DISCONNECTED
+        self.__reporter.print("-> DISCONNECTED")
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def state(self):
+        if self.__state != self.CONNECTED:
+            return self.__state
+
+        if time.time() - self.__latest_success > self.__timeout:
+            self.set_disconnected()
+
+        return self.__state
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
+    def __str__(self, *args, **kwargs):
+        return "AWSMQTTState:{state:%s, timeout:%s, latest_success:%s}}" % \
+               (self.__state, self.__timeout, self.__latest_success)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -195,5 +313,4 @@ class AWSMQTTReport(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTReport:{pub_time:%s, queue_length:%s}}" % \
-               (self.pub_time, self.queue_length)
+        return "AWSMQTTReport:{pub_time:%s, queue_length:%s}}" % (self.pub_time, self.queue_length)
