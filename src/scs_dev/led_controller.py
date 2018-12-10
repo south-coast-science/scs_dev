@@ -51,7 +51,7 @@ from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
-# TODO: add -v to systemctl service and monitor why it fails
+# TODO: add -v to systemctl service and monitor why it fails!
 
 # --------------------------------------------------------------------------------------------------------------------
 # input reader...
