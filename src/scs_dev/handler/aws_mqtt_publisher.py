@@ -91,7 +91,11 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             self.__reporter.print("queue: %s" % queue_length)
 
-            self.__process_message(self.__next_message())
+            try:
+                self.__process_message(self.__next_message())
+
+            except Exception as ex:
+                self.__reporter.print("%s" % ex)
 
 
     def __process_message(self, publication):
