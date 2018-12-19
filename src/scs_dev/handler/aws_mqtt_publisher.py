@@ -117,6 +117,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
                 time.sleep(self.__CONNECT_TIME)
 
+            else:
+                time.sleep(self.__RETRY_TIME)
+
             return
 
         if state == AWSMQTTState.CONNECTED:
