@@ -24,6 +24,9 @@ from scs_core.sync.synchronised_process import SynchronisedProcess
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 
 
+# TODO: consider staying in FAULT state until disconnect is successful
+# TODO: alternatively, don't do CONNECT if you are connected
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class AWSMQTTPublisher(SynchronisedProcess):
@@ -33,7 +36,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     __CONNECT_TIME =            3           # seconds
     __RETRY_TIME =              2           # seconds
-    __POST_PUBLISH_TIME =       1           # seconds
+    __POST_PUBLISH_TIME =       0.5         # seconds
 
     __TIMEOUT =                 120         # seconds
 
@@ -256,11 +259,11 @@ class AWSMQTTState(object):
 
     @property
     def state(self):
-        if self.__state != self.CONNECTED:
-            return self.__state
+        # if self.__state != self.CONNECTED:
+        #     return self.__state
 
-        if time.time() - self.__latest_success > self.__timeout:
-            self.set_disconnected()
+        # if time.time() - self.__latest_success > self.__timeout:
+        #     self.set_disconnected()
 
         return self.__state
 
