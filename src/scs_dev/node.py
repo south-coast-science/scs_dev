@@ -71,6 +71,7 @@ if __name__ == '__main__':
         if cmd.array:
             print('[', end='')
 
+        node = None
         first = True
 
         for line in sys.stdin:
@@ -82,7 +83,13 @@ if __name__ == '__main__':
             if cmd.ignore and not datum.has_path(cmd.path):
                 continue
 
-            node = datum.node(cmd.path)
+            try:
+                node = datum.node(cmd.path)
+
+            except KeyError as ex:
+                print("node: KeyError: %s" % ex, file=sys.stderr)
+                exit(1)
+
             document = JSONify.dumps(node)
 
             if cmd.sequence:
