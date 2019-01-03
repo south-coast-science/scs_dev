@@ -69,11 +69,6 @@ class CmdOSIOTopicSubscriber(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -81,5 +76,4 @@ class CmdOSIOTopicSubscriber(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOTopicSubscriber:{topic:%s, channel:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.channel, self.verbose, self.args)
+        return "CmdOSIOTopicSubscriber:{topic:%s, channel:%s, verbose:%s}" % (self.topic, self.channel, self.verbose)

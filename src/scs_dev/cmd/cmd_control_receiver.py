@@ -48,11 +48,6 @@ class CmdControlReceiver(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -60,5 +55,4 @@ class CmdControlReceiver(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdControlReceiver:{receipt:%s, verbose:%s, args:%s}" % \
-                    (self.receipt, self.verbose, self.args)
+        return "CmdControlReceiver:{receipt:%s, verbose:%s}" % (self.receipt, self.verbose)

@@ -46,11 +46,6 @@ class CmdDiskUsage(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -58,4 +53,4 @@ class CmdDiskUsage(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDiskUsage:{volume:%s, verbose:%s, args:%s}" % (self.volume, self.verbose, self.args)
+        return "CmdDiskUsage:{volume:%s, verbose:%s}" % (self.volume, self.verbose)

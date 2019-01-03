@@ -62,11 +62,6 @@ class CmdSocketSender(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -74,5 +69,5 @@ class CmdSocketSender(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdSocketSender:{hostname:%s, port:%d, echo:%s, verbose:%s, args:%s}" % \
-                    (self.hostname, self.port, self.echo, self.verbose, self.args)
+        return "CmdSocketSender:{hostname:%s, port:%d, echo:%s, verbose:%s}" % \
+                    (self.hostname, self.port, self.echo, self.verbose)

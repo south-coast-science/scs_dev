@@ -54,11 +54,6 @@ class CmdCSVLogger(object):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -66,5 +61,4 @@ class CmdCSVLogger(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogger:{echo:%s, verbose:%s, topic:%s, args:%s}" % \
-                    (self.echo, self.verbose, self.topic, self.args)
+        return "CmdCSVLogger:{echo:%s, verbose:%s, topic:%s}" % (self.echo, self.verbose, self.topic)

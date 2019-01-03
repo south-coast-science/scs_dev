@@ -76,11 +76,6 @@ class CmdLED(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -88,5 +83,4 @@ class CmdLED(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLED:{solid:%s, flash:%s, uds:%s, verbose:%s, args:%s}" % \
-               (self.solid, self.flash, self.uds, self.verbose, self.args)
+        return "CmdLED:{solid:%s, flash:%s, uds:%s, verbose:%s}" % (self.solid, self.flash, self.uds, self.verbose)

@@ -32,12 +32,7 @@ class CmdVerbose(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdVerbose:{verbose:%s, args:%s}" % (self.verbose, self.args)
+        return "CmdVerbose:{verbose:%s}" % self.verbose
