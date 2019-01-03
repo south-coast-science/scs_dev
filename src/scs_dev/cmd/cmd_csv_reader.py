@@ -45,11 +45,6 @@ class CmdCSVReader(object):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -57,5 +52,4 @@ class CmdCSVReader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVReader:{array:%s, verbose:%s, filename:%s, args:%s}" % \
-               (self.array, self.verbose, self.filename, self.args)
+        return "CmdCSVReader:{array:%s, verbose:%s, filename:%s}" % (self.array, self.verbose, self.filename)

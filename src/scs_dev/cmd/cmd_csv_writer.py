@@ -53,13 +53,8 @@ class CmdCSVWriter(object):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVWriter:{append:%s, echo:%s, verbose:%s, filename:%s, args:%s}" % \
-                    (self.append, self.echo, self.verbose, self.filename, self.args)
+        return "CmdCSVWriter:{append:%s, echo:%s, verbose:%s, filename:%s}" % \
+                    (self.append, self.echo, self.verbose, self.filename)

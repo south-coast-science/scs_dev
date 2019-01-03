@@ -70,11 +70,6 @@ class CmdNode(object):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -82,5 +77,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{ignore:%s, array:%s, sequence:%s, verbose:%s, path:%s, args:%s}" %  \
-               (self.ignore, self.array, self.sequence, self.verbose, self.path, self.args)
+        return "CmdNode:{ignore:%s, array:%s, sequence:%s, verbose:%s, path:%s}" %  \
+               (self.ignore, self.array, self.sequence, self.verbose, self.path)

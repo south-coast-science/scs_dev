@@ -67,11 +67,6 @@ class CmdAWSTopicPublisher(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -79,5 +74,4 @@ class CmdAWSTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSTopicPublisher:{topic:%s, channel:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.channel, self.verbose, self.args)
+        return "CmdAWSTopicPublisher:{topic:%s, channel:%s, verbose:%s}" % (self.topic, self.channel, self.verbose)

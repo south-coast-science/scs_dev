@@ -40,11 +40,6 @@ class CmdLEDController(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -52,4 +47,4 @@ class CmdLEDController(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLEDController:{uds:%s, verbose:%s, args:%s}" % (self.uds, self.verbose, self.args)
+        return "CmdLEDController:{uds:%s, verbose:%s}" % (self.uds, self.verbose)

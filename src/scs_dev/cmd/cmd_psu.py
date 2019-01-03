@@ -60,11 +60,6 @@ class CmdPSU(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -72,5 +67,4 @@ class CmdPSU(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPSU:{interactive:%s, verbose:%s, args:%s}" % \
-                    (self.interactive, self.verbose, self.args)
+        return "CmdPSU:{interactive:%s, verbose:%s}" % (self.interactive, self.verbose)

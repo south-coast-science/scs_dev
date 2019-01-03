@@ -77,11 +77,6 @@ class CmdOSIOTopicPublisher(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -89,5 +84,5 @@ class CmdOSIOTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOTopicPublisher:{topic:%s, channel:%s, override:%s, verbose:%s, args:%s}" % \
-                    (self.topic, self.channel, self.override, self.verbose, self.args)
+        return "CmdOSIOTopicPublisher:{topic:%s, channel:%s, override:%s, verbose:%s}" % \
+                    (self.topic, self.channel, self.override, self.verbose)

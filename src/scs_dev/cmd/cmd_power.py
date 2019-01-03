@@ -54,11 +54,6 @@ class CmdPower(object):
         return self.__opts.verbose
 
 
-    @property
-    def args(self):
-        return self.__args
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -66,5 +61,4 @@ class CmdPower(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPower:{power:%d, verbose:%s, args:%s}" % \
-                    (self.power, self.verbose, self.args)
+        return "CmdPower:{power:%d, verbose:%s}" % (self.power, self.verbose)
