@@ -148,13 +148,16 @@ class AWSMQTTPublisher(SynchronisedProcess):
         try:
             if self.__client.connect(self.__auth):
                 self.__reporter.print("connect: done")
+                self.__reporter.set_led("G")
                 return True
 
             self.__reporter.print("connect: failed")
+            self.__reporter.set_led("R")
             return False
 
         except OSError as ex:
             self.__reporter.print("connect: %s" % ex)
+            self.__reporter.set_led("R")
             return False
 
 
@@ -188,18 +191,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
                 self.__reporter.print("done: %0.3f" % elapsed_time)
                 self.__reporter.set_led("G")
-
                 return True
 
             self.__reporter.print("failed")
             self.__reporter.set_led("R")
-
             return False
 
         except OSError as ex:
             self.__reporter.print("publish_message: %s" % ex)
             self.__reporter.set_led("R")
-
             return False
 
 
