@@ -24,8 +24,7 @@ from scs_core.sync.synchronised_process import SynchronisedProcess
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 
 
-# TODO: consider staying in FAULT state until disconnect is successful
-# TODO: alternatively, don't do CONNECT if you are connected
+# TODO: remove AWSMQTTState class
 
 # --------------------------------------------------------------------------------------------------------------------
 
