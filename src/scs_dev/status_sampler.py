@@ -42,12 +42,15 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-be2-3", "rec": "2018-06-21T15:03:02.875+00:00", "val": {
-"tz": {"name": "Etc/UCT", "utc-offset": "+00:00"},
-"pos": {"lat": 50.823049, "lng": -0.123024, "alt": 48, "qual": 2},
+{"tag": "scs-bgx-500", "rec": "2019-01-05T12:04:10Z", "val": {
+"tz": {"name": "Europe/London", "utc-offset": "+00:00"},
+"gps": {"pos": [50.8230166, -0.1229759], "elv": 39.9, "qual": 1},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
-"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 31.2},
-"up": {"period": "01-05:29:00.000", "users": 2, "load": {"av1": 0.04, "av5": 0.01, "av15": 0.0}}}}
+"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.6},
+"up": {"period": "00-00:31:00", "users": 1, "load": {"av1": 0.06, "av5": 0.07, "av15": 0.22}},
+"psu": {"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.4, "pwr-in": 15.8,
+"prot-batt": 0.1}}}
+
 
 SEE ALSO
 scs_dev/scheduler
