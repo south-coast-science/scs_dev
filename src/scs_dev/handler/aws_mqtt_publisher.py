@@ -35,7 +35,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     __CONNECT_TIME =            3           # seconds
     __RETRY_TIME =              2           # seconds
-    __POST_PUBLISH_TIME =       0.5         # seconds
+    __POST_PUBLISH_TIME =       0.1         # seconds - was 0.5
 
     __TIMEOUT =                 120         # seconds
 
