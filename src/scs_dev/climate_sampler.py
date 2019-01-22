@@ -9,7 +9,7 @@ DESCRIPTION
 The climate_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
 temperature and relative humidity. Output values are in degrees centigrade and percentage, respectively.
 
-The climate_sampler utility may also read an MPL115A2 digital barometer. Depending on configuration, the
+The climate_sampler utility may also read an NXP MPL115A2 digital barometer. Depending on configuration, the
 report from this sensor includes absolute pressure (pA), and optionally equivalent sea-level pressure (p0) and the
 MPL115A2 temperature. Pressure is reported in kilopascals.
 
