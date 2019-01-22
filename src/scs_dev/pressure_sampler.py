@@ -97,27 +97,29 @@ if __name__ == '__main__':
             print("pressure_sampler: %s" % system_id, file=sys.stderr)
 
         # MPL115A2Conf...
-        barometer_conf = MPL115A2Conf.load(Host)
+        conf = MPL115A2Conf.load(Host)
 
-        altitude = None if barometer_conf is None else barometer_conf.altitude
+        if conf is None:
+            print("pressure_sampler: MPL115A2Conf not available.", file=sys.stderr)
+            exit(1)
 
-        if cmd.verbose and barometer_conf is not None:
-            print("pressure_sampler: %s" % barometer_conf, file=sys.stderr)
+        if cmd.verbose:
+            print("pressure_sampler: %s" % conf, file=sys.stderr)
 
         # MPL115A2Calib...
-        barometer_calib = MPL115A2Calib.load(Host)
+        calib = MPL115A2Calib.load(Host)
 
-        if cmd.verbose and barometer_calib is not None:
-            print("pressure_sampler: %s" % barometer_calib, file=sys.stderr)
+        if cmd.verbose and calib is not None:
+            print("pressure_sampler: %s" % calib, file=sys.stderr)
 
         # MPL115A2...
-        barometer = MPL115A2.construct(barometer_calib)
+        barometer = MPL115A2.construct(calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = PressureSampler(runner, tag, barometer, altitude)
+        sampler = PressureSampler(runner, tag, barometer, conf.altitude)
 
         if cmd.verbose:
             print("pressure_sampler: %s" % sampler, file=sys.stderr)
