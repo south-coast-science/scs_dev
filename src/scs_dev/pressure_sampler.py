@@ -7,8 +7,8 @@ Created on 21 Jun 2018
 
 DESCRIPTION
 The pressure_sampler utility reads a MPL115A2 digital barometer. It reports pressure in kilopascals and temperature
-in Centigrade. The utility always reports the actual atmospheric pressure ("pA"). It additionally reports temperature
-and equivalent pressure at sea level depending on whether the host device's  altitude has been configured and the
+in Centigrade. The utility always reports the actual atmospheric pressure (pA). It additionally reports temperature
+and equivalent pressure at sea level (p0) depending on whether the host device's  altitude has been configured and the
 MPL115A2's temperature sensor has been calibrated.
 
 The pressure_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
