@@ -81,6 +81,10 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    mpl_conf = None
+    altitude = None
+    barometer = None
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -124,6 +128,8 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print("climate_sampler: %s" % mpl_conf, file=sys.stderr)
 
+            altitude = mpl_conf.altitude
+
             # MPL115A2Calib...
             mpl_calib = MPL115A2Calib.load(Host)
 
@@ -133,15 +139,11 @@ if __name__ == '__main__':
             # MPL115A2...
             barometer = MPL115A2.construct(mpl_calib)
 
-        else:
-            mpl_conf = None
-            barometer = None
-
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = ClimateSampler(runner, tag, sht, barometer, mpl_conf.altitude)
+        sampler = ClimateSampler(runner, tag, sht, barometer, altitude)
 
         if cmd.verbose:
             print("climate_sampler: %s" % sampler, file=sys.stderr)
