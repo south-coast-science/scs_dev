@@ -112,8 +112,6 @@ except ImportError:
 
 # TODO: test gases service restart - semaphore problem?
 
-# TODO: needs flag to keep NDIR switched on?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
