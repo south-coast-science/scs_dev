@@ -16,10 +16,13 @@ class CmdSampler(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-f FILE] [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] "
+                                                    "[-v]", version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="file",
+                                 help="override default conf file location")
+
         self.__parser.add_option("--semaphore", "-s", type="string", nargs=1, action="store", dest="semaphore",
                                  help="sampling controlled by SEMAPHORE")
 
@@ -50,6 +53,11 @@ class CmdSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def file(self):
+        return self.__opts.file
+
+
+    @property
     def semaphore(self):
         return self.__opts.semaphore
 
@@ -76,5 +84,5 @@ class CmdSampler(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdSampler:{semaphore:%s, interval:%s, samples:%s, verbose:%s}" % \
-                    (self.semaphore, self.interval, self.samples, self.verbose)
+        return "CmdSampler:{file:%s, semaphore:%s, interval:%s, samples:%s, verbose:%s}" % \
+                    (self.file, self.semaphore, self.interval, self.samples, self.verbose)

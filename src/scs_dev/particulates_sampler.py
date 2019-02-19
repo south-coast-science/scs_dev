@@ -37,10 +37,10 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-particulates_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+particulates_sampler.py [-f FILE] [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
 EXAMPLES
-./particulates_sampler.py -v -s scs-particulates
+./particulates_sampler.py -v -f /home/pi/SCS/conf/opc_conf_cs1.json
 
 FILES
 ~/SCS/conf/opc_conf.json
@@ -127,7 +127,7 @@ if __name__ == '__main__':
             print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
         # OPCConf...
-        opc_conf = OPCConf.load(Host)
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
         if opc_conf is None:
             print("particulates_sampler: OPCConf not available.", file=sys.stderr)
