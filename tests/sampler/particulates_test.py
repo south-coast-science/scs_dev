@@ -32,7 +32,7 @@ try:
     tag = None if system_id is None else system_id.message_tag()
 
     # OPCConf...
-    conf = OPCConf('N2', 5, False)
+    conf = OPCConf('N2', 5, False, None, None)
 
     # OPCMonitor...
     monitor = conf.opc_monitor(Host)
