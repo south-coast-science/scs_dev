@@ -7,8 +7,6 @@ Created on 27 Sep 2018
 import json
 import time
 
-from collections import OrderedDict
-
 from multiprocessing import Manager
 
 from scs_core.aws.client.client_auth import ClientAuth
@@ -172,7 +170,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         message = self.__queue.next()
 
         try:
-            datum = json.loads(message, object_pairs_hook=OrderedDict)
+            datum = json.loads(message)
 
             return Publication.construct_from_jdict(datum)
 

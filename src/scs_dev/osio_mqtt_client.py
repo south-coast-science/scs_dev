@@ -49,8 +49,6 @@ import random
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
@@ -261,7 +259,7 @@ if __name__ == '__main__':
         for message in pub_comms.read():
             # receive...
             try:
-                datum = json.loads(message, object_pairs_hook=OrderedDict)
+                datum = json.loads(message)
             except ValueError:
                 reporter.print("bad datum: %s" % message)
                 continue

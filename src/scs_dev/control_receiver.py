@@ -72,8 +72,6 @@ scs_mfr/shared_secret
 import json
 import sys
 
-from collections import OrderedDict
-
 from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
@@ -143,7 +141,7 @@ if __name__ == '__main__':
         for line in sys.stdin:
             # control...
             try:
-                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+                jdict = json.loads(line)
             except ValueError:
                 continue
 

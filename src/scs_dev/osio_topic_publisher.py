@@ -124,7 +124,7 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             try:
-                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+                jdict = json.loads(line)
             except ValueError:
                 continue
 

@@ -7,8 +7,6 @@ Created on 27 Sep 2018
 import json
 import sys
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
@@ -38,7 +36,7 @@ class AWSMQTTSubscriptionHandler(object):
 
     def handle(self, client, userdata, message):
         payload = message.payload.decode()
-        payload_jdict = json.loads(payload, object_pairs_hook=OrderedDict)
+        payload_jdict = json.loads(payload)
 
         publication = Publication(message.topic, payload_jdict)
 
