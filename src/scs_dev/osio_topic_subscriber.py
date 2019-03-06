@@ -52,8 +52,6 @@ scs_mfr/system_id
 import json
 import sys
 
-from collections import OrderedDict
-
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
@@ -121,7 +119,7 @@ if __name__ == '__main__':
 
         for line in sys.stdin:
             try:
-                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+                jdict = json.loads(line)
             except ValueError:
                 continue
 
