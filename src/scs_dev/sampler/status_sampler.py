@@ -38,6 +38,7 @@ class StatusSampler(Sampler):
         Sampler.__init__(self, runner)
 
         self.__tag = tag
+
         self.__board = board
         self.__gps_monitor = gps_monitor
         self.__psu_monitor = psu_monitor
