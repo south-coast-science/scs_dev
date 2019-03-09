@@ -16,6 +16,7 @@ which are always reported include:
 
 Fields which may be reported include:
 
+* AirNowSiteConf
 * Timezone
 * GPS location
 * Power supply condition
@@ -42,18 +43,17 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-bgx-500", "rec": "2019-01-05T12:04:10Z", "val": {
+{"tag": "scs-ap1-6", "rec": "2019-03-09T12:05:10Z", "val":
+{"airnow": {"site": "850MM123456789", "pocs": {"88102": 2, "88103": 3}},
 "tz": {"name": "Europe/London", "utc-offset": "+00:00"},
-"gps": {"pos": [50.8230166, -0.1229759], "elv": 39.9, "qual": 1},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
-"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.6},
-"up": {"period": "00-00:31:00", "users": 1, "load": {"av1": 0.06, "av5": 0.07, "av15": 0.22}},
-"psu": {"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.4, "pwr-in": 15.8,
-"prot-batt": 0.1}}}
-
+"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
+"tmp": {"brd": 30.2, "hst": 47.8},
+"up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
 
 SEE ALSO
 scs_dev/scheduler
+scs_mfr/airnow_conf
 scs_mfr/gps_conf
 scs_mfr/psu_conf
 scs_mfr/schedule
@@ -68,6 +68,8 @@ https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys
+
+from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
@@ -122,6 +124,12 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("status_sampler: %s" % system_id, file=sys.stderr)
 
+        # AirNow...
+        airnow = AirNowSiteConf.load(Host)
+
+        if airnow and cmd.verbose:
+            print("status_sampler: %s" % airnow, file=sys.stderr)
+
         # board...
         dfe_conf = DFEConf.load(Host)
         board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
@@ -147,7 +155,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = StatusSampler(runner, tag, board, gps_monitor, psu_monitor)
+        sampler = StatusSampler(runner, tag, airnow, board, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print("status_sampler: %s" % sampler, file=sys.stderr)
