@@ -87,6 +87,8 @@ from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 from scs_host.sys.host import Host
 
 
+# TODO: is there a problem with receipt for reboot?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

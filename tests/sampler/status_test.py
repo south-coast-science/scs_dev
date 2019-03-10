@@ -45,7 +45,7 @@ try:
 
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, tag, board, gps_monitor, psu)
+    sampler = StatusSampler(runner, tag, None, board, gps_monitor, psu)
     print(sampler)
     print("-")
 

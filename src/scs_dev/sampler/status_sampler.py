@@ -31,13 +31,15 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, board, gps_monitor, psu_monitor):
+    def __init__(self, runner, tag, airnow, board, gps_monitor, psu_monitor):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
         self.__tag = tag
+        self.__airnow = airnow
+
         self.__board = board
         self.__gps_monitor = gps_monitor
         self.__psu_monitor = psu_monitor
@@ -95,11 +97,12 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return StatusSample(self.__tag, recorded, timezone, position, temperature, schedule, uptime, psu_monitor_status)
+        return StatusSample(self.__tag, self.__airnow, recorded, timezone, position, temperature,
+                            schedule, uptime, psu_monitor_status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, tag:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
-               (self.runner, self.__tag, self.__board, self.__gps_monitor, self.__psu_monitor)
+        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
+               (self.runner, self.__tag, self.__airnow, self.__board, self.__gps_monitor, self.__psu_monitor)
