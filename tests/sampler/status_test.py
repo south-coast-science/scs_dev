@@ -12,7 +12,6 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.status_sampler import StatusSampler
 
-from scs_dfe.board.mcp9808 import MCP9808
 from scs_dfe.gps.gps_conf import GPSConf
 
 from scs_host.bus.i2c import I2C
@@ -32,9 +31,6 @@ try:
     system_id = SystemID.load(Host)
     tag = None if system_id is None else system_id.message_tag()
 
-    # board...
-    board = MCP9808(True)
-
     # GPS...
     gps_conf = GPSConf.load(Host)
     gps_monitor = gps_conf.gps_monitor(Host)
@@ -45,7 +41,7 @@ try:
 
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, tag, None, board, gps_monitor, psu)
+    sampler = StatusSampler(runner, tag, None, None, gps_monitor, psu)
     print(sampler)
     print("-")
 
