@@ -126,14 +126,14 @@ if __name__ == '__main__':
         # run...
 
         for line in sys.stdin:
-            datum = line.strip()
+            jstr = line.strip()
 
-            if datum is None:
+            if jstr is None:
                 break
 
             if logger:
                 try:
-                    logger.write(datum)
+                    logger.write(jstr)
 
                 except OSError as ex:
                     logger.writing_inhibited = True
@@ -143,7 +143,7 @@ if __name__ == '__main__':
 
             # echo...
             if cmd.echo:
-                print(datum)
+                print(jstr)
                 sys.stdout.flush()
 
 
