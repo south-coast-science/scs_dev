@@ -70,16 +70,16 @@ if __name__ == '__main__':
         # run...
 
         for line in sys.stdin:
-            datum = line.strip()
+            jstr = line.strip()
 
-            if datum is None:
+            if jstr is None:
                 break
 
-            writer.write(datum)
+            writer.write(jstr)
 
             # echo...
             if cmd.echo:
-                print(datum)
+                print(jstr)
                 sys.stdout.flush()
 
 
