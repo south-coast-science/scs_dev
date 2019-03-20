@@ -141,15 +141,9 @@ if __name__ == '__main__':
         gps_conf = GPSConf.load(Host)
         gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
 
-        if cmd.verbose and gps_monitor:
-            print("status_sampler: %s" % gps_monitor, file=sys.stderr)
-
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
         psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host)
-
-        if cmd.verbose and psu_monitor:
-            print("status_sampler: %s" % psu_monitor, file=sys.stderr)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
