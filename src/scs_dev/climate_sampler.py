@@ -11,7 +11,7 @@ temperature and relative humidity. Output values are in degrees centigrade and p
 
 The climate_sampler utility may also read an NXP MPL115A2 digital barometer. Depending on configuration, the
 report from this sensor includes absolute pressure (pA), and optionally equivalent sea-level pressure (p0) and the
-MPL115A2 temperature. Pressure is reported in kilopascals.
+MPL115A2 temperature. Pressure is reported in kilo pascals.
 
 The climate_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
 with fields for:
