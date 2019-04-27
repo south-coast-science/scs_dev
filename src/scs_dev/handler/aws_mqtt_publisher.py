@@ -193,7 +193,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__reporter.set_led("G" if success else "R")
 
         except (OSError, operationError, operationTimeoutException) as ex:
-            self.__reporter.print("publish_message: %s" % ex)
+            self.__reporter.print("publish_message: %s" % ex.__class__.__name__)
             self.__reporter.set_led("R")
 
 
