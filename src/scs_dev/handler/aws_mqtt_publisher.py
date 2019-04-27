@@ -9,6 +9,9 @@ import time
 
 from multiprocessing import Manager
 
+from AWSIoTPythonSDK.exception.operationError import operationError
+from AWSIoTPythonSDK.exception.operationTimeoutException import operationTimeoutException
+
 from scs_core.aws.client.client_auth import ClientAuth
 from scs_core.aws.client.mqtt_client import MQTTClient
 
@@ -31,11 +34,12 @@ class AWSMQTTPublisher(SynchronisedProcess):
     classdocs
     """
 
-    __CONNECT_TIME =            3           # seconds
-    __RETRY_TIME =              2           # seconds
-    __POST_PUBLISH_TIME =       0.1         # seconds - was 0.5
+    __QUEUE_INSPECTION_INTERVAL =   2.0
 
-    __TIMEOUT =                 120         # seconds
+    __CONNECT_TIME =                3.0         # seconds
+    __CONNECT_RETRY_TIME =          2.0         # seconds
+
+    __POST_PUBLISH_TIME =           0.1         # seconds - was 0.5
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -50,7 +54,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
 
         initial_state = AWSMQTTState.INHIBITED if conf.inhibit_publishing else AWSMQTTState.DISCONNECTED
-        self.__state = AWSMQTTState(initial_state, self.__TIMEOUT, reporter)
+        self.__state = AWSMQTTState(initial_state, reporter)
 
         self.__conf = conf
         self.__auth = auth
@@ -66,7 +70,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         try:
             while True:
                 self.__process_messages()
-                time.sleep(self.__RETRY_TIME)                   # don't hammer the CPU
+                time.sleep(self.__QUEUE_INSPECTION_INTERVAL)
 
         except KeyboardInterrupt:
             pass
@@ -95,7 +99,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                 self.__process_message(self.__next_message())
 
             except Exception as ex:
-                self.__reporter.print("%s" % ex)
+                self.__reporter.print("process_messages: %s" % ex.__class__.__name__)
 
 
     def __process_message(self, publication):
@@ -114,24 +118,19 @@ class AWSMQTTPublisher(SynchronisedProcess):
             # connect...
             if self.__connect():
                 self.__state.set_connected()
-
                 time.sleep(self.__CONNECT_TIME)
 
             else:
-                time.sleep(self.__RETRY_TIME)
+                time.sleep(self.__CONNECT_RETRY_TIME)
 
             return
 
         if state == AWSMQTTState.CONNECTED:
             # publish...
-            if self.__publish_message(publication):
-                self.__state.set_connected()
-                self.__queue.dequeue()
+            self.__publish_message(publication)
+            self.__queue.dequeue()
 
-                time.sleep(self.__POST_PUBLISH_TIME)
-
-            else:
-                time.sleep(self.__RETRY_TIME)
+            time.sleep(self.__POST_PUBLISH_TIME)
 
             return
 
@@ -144,14 +143,17 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def __connect(self):
         try:
-            if self.__client.connect(self.__auth):
+            success = self.__client.connect(self.__auth)
+
+            if success:
                 self.__reporter.print("connect: done")
                 self.__reporter.set_led("G")
                 return True
 
-            self.__reporter.print("connect: failed")
-            self.__reporter.set_led("R")
-            return False
+            else:
+                self.__reporter.print("connect: failed")
+                self.__reporter.set_led("R")
+                return False
 
         except OSError as ex:
             self.__reporter.print("connect: %s" % ex)
@@ -184,21 +186,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
         try:
             start_time = time.time()
 
-            if self.__client.publish(publication):
-                elapsed_time = time.time() - start_time
+            success = self.__client.publish(publication)
+            elapsed_time = time.time() - start_time
 
-                self.__reporter.print("done: %0.3f" % elapsed_time)
-                self.__reporter.set_led("G")
-                return True
+            self.__reporter.print("paho: %s: %0.3f" % ("1" if success else "0", elapsed_time))
+            self.__reporter.set_led("G" if success else "R")
 
-            self.__reporter.print("failed")
-            self.__reporter.set_led("R")
-            return False
-
-        except OSError as ex:
+        except (OSError, operationError, operationTimeoutException) as ex:
             self.__reporter.print("publish_message: %s" % ex)
             self.__reporter.set_led("R")
-            return False
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -222,12 +218,11 @@ class AWSMQTTState(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, state, timeout, reporter):
+    def __init__(self, state, reporter):
         """
         Constructor
         """
         self.__state = state
-        self.__timeout = timeout
         self.__reporter = reporter
 
         self.__latest_success = None
@@ -256,20 +251,13 @@ class AWSMQTTState(object):
 
     @property
     def state(self):
-        # if self.__state != self.CONNECTED:
-        #     return self.__state
-
-        # if time.time() - self.__latest_success > self.__timeout:
-        #     self.set_disconnected()
-
         return self.__state
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTState:{state:%s, timeout:%s, latest_success:%s}}" % \
-               (self.__state, self.__timeout, self.__latest_success)
+        return "AWSMQTTState:{state:%s, latest_success:%s}}" %  (self.__state, self.__latest_success)
 
 
 # --------------------------------------------------------------------------------------------------------------------
