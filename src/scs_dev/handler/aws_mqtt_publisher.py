@@ -99,7 +99,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                 self.__process_message(self.__next_message())
 
             except Exception as ex:
-                self.__reporter.print("process_messages: %s" % ex.__class__.__name__)
+                self.__reporter.print("pms: %s" % ex.__class__.__name__)
 
 
     def __process_message(self, publication):
@@ -192,8 +192,11 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__reporter.print("paho: %s: %0.3f" % ("1" if success else "0", elapsed_time))
             self.__reporter.set_led("G" if success else "R")
 
-        except (OSError, operationError, operationTimeoutException) as ex:
-            self.__reporter.print("publish_message: %s" % ex.__class__.__name__)
+        except (OSError, operationError) as ex:
+            self.__reporter.print("pm: %s" % ex.__class__.__name__)
+            self.__reporter.set_led("R")
+
+        except operationTimeoutException:
             self.__reporter.set_led("R")
 
 
