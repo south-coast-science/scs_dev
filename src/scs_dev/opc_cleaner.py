@@ -1,36 +1,30 @@
 #!/usr/bin/env python3
 
 """
-Created on 26 Mar 2017
+Created on 3 May 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The opc_power utility is used to apply or remove power to the Alphasense optical particle counter (OPC). The utility
-may be used to save power, or to cycle an OPC whose laser safety system has tripped.
-
-Note: Power to the OPC is also under the control of the OPC monitor process launched by the particulates_sampler
-utility. If running, the OPC monitor process will override the action of this script.
-
-Note: Raspberry Pi systems do not have the ability to control the OPC power. For these systems, the OPC is simply
-commanded to stop or start operations.
+The opc_power utility is used to ...
 
 SYNOPSIS
-opc_power.py { 1 | 0 } [-v]
+opc_cleaner.py
 
 EXAMPLES
-./opc_power.py 1
+./opc_cleaner.py
 
 SEE ALSO
-scs_dev/dfe_power
+scs_dev/opc_power
 scs_dev/opc_version
 scs_dev/particulates_sampler
+scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 """
 
 import sys
 
-from scs_dev.cmd.cmd_power import CmdPower
+from scs_dev.cmd.cmd_opc_cleaner import CmdOPCCleaner
 
 from scs_dfe.particulate.opc_conf import OPCConf
 
@@ -45,14 +39,10 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdPower()
-
-    if not cmd.is_valid():
-        cmd.print_help(sys.stderr)
-        exit(1)
+    cmd = CmdOPCCleaner()
 
     if cmd.verbose:
-        print("opc_power: %s" % cmd, file=sys.stderr)
+        print("opc_cleaner: %s" % cmd, file=sys.stderr)
         sys.stderr.flush()
 
     try:
@@ -62,32 +52,32 @@ if __name__ == '__main__':
         I2C.open(Host.I2C_SENSORS)
 
         # OPCConf...
-        opc_conf = OPCConf.load(Host)
+        conf = OPCConf.load(Host)
 
-        if opc_conf is None:
-            print("opc_power: OPCConf not available.", file=sys.stderr)
+        if conf is None:
+            print("opc_cleaner: OPCConf not available.", file=sys.stderr)
             exit(1)
 
         # OPC...
-        opc = opc_conf.opc(Host)
+        opc = conf.opc(Host)
+
+        if cmd.verbose:
+            print("opc_cleaner: %s" % opc, file=sys.stderr)
+            sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         if cmd.power:
-            # OPC...
             opc.power_on()
             opc.operations_on()
 
-        else:
-            # OPC...
+        opc.clean()
+
+        if cmd.power:
             opc.operations_off()
             opc.power_off()
-
-        if cmd.verbose:
-            print("opc_power: %s" % opc, file=sys.stderr)
-            sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------

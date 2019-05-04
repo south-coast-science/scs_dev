@@ -6,8 +6,6 @@ Created on 20 Oct 2016
 
 import time
 
-from scs_core.sample.particulates_sample import ParticulatesSample
-
 from scs_core.sampler.sampler import Sampler
 
 
@@ -18,7 +16,7 @@ class ParticulatesSampler(Sampler):
     classdocs
     """
 
-    SCHEDULE_SEMAPHORE =    "scs-particulates"        # hard-coded path
+    SCHEDULE_SEMAPHORE =    "scs-particulates"          # hard-coded path
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -34,19 +32,15 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    # TODO: find a better work-around for OPC-N3 failures
-
     def start(self):
         self.__opc_monitor.start()
 
         # wait for data...
         while True:
-            time.sleep(10.0)
-
-            if self.__opc_monitor.sample() is None:
+            if self.__opc_monitor.sample() is not None:
                 break
 
-        time.sleep(11.0)
+            time.sleep(1.0)
 
 
     def stop(self):
@@ -54,12 +48,12 @@ class ParticulatesSampler(Sampler):
 
 
     def sample(self):
-        opc_sample = self.__opc_monitor.sample()
+        datum = self.__opc_monitor.sample()
 
-        if opc_sample is None or opc_sample.is_zero():              # do not return zero samples
+        if datum is None or datum.is_zero():
             return None
 
-        return ParticulatesSample(self.__tag, opc_sample.rec, opc_sample)
+        return datum.as_sample(self.__tag)
 
 
     # ----------------------------------------------------------------------------------------------------------------

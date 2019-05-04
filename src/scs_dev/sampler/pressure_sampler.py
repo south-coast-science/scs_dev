@@ -6,8 +6,6 @@ Created on 21 Jun 2018
 
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_core.sample.pressure_sample import PressureSample
-
 from scs_core.sampler.sampler import Sampler
 
 
@@ -38,11 +36,11 @@ class PressureSampler(Sampler):
 
 
     def sample(self):
-        barometer_sample = self.__barometer.sample(self.__altitude)      # TODO: get the altitude from GPS if necessary
+        datum = self.__barometer.sample(self.__altitude)      # TODO: get the altitude from GPS if necessary
 
-        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
+        rec = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return PressureSample(self.__tag, recorded, barometer_sample)
+        return datum.as_sample(self.__tag, rec)
 
 
     # ----------------------------------------------------------------------------------------------------------------
