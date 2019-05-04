@@ -6,7 +6,7 @@ Created on 3 May 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The opc_power utility is used to
+The opc_power utility is used to ...
 
 SYNOPSIS
 opc_cleaner.py
