@@ -64,7 +64,9 @@ OPC-N3:
 SEE ALSO
 scs_dev/scheduler
 scs_dev/opc_power
+scs_dev/opc_cleaner
 scs_dev/opc_version
+scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 scs_mfr/schedule
 scs_mfr/system_id

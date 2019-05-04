@@ -25,6 +25,7 @@ DOCUMENT EXAMPLE - OUTPUT
 "OPC-N2 FirmwareVer=OPC-018.2..............................BD"
 
 SEE ALSO
+scs_dev/opc_cleaner
 scs_dev/opc_power
 scs_dev/particulates_sampler
 scs_mfr/opc_conf
