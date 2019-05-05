@@ -7,6 +7,7 @@ Created on 27 Sep 2018
 import json
 import time
 
+from collections import OrderedDict
 from multiprocessing import Manager
 
 from AWSIoTPythonSDK.exception.operationError import operationError
@@ -172,7 +173,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         message = self.__queue.next()
 
         try:
-            datum = json.loads(message)
+            datum = json.loads(message, object_pairs_hook=OrderedDict)
 
             return Publication.construct_from_jdict(datum)
 
