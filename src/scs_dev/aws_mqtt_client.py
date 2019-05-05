@@ -197,7 +197,7 @@ if __name__ == '__main__':
         for message in source.read():
             # receive...
             try:
-                datum = json.loads(message)
+                json.loads(message)
 
             except (TypeError, ValueError) as ex:
                 reporter.print("datum: %s" % message)
