@@ -62,10 +62,10 @@ OPC-N3:
 "sht": {"hmd": 37.3, "tmp": 24.7}}}
 
 SEE ALSO
-scs_dev/scheduler
-scs_dev/opc_power
 scs_dev/opc_cleaner
+scs_dev/opc_power
 scs_dev/opc_version
+scs_dev/scheduler
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 scs_mfr/schedule

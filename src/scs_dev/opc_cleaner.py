@@ -17,9 +17,9 @@ EXAMPLES
 SEE ALSO
 scs_dev/opc_power
 scs_dev/opc_version
-scs_dev/particulates_sampler
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
+scs_dev/particulates_sampler
 """
 
 import sys
