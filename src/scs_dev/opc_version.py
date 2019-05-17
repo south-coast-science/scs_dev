@@ -13,7 +13,7 @@ The opc_version utility exits with 1 if no version string could be read, and exi
 command can therefore be used to test for the presence / operability of an OPC.
 
 SYNOPSIS
-opc_version.py [-v]
+opc_version.py [-f FILE] [-v]
 
 EXAMPLES
 ./opc_version.py -v
@@ -33,7 +33,7 @@ scs_mfr/opc_conf
 
 import sys
 
-from scs_dev.cmd.cmd_verbose import CmdVerbose
+from scs_dev.cmd.cmd_opc_version import CmdOPCVersion
 
 from scs_dfe.particulate.opc_conf import OPCConf
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdVerbose()
+    cmd = CmdOPCVersion()
 
     if cmd.verbose:
         print("opc_version: %s" % cmd, file=sys.stderr)
@@ -57,10 +57,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
-
         # OPCConf...
-        opc_conf = OPCConf.load(Host)
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
         if opc_conf is None:
             print("opc_version: OPCConf not available.", file=sys.stderr)
@@ -71,6 +69,11 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("opc_version: %s" % opc, file=sys.stderr)
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
+
+        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------

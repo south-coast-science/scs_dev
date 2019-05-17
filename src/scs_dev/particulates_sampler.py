@@ -62,10 +62,10 @@ OPC-N3:
 "sht": {"hmd": 37.3, "tmp": 24.7}}}
 
 SEE ALSO
-scs_dev/scheduler
-scs_dev/opc_power
 scs_dev/opc_cleaner
+scs_dev/opc_power
 scs_dev/opc_version
+scs_dev/scheduler
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 scs_mfr/schedule
@@ -100,6 +100,7 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -118,8 +119,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
-
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -135,6 +134,11 @@ if __name__ == '__main__':
             print("particulates_sampler: OPCConf not available.", file=sys.stderr)
             exit(1)
 
+        if 0 < cmd.interval < opc_conf.sample_period:
+            print("particulates_sampler: interval (%d) must not be less than opc_conf sample period (%d)." %
+                  (cmd.interval, opc_conf.sample_period), file=sys.stderr)
+            exit(1)
+
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(Host)
 
@@ -148,6 +152,12 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
+
+        # I2C...
+        opc = opc_conf.opc(Host)
+        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
+
+        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------
