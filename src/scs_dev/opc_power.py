@@ -16,7 +16,7 @@ Note: Raspberry Pi systems do not have the ability to control the OPC power. For
 commanded to stop or start operations.
 
 SYNOPSIS
-opc_power.py { 1 | 0 } [-v]
+opc_power.py [-f FILE] { 1 | 0 } [-v]
 
 EXAMPLES
 ./opc_power.py 1
@@ -30,7 +30,7 @@ scs_mfr/opc_conf
 
 import sys
 
-from scs_dev.cmd.cmd_power import CmdPower
+from scs_dev.cmd.cmd_opc_power import CmdOPCPower
 
 from scs_dfe.particulate.opc_conf import OPCConf
 
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdPower()
+    cmd = CmdOPCPower()
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
@@ -59,10 +59,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
-
         # OPCConf...
-        opc_conf = OPCConf.load(Host)
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
         if opc_conf is None:
             print("opc_power: OPCConf not available.", file=sys.stderr)
@@ -70,6 +68,11 @@ if __name__ == '__main__':
 
         # OPC...
         opc = opc_conf.opc(Host)
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
+
+        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------
