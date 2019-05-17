@@ -145,6 +145,9 @@ if __name__ == '__main__':
                 print("aws_mqtt_client: Project not available.", file=sys.stderr)
                 exit(1)
 
+            if cmd.verbose:
+                print("aws_mqtt_client: %s" % project, file=sys.stderr)
+
             topic = project.channel_path(cmd.channel, system_id)
 
             # subscriber...
