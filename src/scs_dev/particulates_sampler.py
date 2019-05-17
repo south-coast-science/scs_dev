@@ -134,7 +134,7 @@ if __name__ == '__main__':
             print("particulates_sampler: OPCConf not available.", file=sys.stderr)
             exit(1)
 
-        if not cmd.interval != 0 and cmd.interval < opc_conf.sample_period:
+        if 0 < cmd.interval < opc_conf.sample_period:
             print("particulates_sampler: interval (%d) must not be less than opc_conf sample period (%d)." %
                   (cmd.interval, opc_conf.sample_period), file=sys.stderr)
             exit(1)
