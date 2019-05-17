@@ -119,8 +119,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
-
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -154,6 +152,12 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
+
+        # I2C...
+        opc = opc_conf.opc(Host)
+        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
+
+        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------

@@ -9,7 +9,7 @@ DESCRIPTION
 The opc_power utility is used to ...
 
 SYNOPSIS
-opc_cleaner.py
+opc_cleaner.py [-f FILE]
 
 EXAMPLES
 ./opc_cleaner.py
@@ -49,10 +49,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
-
         # OPCConf...
-        conf = OPCConf.load(Host)
+        conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
         if conf is None:
             print("opc_cleaner: OPCConf not available.", file=sys.stderr)
@@ -64,6 +62,11 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("opc_cleaner: %s" % opc, file=sys.stderr)
             sys.stderr.flush()
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
+
+        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------
