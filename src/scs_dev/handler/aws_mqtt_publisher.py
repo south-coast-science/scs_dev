@@ -2,6 +2,11 @@
 Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+LED states:
+
+1 (input)       2 (output)
+
 """
 
 import json
@@ -191,7 +196,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
             elapsed_time = time.time() - start_time
 
             self.__reporter.print("paho: %s: %0.3f" % ("1" if success else "0", elapsed_time))
-            self.__reporter.set_led("G" if success else "R")
+            self.__reporter.set_led("G" if success else "A")
 
         except (OSError, operationError) as ex:
             self.__reporter.print("pm: %s" % ex.__class__.__name__)
