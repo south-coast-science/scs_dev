@@ -22,7 +22,7 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, ndir_monitor, sht, afe):
+    def __init__(self, runner, tag, ndir_monitor, sht, electrochems):
         """
         Constructor
         """
@@ -31,7 +31,7 @@ class GasesSampler(Sampler):
         self.__tag = tag
         self.__ndir_monitor = ndir_monitor
         self.__sht = sht
-        self.__afe = afe
+        self.__electrochems = electrochems
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -72,13 +72,13 @@ class GasesSampler(Sampler):
             sht_datum = self.__sht.null_datum()
 
         try:
-            afe_datum = None if self.__afe is None else self.__afe.sample(sht_datum)
+            electrochem_datum = None if self.__electrochems is None else self.__electrochems.sample(sht_datum)
         except OSError:
-            afe_datum = self.__afe.null_datum()
+            electrochem_datum = self.__electrochems.null_datum()
 
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
-        return GasesSample(self.__tag, recorded, ndir_datum, afe_datum, sht_datum)
+        return GasesSample(self.__tag, recorded, ndir_datum, electrochem_datum, sht_datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------

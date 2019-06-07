@@ -155,21 +155,21 @@ if __name__ == '__main__':
         if cmd.verbose and sht_conf:
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
-        # AFE...
+        # electrochems...
         dfe_conf = DFEConf.load(Host)
-        afe = None if dfe_conf is None else dfe_conf.afe(Host)
+        electrochems = None if dfe_conf is None else dfe_conf.electrochems(Host)
 
         if cmd.verbose and dfe_conf:
             print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
 
-        if cmd.verbose and afe:
-            print("gases_sampler: %s" % afe, file=sys.stderr)
+        if cmd.verbose and electrochems:
+            print("gases_sampler: %s" % electrochems, file=sys.stderr)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
+        sampler = GasesSampler(runner, tag, ndir_monitor, sht, electrochems)
 
         if cmd.verbose:
             print("gases_sampler: %s" % sampler, file=sys.stderr)
