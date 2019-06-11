@@ -43,12 +43,12 @@ try:
 
     # AFE...
     dfe_conf = DFEConf.load(Host)
-    afe = dfe_conf.afe(Host)
+    electrochems = dfe_conf.electrochems(Host)
 
     # runner...
     runner = TimedRunner(0)
 
-    sampler = GasesSampler(runner, tag, ndir_monitor, sht, afe)
+    sampler = GasesSampler(runner, tag, ndir_monitor, sht, electrochems)
     print(sampler)
     print("-")
 
