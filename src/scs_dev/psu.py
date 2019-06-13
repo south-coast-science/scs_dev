@@ -6,7 +6,7 @@ Created on 8 Aug 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The psu utility is used to communicate with the South Coast Science power supply (PSU) board for BeagleBone via a
+The psu utility is used to communicate with the South Coast Science power supply (SerialPSU) boards for BeagleBone via a
 serial port connection.
 
 The utility can be used in either of two modes:
