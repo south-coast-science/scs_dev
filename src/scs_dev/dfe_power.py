@@ -26,6 +26,7 @@ import sys
 
 from scs_dev.cmd.cmd_power import CmdPower
 
+from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.board.io import IO
 from scs_dfe.particulate.opc_conf import OPCConf
 
@@ -60,7 +61,14 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        io = IO()
+        # DFE...
+        dfe_conf = DFEConf.load(Host)
+
+        if dfe_conf is None:
+            print("dfe_power: DFEConf not available.", file=sys.stderr)
+            exit(1)
+
+        io = IO(dfe_conf.load_switch_active_high)
 
         if cmd.verbose:
             print("dfe_power: %s" % io, file=sys.stderr)
@@ -68,7 +76,7 @@ if __name__ == '__main__':
 
         # OPC...
         opc_conf = OPCConf.load(Host)
-        opc = None if opc_conf is None else opc_conf.opc(Host)
+        opc = None if opc_conf is None else opc_conf.opc(dfe_conf.load_switch_active_high, Host)
 
         if cmd.verbose and opc_conf:
             print("dfe_power: %s" % opc_conf, file=sys.stderr)
@@ -86,12 +94,12 @@ if __name__ == '__main__':
 
         if cmd.power:
             # DFE...
-            io.gps_power = IO.LOW
-            io.opc_power = IO.LOW
-            io.ndir_power = IO.LOW
+            io.gps_power = True
+            io.opc_power = True
+            io.ndir_power = True
 
-            io.led_red = IO.HIGH
-            io.led_green = IO.HIGH
+            io.led_red = True
+            io.led_green = True
 
         else:
             # OPC...
@@ -103,12 +111,12 @@ if __name__ == '__main__':
                 ndir.lamp_run(False)         # needed because some DFEs do not have power control
 
             # DFE...
-            io.gps_power = IO.HIGH
-            io.opc_power = IO.HIGH
-            io.ndir_power = IO.HIGH
+            io.gps_power = False
+            io.opc_power = False
+            io.ndir_power = False
 
-            io.led_red = IO.LOW
-            io.led_green = IO.LOW
+            io.led_red = False
+            io.led_green = False
 
 
     # ----------------------------------------------------------------------------------------------------------------

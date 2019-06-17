@@ -93,6 +93,8 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_dfe.board.dfe_conf import DFEConf
+
 from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
@@ -126,6 +128,16 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
+        # DFEConf...
+        dfe_conf = DFEConf.load(Host)
+
+        if dfe_conf is None:
+            print("particulates_sampler: DFEConf not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose and dfe_conf:
+            print("particulates_sampler: %s" % dfe_conf, file=sys.stderr)
+
         # OPCConf...
         opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
@@ -139,7 +151,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPCMonitor...
-        opc_monitor = opc_conf.opc_monitor(Host)
+        opc_monitor = opc_conf.opc_monitor(Host, dfe_conf.load_switch_active_high)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -153,7 +165,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # I2C...
-        opc = opc_conf.opc(Host)
+        opc = opc_conf.opc(Host, dfe_conf.load_switch_active_high)
         i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
 
         I2C.open(i2c_bus)

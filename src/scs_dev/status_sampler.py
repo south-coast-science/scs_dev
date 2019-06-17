@@ -130,7 +130,7 @@ if __name__ == '__main__':
         if airnow and cmd.verbose:
             print("status_sampler: %s" % airnow, file=sys.stderr)
 
-        # board...
+        # DFEConf...
         dfe_conf = DFEConf.load(Host)
         board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
+        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host, dfe_conf.load_switch_active_high)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)

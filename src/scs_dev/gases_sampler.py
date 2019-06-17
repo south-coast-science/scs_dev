@@ -141,6 +141,16 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("gases_sampler: %s" % system_id, file=sys.stderr)
 
+        # DFEConf...
+        dfe_conf = DFEConf.load(Host)
+
+        if dfe_conf is None:
+            print("gases_sampler: DFEConf not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose and dfe_conf:
+            print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
+
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
@@ -156,11 +166,7 @@ if __name__ == '__main__':
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
         # electrochems...
-        dfe_conf = DFEConf.load(Host)
-        electrochems = None if dfe_conf is None else dfe_conf.electrochems(Host)
-
-        if cmd.verbose and dfe_conf:
-            print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
+        electrochems = dfe_conf.electrochems(Host)
 
         if cmd.verbose and electrochems:
             print("gases_sampler: %s" % electrochems, file=sys.stderr)

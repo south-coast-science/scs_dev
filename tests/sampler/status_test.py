@@ -33,7 +33,7 @@ try:
 
     # GPS...
     gps_conf = GPSConf.load(Host)
-    gps_monitor = gps_conf.gps_monitor(Host)
+    gps_monitor = gps_conf.gps_monitor(Host, False)
 
     # PSU...
     psu_conf = PSUConf.load(Host)
