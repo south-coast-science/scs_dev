@@ -31,7 +31,7 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, airnow, board, gps_monitor, psu_monitor):
+    def __init__(self, runner, tag, airnow, interface, gps_monitor, psu_monitor):
         """
         Constructor
         """
@@ -40,7 +40,7 @@ class StatusSampler(Sampler):
         self.__tag = tag
         self.__airnow = airnow
 
-        self.__board = board
+        self.__interface = interface
         self.__gps_monitor = gps_monitor
         self.__psu_monitor = psu_monitor
 
@@ -74,13 +74,13 @@ class StatusSampler(Sampler):
 
         # temperature...
         try:
-            board_sample = None if self.__board is None else self.__board.sample()
+            interface_temp = None if self.__interface is None else self.__interface.temp()
         except OSError:
-            board_sample = self.__board.null_datum()
+            interface_temp = self.__interface.null_datum()
 
-        mcu_sample = Host.mcu_temp()
+        mcu_temp = Host.mcu_temp()
 
-        temperature = SystemTemp.construct(board_sample, mcu_sample)
+        temperature = SystemTemp.construct(interface_temp, mcu_temp)
 
         # schedule...
         schedule = Schedule.load(Host)
@@ -104,5 +104,5 @@ class StatusSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, board:%s, gps_monitor:%s, psu_monitor:%s}" % \
-               (self.runner, self.__tag, self.__airnow, self.__board, self.__gps_monitor, self.__psu_monitor)
+        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, interface:%s, gps_monitor:%s, psu_monitor:%s}" % \
+               (self.runner, self.__tag, self.__airnow, self.__interface, self.__gps_monitor, self.__psu_monitor)

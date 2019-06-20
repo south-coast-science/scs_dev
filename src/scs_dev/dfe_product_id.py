@@ -32,10 +32,10 @@ The utility is not currently functional on BeagleBone systems.
 
 from scs_core.data.json import JSONify
 
-from scs_dfe.board.dfe_product_id import DFEProductID
+from scs_dfe.interface.interface_id import InterfaceID
 
 
-# TODO: implement DFEProductID for BeagleBone
+# TODO: implement InterfaceID for BeagleBone
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
-    product_id = DFEProductID()
+    product_id = InterfaceID()
 
 
     # ----------------------------------------------------------------------------------------------------------------

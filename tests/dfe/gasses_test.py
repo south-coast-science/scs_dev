@@ -12,7 +12,7 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.gases_sampler import GasesSampler
 
-from scs_dfe.board.dfe_conf import DFEConf
+from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.climate.sht_conf import SHTConf
 
 from scs_host.bus.i2c import I2C
@@ -42,13 +42,15 @@ try:
     sht = sht_conf.int_sht()
 
     # AFE...
-    dfe_conf = DFEConf.load(Host)
-    electrochems = dfe_conf.electrochems(Host)
+    interface_conf = InterfaceConf.load(Host)
+    interface = interface_conf.interface()
+
+    gas_sensors = interface.gas_sensors(Host)
 
     # runner...
     runner = TimedRunner(0)
 
-    sampler = GasesSampler(runner, tag, ndir_monitor, sht, electrochems)
+    sampler = GasesSampler(runner, tag, ndir_monitor, sht, gas_sensors)
     print(sampler)
     print("-")
 
