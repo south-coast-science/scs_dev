@@ -81,8 +81,8 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.status_sampler import StatusSampler
 
-from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.gps.gps_conf import GPSConf
+from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -130,16 +130,16 @@ if __name__ == '__main__':
         if airnow and cmd.verbose:
             print("status_sampler: %s" % airnow, file=sys.stderr)
 
-        # board...
-        dfe_conf = DFEConf.load(Host)
-        board = None if dfe_conf is None else dfe_conf.board_temp_sensor()
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+        interface = None if interface_conf is None else interface_conf.interface()
 
-        if cmd.verbose and dfe_conf:
-            print("status_sampler: %s" % dfe_conf, file=sys.stderr)
+        if cmd.verbose and interface:
+            print("status_sampler: %s" % interface, file=sys.stderr)
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host)
+        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host, interface.load_switch_active_high)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
@@ -149,7 +149,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = StatusSampler(runner, tag, airnow, board, gps_monitor, psu_monitor)
+        sampler = StatusSampler(runner, tag, airnow, interface, gps_monitor, psu_monitor)
 
         if cmd.verbose:
             print("status_sampler: %s" % sampler, file=sys.stderr)
