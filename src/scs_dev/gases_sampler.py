@@ -26,8 +26,8 @@ order of precedence for temperature sources, depending on availability:
 3. AFE Pt1000 sensor
 
 The presence of the DFE subsystem, and the availability of the Pt1000 sensor on the AFE is specified using the
-scs_mfr/dfe_conf utility. The configuration of Sensirion SHT sensor(s) is specified using the scs_mfr/dfe_conf
-utility.
+scs_mfr/interface_conf utility. The configuration of Sensirion SHT sensor(s) is specified using the
+scs_mfr/interface_conf utility.
 
 Gas concentrations for each sensor are adjusted according to a baseline value, which is specified using the
 scs_mfr/afe_baseline utility. This provides a simple way of managing zero-offset drift for each sensor
@@ -52,7 +52,7 @@ EXAMPLES
 FILES
 ~/SCS/conf/afe_baseline.json
 ~/SCS/conf/afe_calib.json
-~/SCS/conf/dfe_conf.json
+~/SCS/conf/interface_conf.json
 ~/SCS/conf/ndir_conf.json
 ~/SCS/conf/pt1000_calib.json
 ~/SCS/conf/sht_conf.json
@@ -71,7 +71,7 @@ SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
-scs_mfr/dfe_conf
+scs_mfr/interface_conf
 scs_mfr/ndir_conf
 scs_mfr/pt1000_calib
 scs_mfr/schedule
@@ -95,8 +95,8 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
-from scs_dfe.board.dfe_conf import DFEConf
 from scs_dfe.climate.sht_conf import SHTConf
+from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -141,6 +141,22 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("gases_sampler: %s" % system_id, file=sys.stderr)
 
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+
+        if interface_conf is None:
+            print("gases_sampler: InterfaceConf not available.", file=sys.stderr)
+            exit(1)
+
+        interface = interface_conf.interface()
+
+        if interface is None:
+            print("gases_sampler: Interface not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose and interface:
+            print("gases_sampler: %s" % interface, file=sys.stderr)
+
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
@@ -155,21 +171,17 @@ if __name__ == '__main__':
         if cmd.verbose and sht_conf:
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
-        # electrochems...
-        dfe_conf = DFEConf.load(Host)
-        electrochems = None if dfe_conf is None else dfe_conf.electrochems(Host)
+        # gas_sensors...
+        gas_sensors = interface.gas_sensors(Host)
 
-        if cmd.verbose and dfe_conf:
-            print("gases_sampler: %s" % dfe_conf, file=sys.stderr)
-
-        if cmd.verbose and electrochems:
-            print("gases_sampler: %s" % electrochems, file=sys.stderr)
+        if cmd.verbose and gas_sensors:
+            print("gases_sampler: %s" % gas_sensors, file=sys.stderr)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore, False)
 
-        sampler = GasesSampler(runner, tag, ndir_monitor, sht, electrochems)
+        sampler = GasesSampler(runner, tag, ndir_monitor, sht, gas_sensors)
 
         if cmd.verbose:
             print("gases_sampler: %s" % sampler, file=sys.stderr)

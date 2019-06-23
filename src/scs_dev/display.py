@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+
+"""
+Created on 23 Jun 2019
+
+@author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+DESCRIPTION
+The display utility is used to
+
+SYNOPSIS
+display.py [-v]
+
+EXAMPLES
+( cat < /home/pi/SCS/pipes/display_pipe & ) | /home/pi/SCS/scs_dev/src/scs_dev/display.py -v
+
+SEE ALSO
+scs_mfr/display_conf
+"""
+
+import signal
+import sys
+
+from scs_core.display.display_conf import DisplayConf
+
+from scs_dev.cmd.cmd_verbose import CmdVerbose
+
+from scs_host.sys.host import Host
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+def signal_handler(sig, _):
+    if cmd.verbose:
+        print("display: signal: %s" % sig, file=sys.stderr)
+
+    sys.exit(0)
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    cmd = None
+    monitor = None
+
+    try:
+        # ------------------------------------------------------------------------------------------------------------
+        # cmd...
+
+        cmd = CmdVerbose()
+
+        if cmd.verbose:
+            print("display: %s" % cmd, file=sys.stderr)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
+
+        # DisplayConf...
+        conf = DisplayConf.load(Host)
+
+        if conf is None:
+            print("display: DisplayConf not available.", file=sys.stderr)
+            exit(1)
+
+        monitor = conf.monitor()
+
+        if cmd.verbose and monitor:
+            print("display: %s" % monitor, file=sys.stderr)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # run...
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGHUP, signal_handler)
+
+        monitor.start()
+
+        for line in sys.stdin:
+            message = line.strip()
+
+            monitor.set_message(message)
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    # except KeyboardInterrupt:
+    #     if cmd.verbose:
+    #         print("display: KeyboardInterrupt", file=sys.stderr)
+
+    finally:
+        if monitor:
+            monitor.stop()

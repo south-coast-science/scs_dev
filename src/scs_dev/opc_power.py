@@ -32,6 +32,7 @@ import sys
 
 from scs_dev.cmd.cmd_opc_power import CmdOPCPower
 
+from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
@@ -59,6 +60,22 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+
+        if interface_conf is None:
+            print("opc_power: InterfaceConf not available.", file=sys.stderr)
+            exit(1)
+
+        interface = interface_conf.interface()
+
+        if interface is None:
+            print("opc_power: Interface not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose and interface:
+            print("opc_power: %s" % interface, file=sys.stderr)
+
         # OPCConf...
         opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
@@ -67,7 +84,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPC...
-        opc = opc_conf.opc(Host)
+        opc = opc_conf.opc(Host, interface.load_switch_active_high)
 
         # I2C...
         i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus

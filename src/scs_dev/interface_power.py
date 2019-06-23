@@ -6,17 +6,17 @@ Created on 28 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The dfe_power utility is used to simultaneously switch on and off the power to GPS, OPC, NDIR and LED peripherals.
+The interface_power utility is used to simultaneously switch on and off the power to GPS, OPC, NDIR and LED peripherals.
 
 Note: the command is fully-functional only with the South Coast Science digital front-end (DFE) board for BeagleBone.
 For other DFE boards - such as that for Raspberry Pi - the utility is only able to command a operation start / stop to
 the NDIR and OPC.
 
 SYNOPSIS
-dfe_power.py { 1 | 0 } [-v]
+interface_power.py { 1 | 0 } [-v]
 
 EXAMPLES
-./dfe_power.py 0
+./interface_power.py 0
 
 SEE ALSO
 scs_dev/opc_power
@@ -26,7 +26,9 @@ import sys
 
 from scs_dev.cmd.cmd_power import CmdPower
 
-from scs_dfe.board.io import IO
+from scs_dfe.interface.components.io import IO
+from scs_dfe.interface.interface_conf import InterfaceConf
+
 from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
@@ -54,44 +56,53 @@ if __name__ == '__main__':
         exit(2)
 
     if cmd.verbose:
-        print("dfe_power: %s" % cmd, file=sys.stderr)
+        print("interface_power: %s" % cmd, file=sys.stderr)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        io = IO()
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+
+        if interface_conf is None:
+            print("interface_power: InterfaceConf not available.", file=sys.stderr)
+            exit(1)
+
+        interface = interface_conf.interface()
+
+        io = IO(interface.load_switch_active_high)
 
         if cmd.verbose:
-            print("dfe_power: %s" % io, file=sys.stderr)
+            print("interface_power: %s" % io, file=sys.stderr)
             sys.stderr.flush()
 
         # OPC...
         opc_conf = OPCConf.load(Host)
-        opc = None if opc_conf is None else opc_conf.opc(Host)
+        opc = None if opc_conf is None else opc_conf.opc(Host, interface.load_switch_active_high)
 
         if cmd.verbose and opc_conf:
-            print("dfe_power: %s" % opc_conf, file=sys.stderr)
+            print("interface_power: %s" % opc_conf, file=sys.stderr)
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir = None if ndir_conf is None else ndir_conf.ndir(Host)
 
         if cmd.verbose and ndir_conf:
-            print("dfe_power: %s" % ndir_conf, file=sys.stderr)
+            print("interface_power: %s" % ndir_conf, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         if cmd.power:
-            # DFE...
-            io.gps_power = IO.LOW
-            io.opc_power = IO.LOW
-            io.ndir_power = IO.LOW
+            # Interface...
+            io.gps_power = True
+            io.opc_power = True
+            io.ndir_power = True
 
-            io.led_red = IO.HIGH
-            io.led_green = IO.HIGH
+            io.led_red = True
+            io.led_green = True
 
         else:
             # OPC...
@@ -102,13 +113,13 @@ if __name__ == '__main__':
             if ndir:
                 ndir.lamp_run(False)         # needed because some DFEs do not have power control
 
-            # DFE...
-            io.gps_power = IO.HIGH
-            io.opc_power = IO.HIGH
-            io.ndir_power = IO.HIGH
+            # Interface...
+            io.gps_power = False
+            io.opc_power = False
+            io.ndir_power = False
 
-            io.led_red = IO.LOW
-            io.led_green = IO.LOW
+            io.led_red = False
+            io.led_green = False
 
 
     # ----------------------------------------------------------------------------------------------------------------
