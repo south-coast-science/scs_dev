@@ -30,11 +30,22 @@ from scs_host.sys.host import Host
 
 # --------------------------------------------------------------------------------------------------------------------
 
-def signal_handler(sig, _):
-    if cmd.verbose:
-        print("display: signal: %s" % sig, file=sys.stderr)
+def signalled_exit(signum, _):
+    if signum == signal.SIGINT:
+        signal.signal(signal.SIGINT, ORIGINAL_SIGINT)
 
-    sys.exit(0)
+        if cmd.verbose:
+            print("Got SIGINT", file=sys.stderr)
+
+        sys.exit(1)
+
+    if signum == signal.SIGTERM:
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+
+        if cmd.verbose:
+            print("Got SIGTERM", file=sys.stderr)
+
+        sys.exit(0)
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -43,6 +54,11 @@ if __name__ == '__main__':
 
     cmd = None
     monitor = None
+
+    ORIGINAL_SIGINT = signal.getsignal(signal.SIGINT)
+
+    signal.signal(signal.SIGINT, signalled_exit)
+    signal.signal(signal.SIGTERM, signalled_exit)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -73,23 +89,20 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGHUP, signal_handler)
-
         monitor.start()
 
         for line in sys.stdin:
             message = line.strip()
+
+            if cmd.verbose:
+                print("display: %s" % message, file=sys.stderr)
+                sys.stderr.flush()
 
             monitor.set_message(message)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
-
-    # except KeyboardInterrupt:
-    #     if cmd.verbose:
-    #         print("display: KeyboardInterrupt", file=sys.stderr)
 
     finally:
         if monitor:
