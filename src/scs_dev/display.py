@@ -35,7 +35,7 @@ def signalled_exit(signum, _):
         signal.signal(signal.SIGINT, ORIGINAL_SIGINT)
 
         if cmd.verbose:
-            print("Got SIGINT", file=sys.stderr)
+            print("display: SIGINT", file=sys.stderr)
 
         sys.exit(1)
 
@@ -43,7 +43,7 @@ def signalled_exit(signum, _):
         signal.signal(signal.SIGTERM, signal.SIG_IGN)
 
         if cmd.verbose:
-            print("Got SIGTERM", file=sys.stderr)
+            print("display: SIGTERM", file=sys.stderr)
 
         sys.exit(0)
 
