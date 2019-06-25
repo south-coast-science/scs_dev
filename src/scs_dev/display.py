@@ -16,6 +16,10 @@ EXAMPLES
 
 SEE ALSO
 scs_mfr/display_conf
+
+RESOURCES
+sudo apt install libatlas3-base
+sudo apt-get install libopenjp2-7
 """
 
 import signal
