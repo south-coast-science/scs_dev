@@ -33,6 +33,8 @@ from scs_dev.cmd.cmd_verbose import CmdVerbose
 from scs_host.sys.host import Host
 
 
+# TODO: run display cleaning routing on startup
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
