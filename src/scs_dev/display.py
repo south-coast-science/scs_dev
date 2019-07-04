@@ -16,26 +16,24 @@ EXAMPLES
 
 SEE ALSO
 scs_mfr/display_conf
+
+RESOURCES
+sudo apt install libatlas3-base
+sudo apt-get install libopenjp2-7
 """
 
-import signal
 import sys
 
 from scs_core.display.display_conf import DisplayConf
+
+from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
 
 from scs_host.sys.host import Host
 
 
-# --------------------------------------------------------------------------------------------------------------------
-
-def signal_handler(sig, _):
-    if cmd.verbose:
-        print("display: signal: %s" % sig, file=sys.stderr)
-
-    sys.exit(0)
-
+# TODO: run display cleaning routing on startup
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -57,6 +55,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("display", cmd.verbose)
+
         # DisplayConf...
         conf = DisplayConf.load(Host)
 
@@ -73,23 +74,20 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGHUP, signal_handler)
-
         monitor.start()
 
         for line in sys.stdin:
             message = line.strip()
+
+            if cmd.verbose:
+                print("display: %s" % message, file=sys.stderr)
+                sys.stderr.flush()
 
             monitor.set_message(message)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
-
-    # except KeyboardInterrupt:
-    #     if cmd.verbose:
-    #         print("display: KeyboardInterrupt", file=sys.stderr)
 
     finally:
         if monitor:

@@ -14,6 +14,8 @@ from scs_dfe.display.led_state import LEDState
 from scs_host.comms.domain_socket import DomainSocket
 
 
+# TODO: drive the display with UDS - like the LED
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class MQTTReporter(object):

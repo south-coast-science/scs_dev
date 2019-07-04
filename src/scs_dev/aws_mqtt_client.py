@@ -72,6 +72,8 @@ from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 
+# TODO: do not use the queue - publish directly?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
