@@ -6,7 +6,14 @@ Created on 23 Jun 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The display utility is used to
+The display utility is used to set the content for a visual display, such as the Pimoroni Inky pHAT eInk module.
+Content is gained from three sources:
+
+* The display_conf settings
+* System status
+* Input from stdin or a Unix domain socket
+
+In development.
 
 SYNOPSIS
 display.py [-v]
