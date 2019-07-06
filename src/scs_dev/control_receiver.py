@@ -80,6 +80,7 @@ from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.shared_secret import SharedSecret
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
@@ -110,6 +111,9 @@ if __name__ == '__main__':
 
     # ------------------------------------------------------------------------------------------------------------
     # resources...
+
+    # signal handler...
+    SignalledExit.construct("control_receiver", cmd.verbose)
 
     # SystemID...
     system_id = SystemID.load(Host)
@@ -198,6 +202,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("control_receiver: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
+
+    finally:
+        sys.stderr.close()

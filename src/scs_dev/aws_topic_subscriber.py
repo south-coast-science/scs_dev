@@ -56,6 +56,7 @@ from scs_core.aws.config.project import Project
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_subscriber import CmdAWSTopicSubscriber
@@ -84,6 +85,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("aws_topic_subscriber", cmd.verbose)
 
         # topic...
         if cmd.channel:
@@ -133,6 +137,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("aws_topic_subscriber: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
+
+    finally:
+        sys.stderr.close()

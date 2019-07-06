@@ -58,6 +58,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.message_queue import MessageQueue
 
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
@@ -99,6 +100,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("aws_mqtt_client", cmd.verbose)
 
         # MQTTConf
         conf = MQTTConf.load(Host)
@@ -221,9 +225,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("aws_mqtt_client: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if source:
@@ -238,3 +241,5 @@ if __name__ == '__main__':
         if reporter:
             reporter.print("exiting")
             reporter.set_led("A")
+
+        sys.stderr.close()

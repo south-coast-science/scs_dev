@@ -46,6 +46,8 @@ import sys
 
 from scs_core.csv.csv_reader import CSVReader
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 
 
@@ -68,6 +70,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("csv_reader", cmd.verbose)
 
         reader = CSVReader(cmd.filename)
 
@@ -102,14 +107,14 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd and cmd.verbose:
-            print("csv_reader: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
-
         if reader is not None:
             if cmd is not None and cmd.array:
                 print(']')
 
             reader.close()
+
+        sys.stderr.close()

@@ -44,6 +44,8 @@ scs_mfr/schedule
 
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_core.sync.schedule import Schedule
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
@@ -72,6 +74,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("scheduler", cmd.verbose)
+
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -96,10 +101,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("scheduler: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if scheduler:
             scheduler.terminate()
+
+        sys.stderr.close()

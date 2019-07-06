@@ -63,6 +63,7 @@ from scs_core.csv.csv_log import CSVLog
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
@@ -93,6 +94,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("csv_logger", cmd.verbose)
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -150,10 +154,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("csv_logger: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if logger is not None:
             logger.close()
+
+        sys.stderr.close()
