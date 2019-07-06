@@ -56,6 +56,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -87,6 +88,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("pressure_sampler", cmd.verbose)
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -144,9 +148,10 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("pressure_sampler: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         I2C.close()
+
+        sys.stderr.close()

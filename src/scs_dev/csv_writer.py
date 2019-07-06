@@ -37,6 +37,8 @@ import sys
 
 from scs_core.csv.csv_writer import CSVWriter
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_csv_writer import CmdCSVWriter
 
 
@@ -60,11 +62,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("csv_writer", cmd.verbose)
+
         writer = CSVWriter(cmd.filename, cmd.append)
 
         if cmd.verbose:
             print("csv_writer: %s" % writer, file=sys.stderr)
             sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -86,10 +92,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("csv_writer: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if writer is not None:
             writer.close()
+
+        sys.stderr.close()

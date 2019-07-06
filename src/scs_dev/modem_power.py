@@ -23,6 +23,8 @@ import sys
 
 from scs_comms.modem.io import IO
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_host.bus.i2c import I2C
@@ -51,6 +53,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("modem_power", cmd.verbose)
+
         io = IO()
 
         if cmd.verbose:
@@ -75,5 +80,10 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         I2C.close()
+
+        sys.stderr.close()

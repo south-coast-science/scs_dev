@@ -60,6 +60,7 @@ from scs_core.osio.config.project import Project
 from scs_core.osio.manager.topic_manager import TopicManager
 
 from scs_core.sys.exception_report import ExceptionReport
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
@@ -143,6 +144,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("osio_mqtt_client", cmd.verbose)
 
         # MQTTConf
         conf = MQTTConf.load(Host)
@@ -301,9 +305,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("osio_mqtt_client: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if client:
@@ -314,3 +317,5 @@ if __name__ == '__main__':
 
         if reporter:
             reporter.set_led("A")
+
+        sys.stderr.close()

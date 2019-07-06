@@ -6,7 +6,14 @@ Created on 23 Jun 2019
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The display utility is used to
+The display utility is used to set the content for a visual display, such as the Pimoroni Inky pHAT eInk module.
+Content is gained from three sources:
+
+* The display_conf settings
+* System status
+* Input from stdin or a Unix domain socket
+
+In development.
 
 SYNOPSIS
 display.py [-v]
@@ -22,35 +29,18 @@ sudo apt install libatlas3-base
 sudo apt-get install libopenjp2-7
 """
 
-import signal
 import sys
 
 from scs_core.display.display_conf import DisplayConf
+
+from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
 
 from scs_host.sys.host import Host
 
 
-# --------------------------------------------------------------------------------------------------------------------
-
-def signalled_exit(signum, _):
-    if signum == signal.SIGINT:
-        signal.signal(signal.SIGINT, ORIGINAL_SIGINT)
-
-        if cmd.verbose:
-            print("display: SIGINT", file=sys.stderr)
-
-        sys.exit(1)
-
-    if signum == signal.SIGTERM:
-        signal.signal(signal.SIGTERM, signal.SIG_IGN)
-
-        if cmd.verbose:
-            print("display: SIGTERM", file=sys.stderr)
-
-        sys.exit(0)
-
+# TODO: run display cleaning routing on startup
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -58,11 +48,6 @@ if __name__ == '__main__':
 
     cmd = None
     monitor = None
-
-    ORIGINAL_SIGINT = signal.getsignal(signal.SIGINT)
-
-    signal.signal(signal.SIGINT, signalled_exit)
-    signal.signal(signal.SIGTERM, signalled_exit)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -76,6 +61,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("display", cmd.verbose)
 
         # DisplayConf...
         conf = DisplayConf.load(Host)
@@ -108,6 +96,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         if monitor:
             monitor.stop()
+
+        sys.stderr.close()

@@ -33,6 +33,8 @@ scs_mfr/opc_conf
 
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_opc_version import CmdOPCVersion
 
 from scs_dfe.interface.interface_conf import InterfaceConf
@@ -57,6 +59,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("opc_version", cmd.verbose)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -108,8 +113,14 @@ if __name__ == '__main__':
 
         opc.power_off()
 
+
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         I2C.close()
+
+        sys.stderr.close()

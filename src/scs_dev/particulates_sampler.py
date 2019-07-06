@@ -88,6 +88,7 @@ from scs_core.data.localized_datetime import LocalizedDatetime
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
@@ -105,6 +106,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    opc = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -118,6 +120,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -211,12 +216,13 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("particulates_sampler: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if sampler:
             sampler.stop()
 
         I2C.close()
+
+        sys.stderr.close()

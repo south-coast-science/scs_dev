@@ -37,6 +37,8 @@ import os
 import json
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_core.data.json import JSONify
 
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
@@ -120,10 +122,13 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
     try:
+        I2C.open(Host.I2C_SENSORS)
+
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        I2C.open(Host.I2C_SENSORS)
+        # signal handler...
+        SignalledExit.construct("led_controller", cmd.verbose)
 
         # LEDControllerReader...
         reader = LEDControllerReader(cmd.uds)
@@ -170,9 +175,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("led_controller: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if reader:
@@ -182,3 +186,5 @@ if __name__ == '__main__':
             controller.stop()
 
         I2C.close()
+
+        sys.stderr.close()

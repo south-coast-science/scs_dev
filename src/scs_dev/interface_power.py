@@ -24,6 +24,8 @@ scs_dev/opc_power
 
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.interface.components.io import IO
@@ -61,6 +63,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # signal handler...
+        SignalledExit.construct("interface_power", cmd.verbose)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -125,5 +130,10 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         I2C.close()
+
+        sys.stderr.close()
