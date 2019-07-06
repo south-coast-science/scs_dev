@@ -34,6 +34,8 @@ The psu utility is typically locked by the status_sampler utility, and is theref
 
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_host.sys.host import Host
@@ -63,8 +65,12 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resource...
+        # resources...
 
+        # signal handler...
+        SignalledExit.construct("psu", cmd.verbose)
+
+        # PSU...
         psu_conf = PSUConf.load(Host)
         psu = psu_conf.psu(Host)
 
@@ -106,13 +112,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.interactive:
-            print("", file=sys.stderr)
-
-        if cmd.verbose:
-            print("psu: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if psu:
             psu.close()
+
+        sys.stderr.close()

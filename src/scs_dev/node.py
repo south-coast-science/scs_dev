@@ -44,6 +44,8 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_node import CmdNode
 
 
@@ -65,6 +67,13 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
     try:
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
+
+        # signal handler...
+        SignalledExit.construct("node", cmd.verbose)
+
+
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
@@ -117,10 +126,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("node: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if cmd.array:
             print(']')
+
+        sys.stderr.close()

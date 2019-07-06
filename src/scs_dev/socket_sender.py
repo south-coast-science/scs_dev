@@ -32,6 +32,8 @@ may take time to be garbage collected.
 
 import sys
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
 
 from scs_host.comms.network_socket import NetworkSocket
@@ -59,6 +61,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("socket_sender", cmd.verbose)
+
         sender = NetworkSocket(cmd.hostname, cmd.port)
 
         if cmd.verbose:
@@ -82,10 +87,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except KeyboardInterrupt:
-        if cmd.verbose:
-            print("socket_sender: KeyboardInterrupt", file=sys.stderr)
+    except BrokenPipeError:
+        pass
 
     finally:
         if sender:
             sender.close()
+
+        sys.stderr.close()

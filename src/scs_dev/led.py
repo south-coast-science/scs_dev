@@ -44,6 +44,8 @@ import sys
 
 from scs_core.data.json import JSONify
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_led import CmdLED
 
 from scs_dfe.display.led_state import LEDState
@@ -116,6 +118,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # signal handler...
+        SignalledExit.construct("led", cmd.verbose)
+
         writer = LEDWriter(cmd.uds)
 
         if cmd.verbose:
@@ -143,6 +148,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         if writer:
             writer.close()
+
+        sys.stderr.close()

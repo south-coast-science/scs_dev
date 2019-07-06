@@ -96,6 +96,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
+    except BrokenPipeError:
+        pass
+
     finally:
         if monitor:
             monitor.stop()
+
+        sys.stderr.close()
