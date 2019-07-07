@@ -174,10 +174,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
         I2C.close()
-
-        sys.stderr.close()

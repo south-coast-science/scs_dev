@@ -225,7 +225,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
@@ -241,5 +241,3 @@ if __name__ == '__main__':
         if reporter:
             reporter.print("exiting")
             reporter.set_led("A")
-
-        sys.stderr.close()

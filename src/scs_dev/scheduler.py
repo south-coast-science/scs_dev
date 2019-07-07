@@ -101,11 +101,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
         if scheduler:
             scheduler.terminate()
-
-        sys.stderr.close()
