@@ -92,11 +92,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
         if writer is not None:
             writer.close()
-
-        sys.stderr.close()

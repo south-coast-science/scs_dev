@@ -87,11 +87,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
         if sender:
             sender.close()
-
-        sys.stderr.close()

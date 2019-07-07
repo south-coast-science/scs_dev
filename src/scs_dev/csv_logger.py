@@ -154,11 +154,9 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except BrokenPipeError:
+    except (BrokenPipeError, ConnectionResetError):
         pass
 
     finally:
         if logger is not None:
             logger.close()
-
-        sys.stderr.close()
