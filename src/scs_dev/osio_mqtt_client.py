@@ -309,6 +309,9 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("osio_mqtt_client: finishing", file=sys.stderr)
+
         if client:
             client.disconnect()
 

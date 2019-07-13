@@ -100,5 +100,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("display: finishing", file=sys.stderr)
+
         if monitor:
             monitor.stop()

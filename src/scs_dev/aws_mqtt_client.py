@@ -227,6 +227,9 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("aws_mqtt_client: finishing", file=sys.stderr)
+
         if source:
             source.close()
 

@@ -152,5 +152,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("led: finishing", file=sys.stderr)
+
         if writer:
             writer.close()

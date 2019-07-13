@@ -218,6 +218,9 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("gases_sampler: finishing", file=sys.stderr)
+
         if sampler:
             sampler.stop()
 
