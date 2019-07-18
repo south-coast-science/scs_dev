@@ -35,7 +35,8 @@ from scs_core.display.display_conf import DisplayConf
 
 from scs_core.sys.signalled_exit import SignalledExit
 
-from scs_dev.cmd.cmd_verbose import CmdVerbose
+from scs_dev.cmd.cmd_display import CmdDisplay
+from scs_dev.handler.uds_reader import UDSReader
 
 from scs_host.sys.host import Host
 
@@ -53,7 +54,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # cmd...
 
-        cmd = CmdVerbose()
+        cmd = CmdDisplay()
 
         if cmd.verbose:
             print("display: %s" % cmd, file=sys.stderr)
@@ -64,6 +65,9 @@ if __name__ == '__main__':
 
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
+
+        # UDSReader...
+        reader = UDSReader(cmd.uds)
 
         # DisplayConf...
         conf = DisplayConf.load(Host)
@@ -83,9 +87,7 @@ if __name__ == '__main__':
 
         monitor.start()
 
-        for line in sys.stdin:
-            message = line.strip()
-
+        for message in reader.messages():
             if cmd.verbose:
                 print("display: %s" % message, file=sys.stderr)
                 sys.stderr.flush()
