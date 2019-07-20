@@ -54,6 +54,8 @@ from scs_host.sys.host import Host
 from scs_host.sync.scheduler import Scheduler
 
 
+# TODO: control LED start - green, finish - amber
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -105,5 +107,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("scheduler: finishing", file=sys.stderr)
+
         if scheduler:
             scheduler.terminate()

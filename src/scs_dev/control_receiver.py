@@ -206,4 +206,5 @@ if __name__ == '__main__':
         pass
 
     finally:
-        pass
+        if cmd.verbose:
+            print("control_receiver: finishing", file=sys.stderr)

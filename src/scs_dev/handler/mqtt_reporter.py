@@ -2,6 +2,20 @@
 Created on 5 Jul 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+short
+-----
+off         no power
+amber       scheduler stopped
+green       scheduler running
+red         unused
+
+long
+-----
+off         no power
+amber       MQTT client stopped (usually short-lived)
+green       MQTT client publishing (may have queue)
+red         MQTT client publish fail
 """
 
 import sys
@@ -15,6 +29,8 @@ from scs_host.comms.domain_socket import DomainSocket
 
 
 # TODO: drive the display with UDS - like the LED
+# TODO: report whether queue length > 10 on display
+# TODO: report actual queue length to status sampler
 
 # --------------------------------------------------------------------------------------------------------------------
 

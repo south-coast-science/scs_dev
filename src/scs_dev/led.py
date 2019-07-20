@@ -25,8 +25,6 @@ the named Unix domain socket in a format that is compatible with the led_control
 
 If the Unix domain socket has no listener, the led utility discards messages.
 
-Note: the led utility is not currently supported on Raspberry Pi systems.
-
 SYNOPSIS
 led.py { -s { R | A | G | 0 } | -f { R | A | G | 0 } { R | A | G | 0 } } [-u UDS] [-v]
 
@@ -47,53 +45,9 @@ from scs_core.data.json import JSONify
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led import CmdLED
+from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_dfe.display.led_state import LEDState
-
-from scs_host.comms.domain_socket import DomainSocket
-
-
-# --------------------------------------------------------------------------------------------------------------------
-# output writer...
-
-class LEDWriter(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, uds_name):
-        """
-        Constructor
-        """
-        self.__uds = DomainSocket(uds_name) if uds_name else None
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def connect(self):
-        if self.__uds:
-            self.__uds.connect(False)
-
-
-    def close(self):
-        if self.__uds:
-            self.__uds.close()
-
-
-    def write(self, message):
-        if self.__uds:
-            self.__uds.write(message, False)
-
-        else:
-            print(message)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "LEDWriter:{uds:%s}" % self.__uds
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -121,7 +75,7 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("led", cmd.verbose)
 
-        writer = LEDWriter(cmd.uds)
+        writer = UDSWriter(cmd.uds)
 
         if cmd.verbose:
             print("led: %s" % writer, file=sys.stderr)
@@ -152,5 +106,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("led: finishing", file=sys.stderr)
+
         if writer:
             writer.close()

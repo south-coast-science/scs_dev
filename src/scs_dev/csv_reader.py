@@ -111,6 +111,9 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("csv_reader: finishing", file=sys.stderr)
+
         if reader is not None:
             if cmd is not None and cmd.array:
                 print(']')
