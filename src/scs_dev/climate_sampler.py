@@ -178,4 +178,7 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("climate_sampler: finishing", file=sys.stderr)
+
         I2C.close()

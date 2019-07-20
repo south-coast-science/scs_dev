@@ -220,6 +220,9 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("particulates_sampler: finishing", file=sys.stderr)
+
         if sampler:
             sampler.stop()
 

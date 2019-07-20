@@ -96,5 +96,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("csv_writer: finishing", file=sys.stderr)
+
         if writer is not None:
             writer.close()

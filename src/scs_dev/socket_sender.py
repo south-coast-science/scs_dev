@@ -91,5 +91,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("socket_sender: finishing", file=sys.stderr)
+
         if sender:
             sender.close()

@@ -1,5 +1,5 @@
 """
-Created on 13 May 2018
+Created on 13 Jul 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,7 +9,7 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdLEDController(object):
+class CmdDisplay(object):
     """unix command line handler"""
 
     def __init__(self):
@@ -20,7 +20,7 @@ class CmdLEDController(object):
 
         # optional...
         self.__parser.add_option("--uds", "-u", type="string", nargs=1, action="store", dest="uds",
-                                 help="receive  state updates from Unix domain socket (instead of stdin)")
+                                 help="receive messages from Unix domain socket (instead of stdin)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -47,4 +47,4 @@ class CmdLEDController(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdLEDController:{uds:%s, verbose:%s}" % (self.uds, self.verbose)
+        return "CmdDisplay:{uds:%s, verbose:%s}" % (self.uds, self.verbose)

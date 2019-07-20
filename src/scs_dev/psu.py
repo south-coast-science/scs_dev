@@ -116,5 +116,8 @@ if __name__ == '__main__':
         pass
 
     finally:
+        if cmd.verbose:
+            print("psu: finishing", file=sys.stderr)
+
         if psu:
             psu.close()
