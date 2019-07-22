@@ -141,7 +141,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("aws_topic_publisher: finishing", file=sys.stderr)
 
         if cmd.verbose:
