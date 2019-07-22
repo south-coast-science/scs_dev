@@ -86,6 +86,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        reader.connect()
+
         monitor.start()
 
         for message in reader.messages():
@@ -98,9 +100,6 @@ if __name__ == '__main__':
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
-
-    except KeyboardInterrupt:
-        pass
 
     except (BrokenPipeError, ConnectionResetError):
         pass
