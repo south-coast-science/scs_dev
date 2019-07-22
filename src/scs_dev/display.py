@@ -41,8 +41,6 @@ from scs_dev.handler.uds_reader import UDSReader
 from scs_host.sys.host import Host
 
 
-# TODO: run display cleaning routing on startup
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
