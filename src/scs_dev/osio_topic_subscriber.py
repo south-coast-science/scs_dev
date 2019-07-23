@@ -73,6 +73,7 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdOSIOTopicSubscriber()
+
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit(2)
@@ -141,5 +142,5 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("osio_topic_subscriber: finishing", file=sys.stderr)

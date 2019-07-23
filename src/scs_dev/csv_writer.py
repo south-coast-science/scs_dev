@@ -46,19 +46,17 @@ from scs_dev.cmd.cmd_csv_writer import CmdCSVWriter
 
 if __name__ == '__main__':
 
-    cmd = None
     writer = None
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdCSVWriter()
+
+    if cmd.verbose:
+        print("csv_writer: %s" % cmd, file=sys.stderr)
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # cmd...
-
-        cmd = CmdCSVWriter()
-
-        if cmd.verbose:
-            print("csv_writer: %s" % cmd, file=sys.stderr)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -96,7 +94,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("csv_writer: finishing", file=sys.stderr)
 
         if writer is not None:
