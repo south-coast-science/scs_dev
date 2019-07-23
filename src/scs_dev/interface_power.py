@@ -134,7 +134,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("interface_power: finishing", file=sys.stderr)
 
         I2C.close()

@@ -47,23 +47,21 @@ from scs_psu.psu.psu_conf import PSUConf
 
 if __name__ == '__main__':
 
-    cmd = None
     psu = None
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdPSU()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
+    if cmd.verbose:
+        print("psu: %s" % cmd, file=sys.stderr)
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # cmd...
-
-        cmd = CmdPSU()
-
-        if not cmd.is_valid():
-            cmd.print_help(sys.stderr)
-            exit(2)
-
-        if cmd.verbose:
-            print("psu: %s" % cmd, file=sys.stderr)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -116,7 +114,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("psu: finishing", file=sys.stderr)
 
         if psu:

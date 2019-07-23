@@ -55,19 +55,17 @@ from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 
 if __name__ == '__main__':
 
-    cmd = None
     reader = None
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdCSVReader()
+
+    if cmd.verbose:
+        print("csv_reader: %s" % cmd, file=sys.stderr)
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # cmd...
-
-        cmd = CmdCSVReader()
-
-        if cmd.verbose:
-            print("csv_reader: %s" % cmd, file=sys.stderr)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -111,7 +109,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("csv_reader: finishing", file=sys.stderr)
 
         if reader is not None:

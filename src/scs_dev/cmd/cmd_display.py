@@ -16,7 +16,7 @@ class CmdDisplay(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-u UDS] [-v] ", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-u UDS] [-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--uds", "-u", type="string", nargs=1, action="store", dest="uds",

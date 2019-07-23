@@ -60,19 +60,17 @@ from scs_host.sync.scheduler import Scheduler
 
 if __name__ == '__main__':
 
-    cmd = None
     scheduler = None
 
+    # ----------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdVerbose()
+
+    if cmd.verbose:
+        print("scheduler: %s" % cmd, file=sys.stderr)
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # cmd...
-
-        cmd = CmdVerbose()
-
-        if cmd.verbose:
-            print("scheduler: %s" % cmd, file=sys.stderr)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -107,7 +105,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("scheduler: finishing", file=sys.stderr)
 
         if scheduler:

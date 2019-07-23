@@ -41,25 +41,21 @@ from scs_dev.handler.uds_reader import UDSReader
 from scs_host.sys.host import Host
 
 
-# TODO: run display cleaning routing on startup
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
-    cmd = None
     monitor = None
 
+    # ------------------------------------------------------------------------------------------------------------
+    # cmd...
+
+    cmd = CmdDisplay()
+
+    if cmd.verbose:
+        print("display: %s" % cmd, file=sys.stderr)
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # cmd...
-
-        cmd = CmdDisplay()
-
-        if cmd.verbose:
-            print("display: %s" % cmd, file=sys.stderr)
-
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -68,6 +64,9 @@ if __name__ == '__main__':
 
         # UDSReader...
         reader = UDSReader(cmd.uds)
+
+        if cmd.verbose:
+            print("display: %s" % reader, file=sys.stderr)
 
         # DisplayConf...
         conf = DisplayConf.load(Host)
@@ -84,6 +83,8 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        reader.connect()
 
         monitor.start()
 
@@ -102,7 +103,7 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd.verbose:
+        if cmd and cmd.verbose:
             print("display: finishing", file=sys.stderr)
 
         if monitor:

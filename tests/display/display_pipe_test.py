@@ -4,6 +4,8 @@
 Created on 23 Jun 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+(cat /home/pi/SCS/pipes/display_pipe &) | ./display.py -v
 """
 
 import sys
