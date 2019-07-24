@@ -65,7 +65,7 @@ if __name__ == '__main__':
         # UDSReader...
         reader = UDSReader(cmd.uds)
 
-        if cmd.verbose:
+        if cmd.verbose and cmd.uds:
             print("display: %s" % reader, file=sys.stderr)
 
         # DisplayConf...
