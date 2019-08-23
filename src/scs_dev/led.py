@@ -47,7 +47,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_dev.cmd.cmd_led import CmdLED
 from scs_dev.handler.uds_writer import UDSWriter
 
-from scs_dfe.display.led_state import LEDState
+from scs_dfe.led.led_state import LEDState
 
 
 # --------------------------------------------------------------------------------------------------------------------

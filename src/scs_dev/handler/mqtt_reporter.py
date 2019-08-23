@@ -23,7 +23,7 @@ import sys
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
-from scs_dfe.display.led_state import LEDState
+from scs_dfe.led.led_state import LEDState
 
 from scs_host.comms.domain_socket import DomainSocket
 
