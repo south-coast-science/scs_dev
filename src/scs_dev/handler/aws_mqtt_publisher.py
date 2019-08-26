@@ -2,11 +2,6 @@
 Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-LED states:
-
-1 (input)       2 (output)
-
 """
 
 import json
@@ -25,13 +20,12 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.message_queue import MessageQueue
 from scs_core.data.publication import Publication
+from scs_core.data.queue_report import QueueReport
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 
-
-# TODO: remove AWSMQTTState class
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -98,6 +92,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             if queue_length < 1:
                 return
+
+            if self.__conf.report_file:
+                QueueReport(queue_length).save(self.__conf.report_file)
 
             self.__reporter.print("queue: %s" % queue_length)
 
