@@ -62,6 +62,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
         self.__client = client
         self.__reporter = reporter
 
+        self.__report = QueueReport(0, False)
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # SynchronisedProcess implementation...
@@ -88,15 +90,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def __process_messages(self):
         while True:
-            queue_length = self.__queue.length()
+            self.__report.length = self.__queue.length()
 
-            if queue_length < 1:
+            if self.__report.length < 1:
                 return
 
             if self.__conf.report_file:
-                QueueReport(queue_length).save(self.__conf.report_file)
+                self.__report.save(self.__conf.report_file)
 
-            self.__reporter.print("queue: %s" % queue_length)
+            self.__reporter.print("queue: %s" % self.__report.length)
 
             try:
                 self.__process_message(self.__next_message())
@@ -189,11 +191,11 @@ class AWSMQTTPublisher(SynchronisedProcess):
         try:
             start_time = time.time()
 
-            success = self.__client.publish(publication)
+            self.__report.publish_success = self.__client.publish(publication)
             elapsed_time = time.time() - start_time
 
-            self.__reporter.print("paho: %s: %0.3f" % ("1" if success else "0", elapsed_time))
-            self.__reporter.set_led("G" if success else "A")
+            self.__reporter.print("paho: %s: %0.3f" % ("1" if self.__report.publish_success else "0", elapsed_time))
+            self.__reporter.set_led("G" if self.__report.publish_success else "A")
 
         except (OSError, operationError) as ex:
             self.__reporter.print("pm: %s" % ex.__class__.__name__)
@@ -206,8 +208,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTPublisher:{state:%s, conf:%s, auth:%s, queue:%s, client:%s, reporter:%s}" % \
-               (self.__state, self.__conf, self.__auth, self.__queue, self.__client, self.__reporter)
+        return "AWSMQTTPublisher:{state:%s, conf:%s, auth:%s, queue:%s, client:%s, reporter:%s, report:%s}" % \
+               (self.__state, self.__conf, self.__auth, self.__queue, self.__client, self.__reporter, self.__report)
 
 
 # --------------------------------------------------------------------------------------------------------------------
