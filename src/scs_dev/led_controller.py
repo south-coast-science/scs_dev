@@ -44,8 +44,10 @@ from scs_core.data.json import JSONify
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
 from scs_dev.handler.uds_reader import UDSReader
 
-from scs_dfe.display.led_controller import LEDController
-from scs_dfe.display.led_state import LEDState
+from scs_dfe.interface.interface_conf import InterfaceConf
+
+from scs_dfe.led.led_controller import LEDController
+from scs_dfe.led.led_state import LEDState
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -82,8 +84,21 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("led_controller: %s" % reader, file=sys.stderr)
 
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+
+        if interface_conf is None:
+            print("led_controller: InterfaceConf not available.", file=sys.stderr)
+            exit(1)
+
+        interface = interface_conf.interface()
+
+        if interface is None:
+            print("led_controller: Interface not available.", file=sys.stderr)
+            exit(1)
+
         # LEDController..
-        controller = LEDController()
+        controller = LEDController(interface.led())
 
         if cmd.verbose:
             print("led_controller: %s" % controller, file=sys.stderr)
