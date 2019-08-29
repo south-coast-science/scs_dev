@@ -31,6 +31,8 @@ sudo apt-get install libopenjp2-7
 
 import sys
 
+from scs_core.comms.mqtt_conf import MQTTConf
+
 from scs_core.display.display_conf import DisplayConf
 
 from scs_core.sys.signalled_exit import SignalledExit
@@ -62,6 +64,9 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
 
+        # MQTTConf
+        mqtt_conf = MQTTConf.load(Host)
+
         # UDSReader...
         reader = UDSReader(cmd.uds)
 
@@ -75,7 +80,7 @@ if __name__ == '__main__':
             print("display: DisplayConf not available.", file=sys.stderr)
             exit(1)
 
-        monitor = conf.monitor()
+        monitor = conf.monitor(mqtt_conf.report_file)
 
         if cmd.verbose and monitor:
             print("display: %s" % monitor, file=sys.stderr)

@@ -137,6 +137,7 @@ if __name__ == '__main__':
         # Interface...
         interface_conf = InterfaceConf.load(Host)
         interface = None if interface_conf is None else interface_conf.interface()
+        interface_model = None if interface_conf is None else interface_conf.model
 
         if cmd.verbose and interface:
             print("status_sampler: %s" % interface, file=sys.stderr)
@@ -147,7 +148,7 @@ if __name__ == '__main__':
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
-        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host)
+        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host, interface_model)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \

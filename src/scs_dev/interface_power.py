@@ -28,7 +28,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_power import CmdPower
 
-from scs_dfe.interface.components.io import IO
+from scs_dfe.interface.component.io import IO
 from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_dfe.particulate.opc_conf import OPCConf
