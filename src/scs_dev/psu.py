@@ -38,6 +38,8 @@ from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_psu import CmdPSU
 
+from scs_dfe.interface.interface_conf import InterfaceConf
+
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -68,9 +70,14 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("psu", cmd.verbose)
 
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+        interface = None if interface_conf is None else interface_conf.interface()
+        interface_model = None if interface_conf is None else interface_conf.model
+
         # PSU...
         psu_conf = PSUConf.load(Host)
-        psu = psu_conf.psu(Host)
+        psu = psu_conf.psu(Host, interface_model)
 
         if psu is None:
             print("psu: no PSU present", file=sys.stderr)

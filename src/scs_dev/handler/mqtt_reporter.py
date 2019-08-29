@@ -28,9 +28,7 @@ from scs_dfe.led.led_state import LEDState
 from scs_host.comms.domain_socket import DomainSocket
 
 
-# TODO: drive the display with UDS - like the LED
-# TODO: report whether queue length > 10 on display
-# TODO: report actual queue length to status sampler
+# TODO: use QueueReport object.
 
 # --------------------------------------------------------------------------------------------------------------------
 
