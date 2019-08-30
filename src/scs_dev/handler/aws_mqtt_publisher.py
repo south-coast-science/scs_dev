@@ -2,6 +2,13 @@
 Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+        QueueReport.STATUS_NONE:            "",
+        QueueReport.STATUS_INHIBITED:       "PUBLISHING INHIBITED",
+        QueueReport.STATUS_DISCONNECTED:    "CONNECTING",
+        QueueReport.STATUS_PUBLISHING:      "PUBLISHING DATA",
+        QueueReport.STATUS_QUEUING:         "QUEUING DATA",
+        QueueReport.STATUS_CLEARING:        "CLEARING DATA BACKLOG "
 """
 
 import json
@@ -20,7 +27,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.message_queue import MessageQueue
 from scs_core.data.publication import Publication
-from scs_core.data.queue_report import QueueReport
+from scs_core.data.queue_report import QueueReport, ClientStatus
 
 from scs_core.sync.synchronised_process import SynchronisedProcess
 
@@ -53,7 +60,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
 
-        initial_state = QueueReport.CLIENT_INHIBITED if conf.inhibit_publishing else QueueReport.CLIENT_DISCONNECTED
+        initial_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.DISCONNECTED
         self.__state = AWSMQTTState(initial_state, reporter)
 
         self.__conf = conf
@@ -64,6 +71,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         self.__report = QueueReport(0, initial_state, False)
         self.__report.save(self.__conf.report_file)
+
+        self.__reporter.set_led(self.__report)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -83,6 +92,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
         self.__disconnect()
         self.__state.set_disconnected()
 
+        self.__reporter.set_led(self.__report)
+
         super().stop()
 
 
@@ -95,6 +106,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             if self.__report.length < 1:
                 return
+
+            self.__reporter.set_led(self.__report)
 
             if self.__conf.report_file:
                 self.__report.save(self.__conf.report_file)
@@ -115,12 +128,12 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         self.__report.client_state = self.__state.state
 
-        if self.__report.client_state == QueueReport.CLIENT_INHIBITED:
+        if self.__report.client_state == ClientStatus.INHIBITED:
             # discard...
             self.__queue.dequeue()
             return
 
-        if self.__report.client_state == QueueReport.CLIENT_DISCONNECTED:
+        if self.__report.client_state == ClientStatus.DISCONNECTED:
             # connect...
             if self.__connect():
                 self.__state.set_connected()
@@ -131,7 +144,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             return
 
-        if self.__report.client_state == QueueReport.CLIENT_CONNECTED:
+        if self.__report.client_state == ClientStatus.CONNECTED:
             # publish...
             self.__publish_message(publication)
             self.__queue.dequeue()
@@ -153,17 +166,14 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             if success:
                 self.__reporter.print("connect: done")
-                self.__reporter.set_led("G")
                 return True
 
             else:
                 self.__reporter.print("connect: failed")
-                self.__reporter.set_led("R")
                 return False
 
         except OSError as ex:
             self.__reporter.print("connect: %s" % ex)
-            self.__reporter.set_led("R")
             return False
 
 
@@ -198,16 +208,14 @@ class AWSMQTTPublisher(SynchronisedProcess):
             elapsed_time = time.time() - start_time
 
             self.__reporter.print("paho: %s: %0.3f" % ("1" if paho else "0", elapsed_time))
-            self.__reporter.set_led("G")
 
             self.__report.publish_success = True
 
+        except operationTimeoutException:
+            pass
+
         except (OSError, operationError) as ex:
             self.__reporter.print("pm: %s" % ex.__class__.__name__)
-            self.__reporter.set_led("R")
-
-        except operationTimeoutException:
-            self.__reporter.set_led("R")
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -230,10 +238,10 @@ class AWSMQTTState(object):
         """
         Constructor
         """
-        self.__state = state
-        self.__reporter = reporter
+        self.__state = state                        # ClientStatus
+        self.__reporter = reporter                  # MQTTReporter
 
-        self.__latest_success = None
+        self.__latest_success = None                # bool
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -241,17 +249,17 @@ class AWSMQTTState(object):
     def set_connected(self):
         self.__latest_success = time.time()
 
-        if self.__state == QueueReport.CLIENT_CONNECTED:
+        if self.__state == ClientStatus.CONNECTED:
             return
 
-        self.__state = QueueReport.CLIENT_CONNECTED
+        self.__state = ClientStatus.CONNECTED
         self.__reporter.print("-> CONNECTED")
 
 
     def set_disconnected(self):
         self.__latest_success = None
 
-        self.__state = QueueReport.CLIENT_DISCONNECTED
+        self.__state = ClientStatus.DISCONNECTED
         self.__reporter.print("-> DISCONNECTED")
 
 

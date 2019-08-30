@@ -195,8 +195,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        reporter.set_led("A")
-
         # data source...
         source.connect()
 
@@ -241,4 +239,4 @@ if __name__ == '__main__':
 
         if reporter:
             reporter.print("exiting")
-            reporter.set_led("A")
+            # reporter.set_led(QueueReport.STATUS_DISCONNECTED)
