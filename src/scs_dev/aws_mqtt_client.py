@@ -239,4 +239,3 @@ if __name__ == '__main__':
 
         if reporter:
             reporter.print("exiting")
-            # reporter.set_led(QueueReport.STATUS_DISCONNECTED)
