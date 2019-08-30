@@ -53,6 +53,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
+from scs_core.data.queue_report import QueueReport, ClientStatus
 
 from scs_core.osio.client.api_auth import APIAuth
 from scs_core.osio.client.client_auth import ClientAuth
@@ -252,8 +253,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        reporter.set_led("A")
-
         pub_comms.connect()
 
         if not conf.inhibit_publishing:
@@ -286,7 +285,7 @@ if __name__ == '__main__':
 
                     if not success:
                         reporter.print("abandoned")
-                        reporter.set_led("R")
+                        reporter.set_led(QueueReport(0, ClientStatus.DISCONNECTED, False))
 
                     break
 
@@ -299,7 +298,7 @@ if __name__ == '__main__':
 
             if success:
                 reporter.print("done")
-                reporter.set_led("G")
+                reporter.set_led(QueueReport(0, ClientStatus.CONNECTED, True))
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -317,6 +316,3 @@ if __name__ == '__main__':
 
         if pub_comms:
             pub_comms.close()
-
-        if reporter:
-            reporter.set_led("A")

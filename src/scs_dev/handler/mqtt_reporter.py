@@ -2,33 +2,18 @@
 Created on 5 Jul 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-short
------
-off         no power
-amber       scheduler stopped
-green       scheduler running
-red         unused
-
-long
------
-off         no power
-amber       MQTT client stopped (usually short-lived)
-green       MQTT client publishing (may have queue)
-red         MQTT client publish fail
 """
 
 import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.queue_report import QueueReport, QueueStatus
 
 from scs_dfe.led.led_state import LEDState
 
 from scs_host.comms.domain_socket import DomainSocket
 
-
-# TODO: use QueueReport object.
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -36,6 +21,16 @@ class MQTTReporter(object):
     """
     classdocs
     """
+
+    __CLIENT_STATUS = {
+        QueueStatus.NONE:           ['0', 'R'],
+        QueueStatus.INHIBITED:      ['0', 'G'],
+        QueueStatus.DISCONNECTED:   ['0', 'A'],
+        QueueStatus.PUBLISHING:     ['G', 'G'],
+        QueueStatus.QUEUING:        ['R', 'A'],
+        QueueStatus.CLEARING:       ['G', 'A']
+    }
+
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -58,13 +53,15 @@ class MQTTReporter(object):
         sys.stderr.flush()
 
 
-    def set_led(self, colour):
+    def set_led(self, report: QueueReport):
         if self.__led_uds is None:
             return
 
+        colours = self.__CLIENT_STATUS[report.status()]
+
         try:
             self.__led_uds.connect(False)
-            self.__led_uds.write(JSONify.dumps(LEDState(colour, colour)), False)
+            self.__led_uds.write(JSONify.dumps(LEDState(colours[0], colours[1])), False)
 
         except OSError:
             pass
