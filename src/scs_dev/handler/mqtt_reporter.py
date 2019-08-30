@@ -2,20 +2,6 @@
 Created on 5 Jul 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-short (connection status)
------
-off         no power        QueueReport.STATUS_NONE
-amber       connecting      QueueReport.STATUS_INHIBITED, QueueReport.STATUS_DISCONNECTED
-green       connected       QueueReport.STATUS_PUBLISHING, QueueReport.STATUS_CLEARING
-red         disconnected    QueueReport.STATUS_QUEUING
-
-long (queue status)
------
-off         no power        QueueReport.STATUS_NONE
-amber       clearing        QueueReport.STATUS_CLEARING
-green       publishing      QueueReport.STATUS_DISCONNECTED, QueueReport.STATUS_PUBLISHING, QueueReport.STATUS_QUEUING
-red         inhibited       QueueReport.STATUS_INHIBITED
 """
 
 import sys
