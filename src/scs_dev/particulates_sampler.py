@@ -161,7 +161,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPCMonitor...
-        opc_monitor = opc_conf.opc_monitor(Host, interface.load_switch_active_high)
+        opc_monitor = opc_conf.opc_monitor(interface, Host)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -175,7 +175,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # I2C...
-        opc = opc_conf.opc(Host, interface.load_switch_active_high)
+        opc = opc_conf.opc(interface, Host)
         i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
 
         I2C.open(i2c_bus)
@@ -216,7 +216,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
+    except (BrokenPipeError, ConnectionResetError, TypeError):
         pass
 
     finally:

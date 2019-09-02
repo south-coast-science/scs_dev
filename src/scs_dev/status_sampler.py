@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(Host, interface.load_switch_active_high)
+        gps_monitor = None if gps_conf is None else gps_conf.gps_monitor(interface, Host)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
@@ -179,7 +179,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
+    except (BrokenPipeError, ConnectionResetError, TypeError):
         pass
 
     finally:
