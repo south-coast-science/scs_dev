@@ -216,8 +216,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError):
-        pass
+    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+        print("particulates_sampler: %s" % ex, file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:
