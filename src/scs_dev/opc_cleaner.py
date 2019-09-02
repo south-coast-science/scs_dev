@@ -74,7 +74,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPC...
-        opc = conf.opc(Host, interface.load_switch_active_high)
+        opc = conf.opc(interface, Host)
 
         if cmd.verbose:
             print("opc_cleaner: %s" % opc, file=sys.stderr)

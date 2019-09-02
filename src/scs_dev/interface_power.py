@@ -28,7 +28,6 @@ from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_power import CmdPower
 
-from scs_dfe.interface.component.io import IO
 from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_dfe.particulate.opc_conf import OPCConf
@@ -76,15 +75,13 @@ if __name__ == '__main__':
 
         interface = interface_conf.interface()
 
-        io = IO(interface.load_switch_active_high)
-
         if cmd.verbose:
-            print("interface_power: %s" % io, file=sys.stderr)
+            print("interface_power: %s" % interface, file=sys.stderr)
             sys.stderr.flush()
 
         # OPC...
         opc_conf = OPCConf.load(Host)
-        opc = None if opc_conf is None else opc_conf.opc(Host, interface.load_switch_active_high)
+        opc = None if opc_conf is None else opc_conf.opc(interface, Host)
 
         if cmd.verbose and opc_conf:
             print("interface_power: %s" % opc_conf, file=sys.stderr)
@@ -102,12 +99,9 @@ if __name__ == '__main__':
 
         if cmd.power:
             # Interface...
-            io.gps_power = True
-            io.opc_power = True
-            io.ndir_power = True
-
-            io.led_red = True
-            io.led_green = True
+            interface.power_sensors(True)
+            # io.led_red = True             # TODO: fix LED control
+            # io.led_green = True
 
         else:
             # OPC...
@@ -119,19 +113,16 @@ if __name__ == '__main__':
                 ndir.lamp_run(False)         # needed because some DFEs do not have power control
 
             # Interface...
-            io.gps_power = False
-            io.opc_power = False
-            io.ndir_power = False
-
-            io.led_red = False
-            io.led_green = False
+            interface.power_sensors(False)
+            # io.led_red = False
+            # io.led_green = False
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
-        pass
+    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+        print("interface_power: %s" % ex, file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:
