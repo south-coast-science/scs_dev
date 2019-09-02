@@ -14,6 +14,7 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
@@ -31,11 +32,14 @@ try:
     system_id = SystemID.load(Host)
     tag = None if system_id is None else system_id.message_tag()
 
+    # Interface...
+    interface_conf = InterfaceConf.load(Host)
+
     # OPCConf...
     conf = OPCConf('N2', 5, False, None, None)
 
     # OPCMonitor...
-    monitor = conf.opc_monitor(Host, False)
+    monitor = conf.opc_monitor(interface_conf.interface(), Host)
 
     runner = TimedRunner(10)
 

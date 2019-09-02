@@ -304,8 +304,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
-        pass
+    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+        print("osio_mqtt_client: %s" % ex, file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:

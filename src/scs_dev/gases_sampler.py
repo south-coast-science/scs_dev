@@ -214,8 +214,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
-        pass
+    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+        print("gases_sampler: %s" % ex, file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:

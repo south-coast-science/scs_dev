@@ -87,7 +87,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPC...
-        opc = opc_conf.opc(Host, interface.load_switch_active_high)
+        opc = opc_conf.opc(interface, Host)
 
         if cmd.verbose:
             print("opc_version: %s" % opc, file=sys.stderr)
@@ -117,8 +117,8 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError):
-        pass
+    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+        print("opc_version: %s" % ex, file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:

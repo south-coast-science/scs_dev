@@ -84,7 +84,7 @@ if __name__ == '__main__':
             exit(1)
 
         # OPC...
-        opc = opc_conf.opc(Host, interface.load_switch_active_high)
+        opc = opc_conf.opc(interface, Host)
 
         # I2C...
         i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
