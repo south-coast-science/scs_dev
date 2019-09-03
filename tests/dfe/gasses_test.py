@@ -33,9 +33,13 @@ try:
     system_id = SystemID.load(Host)
     tag = None if system_id is None else system_id.message_tag()
 
+    # Interface...
+    interface_conf = InterfaceConf.load(Host)
+    interface = interface_conf.interface()
+
     # NDIR...
     ndir_conf = NDIRConf.load(Host)
-    ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(Host)
+    ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(interface, Host)
 
     # SHT...
     sht_conf = SHTConf.load(Host)

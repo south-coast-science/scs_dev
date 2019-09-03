@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
-        ndir = None if ndir_conf is None else ndir_conf.ndir(Host)
+        ndir = None if ndir_conf is None else ndir_conf.ndir(interface, Host)
 
         if cmd.verbose and ndir_conf:
             print("interface_power: %s" % ndir_conf, file=sys.stderr)
@@ -150,7 +150,7 @@ if __name__ == '__main__':
             power_gps(cmd.gps)
 
         if cmd.modem is not None:
-            interface.power_modem(cmd.modem)
+            pass                            # TODO: implement 2G modem power control
 
         if cmd.ndir is not None:
             power_ndir(cmd.ndir)

@@ -21,11 +21,11 @@ EXAMPLES
 
 import sys
 
-from scs_comms.modem.io import IO
-
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_power import CmdPower
+
+from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -56,25 +56,25 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("modem_power", cmd.verbose)
 
-        io = IO()
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+
+        if interface_conf is None:
+            print("modem_power: InterfaceConf not available.", file=sys.stderr)
+            exit(1)
+
+        interface = interface_conf.interface()
 
         if cmd.verbose:
-            print("modem_power: %s" % io, file=sys.stderr)
+            print("modem_power: %s" % interface, file=sys.stderr)
             sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if cmd.power:
-            # modem...
-            io.power = IO.LOW
-            io.output_enable = IO.HIGH
-
-        else:
-            # modem...
-            io.output_enable = IO.LOW
-            io.power = IO.HIGH
+        if cmd.all is not None:
+            interface.power_modem(cmd.all)          # TODO: implement 2G modem power control
 
 
     # ----------------------------------------------------------------------------------------------------------------
