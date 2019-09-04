@@ -6,11 +6,19 @@ Created on 28 Feb 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The interface_power utility is used to simultaneously switch on and off the power to GPS, OPC, NDIR and LED peripherals.
+The interface_power utility is used to simultaneously switch on and off the power to the following peripherals:
 
-Note: the command is fully-functional only with the South Coast Science digital front-end (DFE) board for BeagleBone.
-For other DFE boards - such as that for Raspberry Pi - the utility is only able to command a operation start / stop to
-the NDIR and OPC.
+* GPS
+* OPC
+* NDIR
+* modem (currently 2G only)
+* integrated gas sensor interface (digital side only)
+
+Note that not all interface board types are able to switch off all of these subsystems. Where switching is not possible,
+no operation is performed, and no exception is raised.
+
+The utility supports switch of any combination of peripherals, or all peripherals. Note that, in the case of 'all' the
+modem is not included.
 
 SYNOPSIS
 interface_power.py { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] [-o ENABLE] | ENABLE_ALL } [-v]

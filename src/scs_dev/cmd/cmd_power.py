@@ -2,13 +2,6 @@
 Created on 21 Jan 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-    def power_gases(self, enable):                  # switches digital component only
-    def power_gps(self, enable):
-    def power_modem(self, enable):
-    def power_ndir(self, enable):
-    def power_opc(self, enable):
-        pass
-
 """
 
 import optparse
