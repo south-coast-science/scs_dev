@@ -58,6 +58,8 @@ try:
     print(sampler)
     print("-")
 
+    interface.power_gases(True)
+
     sampler.reset()
 
     datum = sampler.sample()
@@ -66,6 +68,8 @@ try:
 
     jstr = JSONify.dumps(datum)
     print(jstr)
+
+    interface.power_gases(True)
 
 finally:
     I2C.close()

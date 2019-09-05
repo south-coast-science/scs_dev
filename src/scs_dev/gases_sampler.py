@@ -117,6 +117,7 @@ except ImportError:
 
 if __name__ == '__main__':
 
+    interface = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -195,6 +196,8 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
+        interface.power_gases(True)
+
         if cmd.verbose and ndir_conf:
             print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
@@ -220,6 +223,9 @@ if __name__ == '__main__':
     finally:
         if cmd and cmd.verbose:
             print("gases_sampler: finishing", file=sys.stderr)
+
+        if interface:
+            interface.power_gases(False)
 
         if sampler:
             sampler.stop()

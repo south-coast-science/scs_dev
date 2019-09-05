@@ -76,7 +76,7 @@ def power_opc(enable):
         opc.power_on()
         opc.operations_on()
     else:
-        # opc.operations_off()
+        opc.operations_off()
         opc.power_off()
 
 
