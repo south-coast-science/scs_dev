@@ -40,6 +40,8 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_dev.cmd.cmd_display import CmdDisplay
 from scs_dev.handler.uds_reader import UDSReader
 
+from scs_dfe.gps.gps_conf import GPSConf
+
 from scs_host.sys.host import Host
 
 
@@ -64,8 +66,13 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
 
-        # MQTTConf
+        # MQTTConf...
         mqtt_conf = MQTTConf.load(Host)
+        queue_report_filename = None if mqtt_conf is None else mqtt_conf.report_file
+
+        # GPSConf...
+        gps_conf = GPSConf.load(Host)
+        gps_report_filename = None if gps_conf is None else gps_conf.report_file
 
         # UDSReader...
         reader = UDSReader(cmd.uds)
@@ -80,7 +87,7 @@ if __name__ == '__main__':
             print("display: DisplayConf not available.", file=sys.stderr)
             exit(1)
 
-        monitor = conf.monitor(mqtt_conf.report_file)
+        monitor = conf.monitor(queue_report_filename, gps_report_filename)
 
         if cmd.verbose and monitor:
             print("display: %s" % monitor, file=sys.stderr)
