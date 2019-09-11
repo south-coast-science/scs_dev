@@ -63,6 +63,17 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("opc_version", cmd.verbose)
 
+        # OPCConf...
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
+
+        if opc_conf is None:
+            print("opc_version: OPCConf not available.", file=sys.stderr)
+            exit(1)
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
+        I2C.open(i2c_bus)
+
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
@@ -79,23 +90,11 @@ if __name__ == '__main__':
         if cmd.verbose and interface:
             print("opc_version: %s" % interface, file=sys.stderr)
 
-        # OPCConf...
-        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
-
-        if opc_conf is None:
-            print("opc_version: OPCConf not available.", file=sys.stderr)
-            exit(1)
-
         # OPC...
         opc = opc_conf.opc(interface, Host)
 
         if cmd.verbose:
             print("opc_version: %s" % opc, file=sys.stderr)
-
-        # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
-
-        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------

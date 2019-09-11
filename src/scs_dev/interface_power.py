@@ -122,22 +122,22 @@ if __name__ == '__main__':
         gps_conf = GPSConf.load(Host)
         gps = None if gps_conf is None else gps_conf.gps(interface, Host)
 
-        if cmd.verbose and gps_conf:
-            print("interface_power: %s" % gps_conf, file=sys.stderr)
+        if cmd.verbose and gps:
+            print("interface_power: %s" % gps, file=sys.stderr)
 
         # OPC...
         opc_conf = OPCConf.load(Host)
         opc = None if opc_conf is None else opc_conf.opc(interface, Host)
 
-        if cmd.verbose and opc_conf:
-            print("interface_power: %s" % opc_conf, file=sys.stderr)
+        if cmd.verbose and opc:
+            print("interface_power: %s" % opc, file=sys.stderr)
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir = None if ndir_conf is None else ndir_conf.ndir(interface, Host)
 
-        if cmd.verbose and ndir_conf:
-            print("interface_power: %s" % ndir_conf, file=sys.stderr)
+        if cmd.verbose and ndir:
+            print("interface_power: %s" % ndir, file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
