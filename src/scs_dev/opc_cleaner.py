@@ -50,6 +50,17 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # OPCConf...
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
+
+        if opc_conf is None:
+            print("opc_cleaner: OPCConf not available.", file=sys.stderr)
+            exit(1)
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
+        I2C.open(i2c_bus)
+
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
@@ -66,24 +77,12 @@ if __name__ == '__main__':
         if cmd.verbose and interface:
             print("opc_cleaner: %s" % interface, file=sys.stderr)
 
-        # OPCConf...
-        conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
-
-        if conf is None:
-            print("opc_cleaner: OPCConf not available.", file=sys.stderr)
-            exit(1)
-
         # OPC...
-        opc = conf.opc(interface, Host)
+        opc = opc_conf.opc(interface, Host)
 
         if cmd.verbose:
             print("opc_cleaner: %s" % opc, file=sys.stderr)
             sys.stderr.flush()
-
-        # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
-
-        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------
