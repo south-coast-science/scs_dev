@@ -132,6 +132,22 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
+        # OPCConf...
+        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
+
+        if opc_conf is None:
+            print("particulates_sampler: OPCConf not available.", file=sys.stderr)
+            exit(1)
+
+        if 0 < cmd.interval < opc_conf.sample_period:
+            print("particulates_sampler: interval (%d) must not be less than opc_conf sample period (%d)." %
+                  (cmd.interval, opc_conf.sample_period), file=sys.stderr)
+            exit(1)
+
+        # I2C...
+        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
+        I2C.open(i2c_bus)
+
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
@@ -148,18 +164,6 @@ if __name__ == '__main__':
         if cmd.verbose and interface:
             print("particulates_sampler: %s" % interface, file=sys.stderr)
 
-        # OPCConf...
-        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
-
-        if opc_conf is None:
-            print("particulates_sampler: OPCConf not available.", file=sys.stderr)
-            exit(1)
-
-        if 0 < cmd.interval < opc_conf.sample_period:
-            print("particulates_sampler: interval (%d) must not be less than opc_conf sample period (%d)." %
-                  (cmd.interval, opc_conf.sample_period), file=sys.stderr)
-            exit(1)
-
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(interface, Host)
 
@@ -173,12 +177,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
-
-        # I2C...
-        opc = opc_conf.opc(interface, Host)
-        i2c_bus = Host.I2C_SENSORS if opc.uses_spi() else opc.bus
-
-        I2C.open(i2c_bus)
 
 
         # ------------------------------------------------------------------------------------------------------------
