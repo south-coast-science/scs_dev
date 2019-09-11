@@ -104,7 +104,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
         while True:
             self.__report.length = self.__queue.length()
 
-            if self.__report.length < 1:
+            if self.__report.length is None or self.__report.length < 1:
                 return
 
             self.__reporter.set_led(self.__report)
