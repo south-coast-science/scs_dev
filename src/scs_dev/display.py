@@ -7,13 +7,12 @@ Created on 23 Jun 2019
 
 DESCRIPTION
 The display utility is used to set the content for a visual display, such as the Pimoroni Inky pHAT eInk module.
-Content is gained from three sources:
+Content is gained from several sources:
 
 * The display_conf settings
 * System status
 * Input from stdin or a Unix domain socket
-
-In development.
+* MQTT client and GPS receiver report files (if available)
 
 SYNOPSIS
 display.py [-v]
@@ -23,6 +22,8 @@ EXAMPLES
 
 SEE ALSO
 scs_mfr/display_conf
+scs_mfr/gps_conf
+scs_mfr/mqtt_conf
 
 RESOURCES
 sudo apt install libatlas3-base
