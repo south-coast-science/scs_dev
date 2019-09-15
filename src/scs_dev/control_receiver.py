@@ -88,8 +88,6 @@ from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 from scs_host.sys.host import Host
 
 
-# TODO: is there a problem with receipt for reboot?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -97,7 +95,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # config...
 
-    deferred_commands = ('reboot', 'restart')
+    deferred_commands = ('shutdown', 'reboot', 'restart')
 
 
     # ----------------------------------------------------------------------------------------------------------------
