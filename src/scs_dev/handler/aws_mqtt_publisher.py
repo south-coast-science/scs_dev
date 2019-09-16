@@ -84,7 +84,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
                 self.__process_messages()
                 time.sleep(self.__QUEUE_INSPECTION_INTERVAL)
 
-        except KeyboardInterrupt:
+        except (BrokenPipeError, KeyboardInterrupt, TypeError):
             pass
 
 
