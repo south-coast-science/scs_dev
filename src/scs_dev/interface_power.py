@@ -163,9 +163,6 @@ if __name__ == '__main__':
             power_ndir(cmd.all)
             power_opc(cmd.all)
 
-            if not cmd.all and led is not None:
-                led.colour = 'A'
-
         if cmd.gases is not None:
             interface.power_gases(cmd.gases)
 
