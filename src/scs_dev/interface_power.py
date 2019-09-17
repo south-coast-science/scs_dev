@@ -17,14 +17,22 @@ The interface_power utility is used to simultaneously switch on and off the powe
 Note that not all interface board types are able to switch off all of these subsystems. Where switching is not possible,
 no operation is performed, and no exception is raised.
 
+LED control is direct - it bypasses the led_controller process, if running. This enables LED control in service stop
+situations, where led_controller service may already have stopped. If the ENABLE_ALL flag is used, the LED is set
+to amber.
+
 The utility supports switch of any combination of peripherals, or all peripherals. Note that, in the case of 'all' the
 modem is not included.
 
 SYNOPSIS
-interface_power.py { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] [-o ENABLE] | ENABLE_ALL } [-v]
+interface_power.py { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] [-o ENABLE] [-l { R | A | G | 0 }] | ENABLE_ALL } \
+[-v]
 
 EXAMPLES
 ./interface_power.py 0
+
+RESOURCES
+https://github.com/south-coast-science/docs/wiki/Praxis-LED-colours
 """
 
 import sys
@@ -139,6 +147,12 @@ if __name__ == '__main__':
         if cmd.verbose and ndir:
             print("interface_power: %s" % ndir, file=sys.stderr)
 
+        # LED...
+        led = interface.led()
+
+        if cmd.verbose and led:
+            print("interface_power: %s" % led, file=sys.stderr)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -149,7 +163,8 @@ if __name__ == '__main__':
             power_ndir(cmd.all)
             power_opc(cmd.all)
 
-            # io.led_red = True             # TODO: fix LED control
+            if not cmd.all and led is not None:
+                led.colour = 'A'
 
         if cmd.gases is not None:
             interface.power_gases(cmd.gases)
@@ -165,6 +180,10 @@ if __name__ == '__main__':
 
         if cmd.opc is not None:
             power_opc(cmd.opc)
+
+        if cmd.led is not None:
+            if led:
+                led.colour = cmd.led
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -6,6 +6,8 @@ Created on 21 Jan 2017
 
 import optparse
 
+from scs_dfe.led.led import LED
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -40,7 +42,8 @@ class CmdPower(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] "
-                                                    "[-o ENABLE] | ENABLE_ALL } [-v]", version="%prog 1.0")
+                                                    "[-o ENABLE] [-l { R | A | G | 0 }] | ENABLE_ALL } [-v]",
+                                              version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--gases", "-g", type="int", nargs=1, action="store", dest="gases",
@@ -57,6 +60,9 @@ class CmdPower(object):
 
         self.__parser.add_option("--opc", "-o", type="int", nargs=1, action="store", dest="opc",
                                  help="switch particulate sensor ON (1) or OFF (0)")
+
+        self.__parser.add_option("--led", "-l", type="string", nargs=1, action="store", dest="led",
+                                 help="set the LED to the given colour")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -76,7 +82,10 @@ class CmdPower(object):
             return False
 
         if self.all is not None and (self.gases is not None or self.gps is not None or self.modem is not None or
-                                     self.ndir is not None or self.opc is not None):
+                                     self.ndir is not None or self.opc is not None or self.led is not None):
+            return False
+
+        if self.led is not None and not LED.is_valid_colour(self.led):
             return False
 
         return True
@@ -110,6 +119,11 @@ class CmdPower(object):
 
 
     @property
+    def led(self):
+        return self.__opts.led
+
+
+    @property
     def all(self):
         return self.boolean(self.__args[0]) if len(self.__args) > 0 else None
 
@@ -126,5 +140,5 @@ class CmdPower(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPower:{gases:%s, gps:%s, modem:%s, ndir:%s, opc:%s, all:%s, verbose:%s}" % \
-               (self.gases, self.gps, self.modem, self.ndir, self.opc, self.all, self.verbose)
+        return "CmdPower:{gases:%s, gps:%s, modem:%s, ndir:%s, opc:%s, led:%s, all:%s, verbose:%s}" % \
+               (self.gases, self.gps, self.modem, self.ndir, self.opc, self.led, self.all, self.verbose)
