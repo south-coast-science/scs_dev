@@ -18,8 +18,7 @@ Note that not all interface board types are able to switch off all of these subs
 no operation is performed, and no exception is raised.
 
 LED control is direct - it bypasses the led_controller process, if running. This enables LED control in service stop
-situations, where led_controller service may already have stopped. If the ENABLE_ALL flag is used, the LED is set
-to amber.
+situations, where led_controller service may already have stopped.
 
 The utility supports switch of any combination of peripherals, or all peripherals. Note that, in the case of 'all' the
 modem is not included.
@@ -162,9 +161,6 @@ if __name__ == '__main__':
             power_gps(cmd.all)
             power_ndir(cmd.all)
             power_opc(cmd.all)
-
-            if not cmd.all and led is not None:
-                led.colour = 'A'
 
         if cmd.gases is not None:
             interface.power_gases(cmd.gases)
