@@ -2,6 +2,8 @@
 Created on 5 Jul 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+
+https://github.com/south-coast-science/docs/wiki/Praxis-LED-colours
 """
 
 import sys
