@@ -44,7 +44,11 @@ class ParticulatesSampler(Sampler):
 
 
     def stop(self):
-        self.__opc_monitor.stop()
+        try:
+            self.__opc_monitor.stop()
+
+        except (BrokenPipeError, KeyboardInterrupt):
+            pass
 
 
     def sample(self):
