@@ -57,11 +57,15 @@ class StatusSampler(Sampler):
 
 
     def stop(self):
-        if self.__psu_monitor:
-            self.__psu_monitor.stop()
+        try:
+            if self.__psu_monitor:
+                self.__psu_monitor.stop()
 
-        if self.__gps_monitor:
-            self.__gps_monitor.stop()
+            if self.__gps_monitor:
+                self.__gps_monitor.stop()
+
+        except (BrokenPipeError, KeyboardInterrupt):
+            pass
 
 
     def sample(self):
