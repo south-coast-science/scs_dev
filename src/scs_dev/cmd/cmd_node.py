@@ -16,7 +16,8 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-i] [{ -a | -s }] [-v] [PATH]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-i] [{ -a | -s }] [-v] [ALPHASENSE_PATH]",
+                                              version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--ignore", "-i", action="store_true", dest="ignore", default=False,

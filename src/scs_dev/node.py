@@ -21,7 +21,7 @@ Alternatively, if the node is an array or other iterable type, then it may be ou
 separated by newline characters) according to the -s flag.
 
 SYNOPSIS
-node.py [-i] [{ -a | -s }] [-v] [PATH]
+node.py [-i] [{ -a | -s }] [-v] [ALPHASENSE_PATH]
 
 EXAMPLES
 climate_sampler.py -i5 | node.py val
