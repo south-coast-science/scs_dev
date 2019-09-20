@@ -124,6 +124,9 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("particulates_sampler", cmd.verbose)
 
+        # Schedule...
+        schedule = Schedule.load(Host)
+
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -182,14 +185,22 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # wait until needed...
 
-        if cmd.semaphore:
+        # if cmd.semaphore:
+        #     while True:
+        #         schedule = Schedule.load(Host)
+        #         item = None if schedule is None else schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE)
+        #
+        #         if item:
+        #             break
+        #
+        #         time.sleep(1.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # check...
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
             while True:
-                schedule = Schedule.load(Host)
-                item = None if schedule is None else schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE)
-
-                if item:
-                    break
-
                 time.sleep(1.0)
 
 

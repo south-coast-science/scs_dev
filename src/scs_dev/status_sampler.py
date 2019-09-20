@@ -68,12 +68,14 @@ https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import sys
+import time
 
 from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
 
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.signalled_exit import SignalledExit
@@ -120,6 +122,9 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("status_sampler", cmd.verbose)
 
+        # Schedule...
+        schedule = Schedule.load(Host)
+
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -159,6 +164,14 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("status_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # check...
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            while True:
+                time.sleep(1.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
