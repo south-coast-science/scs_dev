@@ -43,6 +43,7 @@ scs_mfr/schedule
 """
 
 import sys
+import time
 
 from scs_core.sys.signalled_exit import SignalledExit
 
@@ -53,8 +54,6 @@ from scs_dev.cmd.cmd_verbose import CmdVerbose
 from scs_host.sys.host import Host
 from scs_host.sync.scheduler import Scheduler
 
-
-# TODO: control LED start - green, finish - amber
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -89,7 +88,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # Scheduler...
-        scheduler = Scheduler(schedule, False)          # cmd.verbose
+        scheduler = Scheduler(schedule, True)          # cmd.verbose
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -97,6 +96,8 @@ if __name__ == '__main__':
 
         scheduler.run()
 
+        while True:
+            time.sleep(1.0)
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
@@ -108,5 +109,5 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("scheduler: finishing", file=sys.stderr)
 
-        if scheduler:
-            scheduler.terminate()
+        # if scheduler:
+        #     scheduler.terminate()
