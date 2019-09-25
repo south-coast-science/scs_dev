@@ -109,5 +109,5 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("scheduler: finishing", file=sys.stderr)
 
-        # if scheduler:
-        #     scheduler.terminate()
+        if scheduler:
+            scheduler.stop()
