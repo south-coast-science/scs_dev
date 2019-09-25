@@ -111,6 +111,3 @@ if __name__ == '__main__':
 
         if scheduler:
             scheduler.stop()
-
-        while True:             # TODO: do a join here
-            time.sleep(1.0)
