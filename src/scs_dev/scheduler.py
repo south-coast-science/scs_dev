@@ -96,8 +96,12 @@ if __name__ == '__main__':
 
         scheduler.start()
 
-        while True:
-            time.sleep(1.0)
+        try:
+            while True:
+                time.sleep(1.0)
+
+        except SystemExit:
+            pass
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
