@@ -34,14 +34,14 @@ import sys
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
-from scs_core.display.display_conf import DisplayConf
-
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_display import CmdDisplay
 from scs_dev.handler.uds_reader import UDSReader
 
 from scs_dfe.gps.gps_conf import GPSConf
+
+from scs_display.display.display_conf import DisplayConf
 
 from scs_host.sys.host import Host
 
