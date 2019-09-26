@@ -34,14 +34,14 @@ import sys
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
-from scs_core.display.display_conf import DisplayConf
-
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_display import CmdDisplay
 from scs_dev.handler.uds_reader import UDSReader
 
 from scs_dfe.gps.gps_conf import GPSConf
+
+from scs_display.display.display_conf import DisplayConf
 
 from scs_host.sys.host import Host
 
@@ -63,9 +63,6 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
-
-        # signal handler...
-        SignalledExit.construct("display", cmd.verbose)
 
         # MQTTConf...
         mqtt_conf = MQTTConf.load(Host)
@@ -97,9 +94,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        reader.connect()
-
         monitor.start()
+
+        # signal handler...
+        SignalledExit.construct("display", cmd.verbose)
+
+        reader.connect()
 
         for message in reader.messages():
             if cmd.verbose:

@@ -146,9 +146,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("osio_mqtt_client", cmd.verbose)
-
         # MQTTConf
         conf = MQTTConf.load(Host)
 
@@ -252,6 +249,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("osio_mqtt_client", cmd.verbose)
 
         pub_comms.connect()
 

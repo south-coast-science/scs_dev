@@ -72,9 +72,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("led", cmd.verbose)
-
         writer = UDSWriter(cmd.uds)
 
         if cmd.verbose:
@@ -83,6 +80,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("led", cmd.verbose)
 
         state = LEDState(cmd.solid, cmd.solid) if cmd.solid is not None else LEDState(cmd.flash[0], cmd.flash[1])
 

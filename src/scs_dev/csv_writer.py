@@ -60,9 +60,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("csv_writer", cmd.verbose)
-
         writer = CSVWriter(cmd.filename, cmd.append)
 
         if cmd.verbose:
@@ -72,6 +69,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("csv_writer", cmd.verbose)
 
         for line in sys.stdin:
             jstr = line.strip()

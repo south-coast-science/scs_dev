@@ -104,9 +104,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("climate_sampler", cmd.verbose)
-
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -151,7 +148,7 @@ if __name__ == '__main__':
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, False)
+            else ScheduleRunner(cmd.semaphore)
 
         sampler = ClimateSampler(runner, tag, sht, mpl, altitude)
 
@@ -170,6 +167,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("climate_sampler", cmd.verbose)
 
         if mpl is not None:
             mpl.init()

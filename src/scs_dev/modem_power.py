@@ -53,9 +53,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("modem_power", cmd.verbose)
-
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
@@ -72,6 +69,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("modem_power", cmd.verbose)
 
         if cmd.all is not None:
             interface.power_modem(cmd.all)          # TODO: implement 2G modem power control

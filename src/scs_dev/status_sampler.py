@@ -119,9 +119,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("status_sampler", cmd.verbose)
-
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -157,7 +154,7 @@ if __name__ == '__main__':
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, False)
+            else ScheduleRunner(cmd.semaphore)
 
         sampler = StatusSampler(runner, tag, airnow, interface, gps_monitor, psu_monitor)
 
@@ -178,6 +175,9 @@ if __name__ == '__main__':
         # run...
 
         sampler.start()
+
+        # signal handler...
+        SignalledExit.construct("status_sampler", cmd.verbose)
 
         for sample in sampler.samples():
             if cmd.verbose:

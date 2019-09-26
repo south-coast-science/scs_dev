@@ -60,9 +60,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("opc_version", cmd.verbose)
-
         # OPCConf...
         opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
 
@@ -99,6 +96,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("opc_version", cmd.verbose)
 
         opc.power_on()
 
