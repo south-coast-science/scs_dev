@@ -86,9 +86,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("aws_topic_subscriber", cmd.verbose)
-
         # topic...
         if cmd.channel:
             # SystemID...
@@ -120,6 +117,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("aws_topic_subscriber", cmd.verbose)
 
         for line in sys.stdin:
             try:

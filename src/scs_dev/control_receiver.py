@@ -110,9 +110,6 @@ if __name__ == '__main__':
     # ------------------------------------------------------------------------------------------------------------
     # resources...
 
-    # signal handler...
-    SignalledExit.construct("control_receiver", cmd.verbose)
-
     # SystemID...
     system_id = SystemID.load(Host)
 
@@ -141,6 +138,9 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("control_receiver", cmd.verbose)
 
         for line in sys.stdin:
             # control...

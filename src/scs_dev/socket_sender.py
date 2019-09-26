@@ -61,9 +61,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("socket_sender", cmd.verbose)
-
         sender = NetworkSocket(cmd.hostname, cmd.port)
 
         if cmd.verbose:
@@ -73,6 +70,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("socket_sender", cmd.verbose)
 
         sender.connect(True)
 

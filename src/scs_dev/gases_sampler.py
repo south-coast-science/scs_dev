@@ -137,9 +137,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("gases_sampler", cmd.verbose)
-
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -189,7 +186,7 @@ if __name__ == '__main__':
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, False)
+            else ScheduleRunner(cmd.semaphore)
 
         sampler = GasesSampler(runner, tag, ndir_monitor, sht, gas_sensors)
 
@@ -216,6 +213,9 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         sampler.start()
+
+        # signal handler...
+        SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
             if cmd.verbose:
