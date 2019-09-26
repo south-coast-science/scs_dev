@@ -64,9 +64,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("display", cmd.verbose)
-
         # MQTTConf...
         mqtt_conf = MQTTConf.load(Host)
         queue_report_filename = None if mqtt_conf is None else mqtt_conf.report_file
@@ -97,9 +94,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        reader.connect()
-
         monitor.start()
+
+        # signal handler...
+        SignalledExit.construct("display", cmd.verbose)
+
+        reader.connect()
 
         for message in reader.messages():
             if cmd.verbose:

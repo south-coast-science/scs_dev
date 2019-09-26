@@ -121,9 +121,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("particulates_sampler", cmd.verbose)
-
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -172,7 +169,7 @@ if __name__ == '__main__':
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, False)
+            else ScheduleRunner(cmd.semaphore)
 
         # sampler...
         sampler = ParticulatesSampler(runner, tag, opc_monitor)
@@ -180,20 +177,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
-
-
-        # ------------------------------------------------------------------------------------------------------------
-        # wait until needed...
-
-        # if cmd.semaphore:
-        #     while True:
-        #         schedule = Schedule.load(Host)
-        #         item = None if schedule is None else schedule.item(ParticulatesSampler.SCHEDULE_SEMAPHORE)
-        #
-        #         if item:
-        #             break
-        #
-        #         time.sleep(1.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -208,6 +191,9 @@ if __name__ == '__main__':
         # run...
 
         sampler.start()
+
+        # signal handler...
+        SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         for sample in sampler.samples():
             if sample is None:

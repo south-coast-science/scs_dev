@@ -95,9 +95,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("csv_logger", cmd.verbose)
-
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -128,6 +125,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("csv_logger", cmd.verbose)
 
         for line in sys.stdin:
             jstr = line.strip()

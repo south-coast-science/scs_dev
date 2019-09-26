@@ -75,9 +75,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("led_controller", cmd.verbose)
-
         # UDSReader...
         reader = UDSReader(cmd.uds)
 
@@ -108,9 +105,12 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        reader.connect()
-
         controller.start()
+
+        # signal handler...
+        SignalledExit.construct("led_controller", cmd.verbose)
+
+        reader.connect()
 
         for line in reader.messages():
             try:

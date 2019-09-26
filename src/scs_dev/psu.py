@@ -67,9 +67,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("psu", cmd.verbose)
-
         # Interface...
         interface_conf = InterfaceConf.load(Host)
         interface = None if interface_conf is None else interface_conf.interface()
@@ -90,6 +87,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("psu", cmd.verbose)
 
         psu.open()
 

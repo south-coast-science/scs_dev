@@ -73,9 +73,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("scheduler", cmd.verbose)
-
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -95,6 +92,9 @@ if __name__ == '__main__':
         # run...
 
         scheduler.start()
+
+        # signal handler...
+        SignalledExit.construct("scheduler", cmd.verbose)
 
         try:
             while True:

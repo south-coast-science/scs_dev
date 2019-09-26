@@ -89,9 +89,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("pressure_sampler", cmd.verbose)
-
         # SystemID...
         system_id = SystemID.load(Host)
 
@@ -121,7 +118,7 @@ if __name__ == '__main__':
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
-            else ScheduleRunner(cmd.semaphore, False)
+            else ScheduleRunner(cmd.semaphore)
 
         sampler = PressureSampler(runner, tag, barometer, conf.altitude)
 
@@ -132,6 +129,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("pressure_sampler", cmd.verbose)
 
         sampler.init()
 

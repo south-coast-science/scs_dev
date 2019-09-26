@@ -69,9 +69,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("csv_reader", cmd.verbose)
-
         reader = CSVReader(cmd.filename)
 
         if cmd.verbose:
@@ -81,6 +78,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("csv_reader", cmd.verbose)
 
         if cmd.array:
             print('[', end='')

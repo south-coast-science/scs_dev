@@ -99,9 +99,6 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        # signal handler...
-        SignalledExit.construct("aws_mqtt_client", cmd.verbose)
-
         # MQTTConf
         conf = MQTTConf.load(Host)
 
@@ -194,6 +191,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        # signal handler...
+        SignalledExit.construct("aws_mqtt_client", cmd.verbose)
 
         # data source...
         source.connect()
