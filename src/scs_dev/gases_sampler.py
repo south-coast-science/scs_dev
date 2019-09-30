@@ -113,8 +113,6 @@ except ImportError:
 
 # TODO: there must be a better way to deal with the import error stuff!
 
-# TODO: test gases service restart - semaphore problem?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
