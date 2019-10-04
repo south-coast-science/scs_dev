@@ -64,8 +64,6 @@ from scs_dev.cmd.cmd_aws_topic_publisher import CmdAWSTopicPublisher
 from scs_host.sys.host import Host
 
 
-# TODO: need to move project handling out of osio, and make it common with aws.
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
