@@ -105,16 +105,16 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        controller.start()
-
         # signal handler...
         SignalledExit.construct("led_controller", cmd.verbose)
 
+        controller.start()
+
         reader.connect()
 
-        for line in reader.messages():
+        for message in reader.messages():
             try:
-                jdict = json.loads(line)
+                jdict = json.loads(message)
             except ValueError:
                 continue
 
@@ -136,8 +136,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("led_controller: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

@@ -18,7 +18,7 @@ class CmdAWSTopicSubscriber(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-s UDS_SUB] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -29,6 +29,9 @@ class CmdAWSTopicSubscriber(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--sub", "-s", type="string", nargs=1, action="store", dest="uds_sub",
+                                 help="read subscriptions from UDS instead of stdin")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -60,6 +63,11 @@ class CmdAWSTopicSubscriber(object):
 
 
     @property
+    def uds_sub(self):
+        return self.__opts.uds_sub
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -71,4 +79,5 @@ class CmdAWSTopicSubscriber(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSTopicSubscriber:{topic:%s, channel:%s, verbose:%s}" % (self.topic, self.channel, self.verbose)
+        return "CmdAWSTopicSubscriber:{topic:%s, channel:%s, uds_sub:%s, verbose:%s}" % \
+               (self.topic, self.channel, self.uds_sub, self.verbose)

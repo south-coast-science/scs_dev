@@ -37,14 +37,18 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
-        if self.__ndir_monitor is None:
-            return
+        try:
+            if self.__ndir_monitor is None:
+                return
 
-        self.__ndir_monitor.start()
+            self.__ndir_monitor.start()
 
-        # wait for data...
-        while self.__ndir_monitor.sample() is None:
-            time.sleep(1.0)
+            # wait for data...
+            while self.__ndir_monitor.sample() is None:
+                time.sleep(1.0)
+
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+            pass
 
 
     def stop(self):
@@ -54,7 +58,7 @@ class GasesSampler(Sampler):
 
             self.__ndir_monitor.stop()
 
-        except (BrokenPipeError, KeyboardInterrupt):
+        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
             pass
 
 

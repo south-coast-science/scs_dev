@@ -210,10 +210,10 @@ if __name__ == '__main__':
             print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
 
-        sampler.start()
-
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
+
+        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -228,8 +228,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("gases_sampler: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

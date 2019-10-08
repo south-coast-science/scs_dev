@@ -22,7 +22,7 @@ class CmdMQTTClient(object):
                                                     "[-e] [-l LED_UDS] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--pub-addr", "-p", type="string", nargs=1, action="store", dest="uds_pub_addr",
+        self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
                                  help="read publications from UDS instead of stdin")
 
         self.__parser.add_option("--sub", "-s", action="store_true", dest="uds_sub",
@@ -53,12 +53,12 @@ class CmdMQTTClient(object):
             if self.__opts.uds_sub and len(self.__args) % 2 != 0:
                 return False
 
-        else:
-            if self.__opts.uds_sub and len(self.__args) != 1:
-                return False
-
-            if not self.__opts.uds_sub and len(self.__args) != 0:
-                return False
+        # else:
+        #     if self.__opts.uds_sub and len(self.__args) != 1:
+        #         return False
+        #
+        #     if not self.__opts.uds_sub and len(self.__args) != 0:
+        #         return False
 
         return True
 
@@ -68,6 +68,9 @@ class CmdMQTTClient(object):
     @property
     def subscriptions(self):
         subscriptions = []
+
+        if self.channel:
+            return subscriptions
 
         if self.__opts.uds_sub:
             for i in range(0, len(self.__args), 2):
@@ -93,8 +96,8 @@ class CmdMQTTClient(object):
 
 
     @property
-    def uds_pub_addr(self):
-        return self.__opts.uds_pub_addr
+    def uds_pub(self):
+        return self.__opts.uds_pub
 
 
     @property
@@ -121,8 +124,10 @@ class CmdMQTTClient(object):
     def __str__(self, *args, **kwargs):
         subscriptions = '[' + ', '.join(str(subscription) for subscription in self.subscriptions) + ']'
 
-        return "CmdMQTTClient:{subscriptions:%s, channel:%s, uds_pub_addr:%s, echo:%s, led:%s, verbose:%s}" % \
-               (subscriptions, self.channel, self.uds_pub_addr, self.echo, self.led_uds, self.verbose)
+        return "CmdMQTTClient:{subscriptions:%s, channel:%s, channel_uds:%s, uds_pub:%s, echo:%s, led:%s, " \
+               "verbose:%s}" % \
+               (subscriptions, self.channel, self.channel_uds, self.uds_pub, self.echo, self.led_uds,
+                self.verbose)
 
 
 # --------------------------------------------------------------------------------------------------------------------

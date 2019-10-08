@@ -29,7 +29,7 @@ try:
         now = LocalizedDatetime.now()
         message = "test: %s" % now.as_iso8601()
 
-        uds.connect(True)
+        uds.connect()
         uds.write(message, True)
 
         print(message, file=sys.stderr)

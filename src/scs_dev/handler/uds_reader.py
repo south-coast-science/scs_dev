@@ -42,7 +42,7 @@ class UDSReader(object):
 
     def connect(self):
         if self.__uds:
-            self.__uds.connect(False)
+            self.__uds.connect()
 
 
     def close(self):

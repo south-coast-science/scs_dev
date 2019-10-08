@@ -18,7 +18,7 @@ class CmdAWSTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-p UDS_PUB] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...
@@ -29,6 +29,9 @@ class CmdAWSTopicPublisher(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
+                                 help="write publications to UDS instead of stdout")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -60,6 +63,11 @@ class CmdAWSTopicPublisher(object):
     @property
     def channel(self):
         return self.__opts.channel
+
+
+    @property
+    def uds_pub(self):
+        return self.__opts.uds_pub
 
 
     @property
