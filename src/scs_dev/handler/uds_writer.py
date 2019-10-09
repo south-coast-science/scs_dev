@@ -6,6 +6,8 @@ Created on 13 Jul 2019
 https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
 """
 
+import sys
+
 from scs_host.comms.domain_socket import DomainSocket
 
 
@@ -18,18 +20,18 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, uds_name):
+    def __init__(self, address):
         """
         Constructor
         """
-        self.__uds = DomainSocket(uds_name) if uds_name else None
+        self.__uds = DomainSocket(address) if address else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
         if self.__uds:
-            self.__uds.connect(False)
+            self.__uds.connect()
 
 
     def close(self):
@@ -37,12 +39,13 @@ class UDSWriter(object):
             self.__uds.close()
 
 
-    def write(self, message):
+    def write(self, message, wait_for_availability=False):
         if self.__uds:
-            self.__uds.write(message, False)
+            self.__uds.write(message, wait_for_availability)
 
         else:
             print(message)
+            sys.stdout.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------

@@ -105,15 +105,18 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("csv_reader: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
             print("csv_reader: finishing", file=sys.stderr)
 
-        if reader is not None:
-            if cmd is not None and cmd.array:
+        if reader:
+            if cmd and cmd.array:
                 print(']')
 
             reader.close()

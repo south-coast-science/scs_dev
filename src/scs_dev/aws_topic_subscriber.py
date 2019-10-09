@@ -18,10 +18,11 @@ Messaging topics can be specified either by a project channel name, or by an exp
 name is used, the aws_topic_subscriber utility requires system ID and AWS project configurations to be set.
 
 SYNOPSIS
-aws_topic_publisher.py { -t TOPIC | -c { C | G | P | S | X } } [-v]
+aws_topic_subscriber.py { -t TOPIC | -c { C | G | P | S | X } } [-s UDS_SUB] [-v]
 
 EXAMPLES
-( cat ~/SCS/pipes/control_subscription_pipe & ) | ./aws_topic_subscriber.py -cX | ./control_receiver.py -r -v
+/home/pi/SCS/scs_dev/src/scs_dev/aws_topic_subscriber.py -cX -s /home/pi/SCS/pipes/mqtt_control_subscription.uds | \
+/home/pi/SCS/scs_dev/src/scs_dev/control_receiver.py -r -v
 
 DOCUMENT EXAMPLE - INPUT
 {"south-coast-science-dev/production-test/loc/1/gases":
@@ -60,15 +61,16 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_subscriber import CmdAWSTopicSubscriber
+from scs_dev.handler.uds_reader import UDSReader
 
 from scs_host.sys.host import Host
 
 
-# TODO: need to move project handling out of osio, and make it common with aws?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    source = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -85,6 +87,13 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
+
+        # comms...
+        source = UDSReader(cmd.uds_sub)
+
+        if cmd.verbose:
+            print("aws_mqtt_client: %s" % source, file=sys.stderr)
+            sys.stderr.flush()
 
         # topic...
         if cmd.channel:
@@ -112,7 +121,6 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("aws_topic_subscriber: %s" % topic, file=sys.stderr)
-            sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -121,9 +129,12 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("aws_topic_subscriber", cmd.verbose)
 
-        for line in sys.stdin:
+        # data source...
+        source.connect()
+
+        for message in source.messages():
             try:
-                jdict = json.loads(line, object_pairs_hook=OrderedDict)
+                jdict = json.loads(message, object_pairs_hook=OrderedDict)
             except ValueError:
                 continue
 
@@ -137,9 +148,15 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("aws_topic_subscriber: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
             print("aws_topic_subscriber: finishing", file=sys.stderr)
+
+        if source:
+            source.close()

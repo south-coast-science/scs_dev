@@ -23,7 +23,7 @@ The aws_mqtt_client utility requires the AWS client authorisation to operate.
 Only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
-aws_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) |
+aws_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | \
 [SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] } [-e] [-l LED_UDS] [-v]
 
 EXAMPLES
@@ -66,9 +66,8 @@ from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 from scs_dev.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_dev.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
-
-from scs_host.comms.domain_socket import DomainSocket
-from scs_host.comms.stdio import StdIO
+from scs_dev.handler.uds_reader import UDSReader
+from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_host.sys.host import Host
 
@@ -120,7 +119,10 @@ if __name__ == '__main__':
             print("aws_mqtt_client: %s" % auth, file=sys.stderr)
 
         # comms...
-        source = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
+        source = UDSReader(cmd.uds_pub)
+
+        if cmd.verbose:
+            print("aws_mqtt_client: %s" % source, file=sys.stderr)
 
         # reporter...
         reporter = MQTTReporter(cmd.verbose, cmd.led_uds)
@@ -152,7 +154,7 @@ if __name__ == '__main__':
             topic = project.channel_path(cmd.channel, system_id)
 
             # subscriber...
-            sub_comms = DomainSocket(cmd.channel_uds) if cmd.channel_uds else StdIO()
+            sub_comms = UDSWriter(cmd.channel_uds)
 
             handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
 
@@ -160,7 +162,7 @@ if __name__ == '__main__':
 
         else:
             for subscription in cmd.subscriptions:
-                sub_comms = DomainSocket(subscription.address) if subscription.address else StdIO()
+                sub_comms = UDSWriter(subscription.address)
 
                 # subscriber...
                 handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
@@ -199,7 +201,7 @@ if __name__ == '__main__':
         source.connect()
 
         # process input...
-        for message in source.read():
+        for message in source.messages():
             # receive...
             try:
                 json.loads(message)
@@ -221,8 +223,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("aws_mqtt_client: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

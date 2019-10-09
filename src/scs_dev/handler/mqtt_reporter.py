@@ -62,7 +62,7 @@ class MQTTReporter(object):
         colours = self.__CLIENT_STATUS[report.status()]
 
         try:
-            self.__led_uds.connect(False)
+            self.__led_uds.connect()
             self.__led_uds.write(JSONify.dumps(LEDState(colours[0], colours[1])), False)
 
         except OSError:
