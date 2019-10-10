@@ -169,7 +169,7 @@ if __name__ == '__main__':
             power_gps(cmd.gps)
 
         if cmd.modem is not None:
-            pass                            # TODO: implement 2G modem power control
+            pass                            # 2G modem only - we don't care
 
         if cmd.ndir is not None:
             power_ndir(cmd.ndir)

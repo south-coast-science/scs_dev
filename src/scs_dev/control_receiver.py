@@ -72,6 +72,7 @@ scs_mfr/shared_secret
 
 import json
 import sys
+import time
 
 from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
@@ -195,6 +196,7 @@ if __name__ == '__main__':
 
             # execute deferred commands...
             if command.cmd in deferred_commands:
+                time.sleep(10.0)                            # wait, hoping that the receipt is sent
                 command.execute(Host)
 
 

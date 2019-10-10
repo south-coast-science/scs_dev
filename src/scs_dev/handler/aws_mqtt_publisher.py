@@ -210,12 +210,12 @@ class AWSMQTTPublisher(SynchronisedProcess):
         try:
             start_time = time.time()
 
-            paho = self.__client.publish(publication)
+            reached_paho = self.__client.publish(publication)
             elapsed_time = time.time() - start_time
 
-            self.__reporter.print("paho: %s: %0.3f" % ("1" if paho else "0", elapsed_time))
+            self.__reporter.print("paho: %s: %0.3f" % ("1" if reached_paho else "0", elapsed_time))
 
-            self.__report.publish_success = True
+            self.__report.publish_success = reached_paho
 
         except operationTimeoutException:
             pass
