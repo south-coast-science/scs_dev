@@ -53,7 +53,7 @@ FILES
 DOCUMENT EXAMPLE - REQUEST
 {"/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control":
 {"tag": "bruno", "attn": "scs-ap1-6", "rec": "2018-04-04T14:41:11.872+01:00", "cmd_tokens": ["?"],
-"digest": "bf682976cb45d889dfbb7ebdecd207bf3e3b4a6e12336859a93d7023b8454514"}}
+"digest": "bf682976cb45d889207bf3e3b4a6e12336859a93d7023b8454514"}}
 
 DOCUMENT EXAMPLE - RESPONSE
 {"/orgs/south-coast-science-dev/development/device/alpha-pi-eng-000006/control":
@@ -62,7 +62,7 @@ DOCUMENT EXAMPLE - RESPONSE
 "stdout": ["[\"afe_baseline\", \"afe_calib\", \"opc_power\", \"ps\", \"schedule\", \"shared_secret\"]"],
 "stderr": [], "ret": 0},
 "omd": "40ef7a9c0f70033bbe21827ed25286b448a5ad3ace9b16f44f3d94da6a89ab25",
-"digest": "597f8de3852f1067f52f126398777abdba6c204c378e8f5d30bad6d8d99ee536"}}
+"digest": "597f8de3852f1067f52f126398777204c378e8f5d30bad6d8d99ee536"}}
 
 SEE ALSO
 scs_analysis/aws_mqtt_control

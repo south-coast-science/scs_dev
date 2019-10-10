@@ -285,7 +285,7 @@ if __name__ == '__main__':
 
                     if not success:
                         reporter.print("abandoned")
-                        reporter.set_led(QueueReport(0, ClientStatus.DISCONNECTED, False))
+                        reporter.set_led(QueueReport(0, ClientStatus.CONNECTING, False))
 
                     break
 

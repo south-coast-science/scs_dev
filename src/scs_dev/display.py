@@ -40,16 +40,21 @@ from scs_dev.cmd.cmd_display import CmdDisplay
 from scs_dev.handler.uds_reader import UDSReader
 
 from scs_dfe.gps.gps_conf import GPSConf
+from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_display.display.display_conf import DisplayConf
 
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
+
+# TODO: handle OPC power-down issue
 
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
+    interface = None
     monitor = None
 
     # ------------------------------------------------------------------------------------------------------------
@@ -61,6 +66,8 @@ if __name__ == '__main__':
         print("display: %s" % cmd, file=sys.stderr)
 
     try:
+        I2C.open(Host.I2C_SENSORS)
+
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -78,6 +85,13 @@ if __name__ == '__main__':
         if cmd.verbose and cmd.uds:
             print("display: %s" % reader, file=sys.stderr)
 
+        # Interface...
+        interface_conf = InterfaceConf.load(Host)
+        interface = None if interface_conf is None else interface_conf.interface()
+
+        if cmd.verbose and interface:
+            print("display: %s" % interface, file=sys.stderr)
+
         # DisplayConf...
         conf = DisplayConf.load(Host)
 
@@ -93,6 +107,9 @@ if __name__ == '__main__':
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
+
+        if interface:
+            interface.power_opc(True)                       # otherwise the SPI bus is held low
 
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
@@ -124,3 +141,8 @@ if __name__ == '__main__':
 
         if monitor:
             monitor.stop()
+
+        # if interface:
+        #     interface.power_opc(False)
+
+        I2C.close()

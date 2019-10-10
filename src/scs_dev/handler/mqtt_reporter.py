@@ -27,7 +27,8 @@ class MQTTReporter(object):
     __CLIENT_STATUS = {
         QueueStatus.NONE:           ['0', 'R'],
         QueueStatus.INHIBITED:      ['0', 'G'],
-        QueueStatus.DISCONNECTED:   ['0', 'A'],
+        QueueStatus.WAITING:        ['0', 'A'],
+        QueueStatus.CONNECTING:     ['G', 'R'],
         QueueStatus.PUBLISHING:     ['G', 'G'],
         QueueStatus.QUEUING:        ['R', 'A'],
         QueueStatus.CLEARING:       ['G', 'A']
