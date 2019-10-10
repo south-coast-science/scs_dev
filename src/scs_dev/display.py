@@ -15,10 +15,10 @@ Content is gained from several sources:
 * MQTT client and GPS receiver report files (if available)
 
 SYNOPSIS
-display.py [-v]
+display.py [-u UDS] [-v]
 
 EXAMPLES
-( cat < /home/pi/SCS/pipes/display_pipe & ) | /home/pi/SCS/scs_dev/src/scs_dev/display.py -v
+/home/pi/SCS/scs_dev/src/scs_dev/display.py -v -u /home/pi/SCS/pipes/display.uds
 
 SEE ALSO
 scs_mfr/display_conf
@@ -94,10 +94,10 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        monitor.start()
-
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
+
+        monitor.start()
 
         reader.connect()
 
@@ -112,8 +112,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("display: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

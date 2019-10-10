@@ -42,8 +42,9 @@ SYNOPSIS
 control_receiver.py [-r] [-e] [-v]
 
 EXAMPLES
-( cat ~/SCS/pipes/control_subscription_pipe & ) | ./osio_topic_subscriber.py -cX | ./control_receiver.py -r -v
-
+/home/pi/SCS/scs_dev/src/scs_dev/aws_topic_subscriber.py -cX -s /home/pi/SCS/pipes/mqtt_control_subscription.uds | \
+/home/pi/SCS/scs_dev/src/scs_dev/control_receiver.py -r -v | \
+/home/pi/SCS/scs_dev/src/scs_dev/aws_topic_publisher.py -v -cX -p /home/pi/SCS/pipes/mqtt_publication.uds
 FILES
 ~/SCS/cmd/*
 ~/SCS/conf/system_id.json
@@ -71,6 +72,7 @@ scs_mfr/shared_secret
 
 import json
 import sys
+import time
 
 from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
@@ -194,14 +196,18 @@ if __name__ == '__main__':
 
             # execute deferred commands...
             if command.cmd in deferred_commands:
+                time.sleep(10.0)                            # wait, hoping that the receipt is sent
                 command.execute(Host)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("control_receiver: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

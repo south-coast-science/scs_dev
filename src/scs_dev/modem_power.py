@@ -74,14 +74,17 @@ if __name__ == '__main__':
         SignalledExit.construct("modem_power", cmd.verbose)
 
         if cmd.all is not None:
-            interface.power_modem(cmd.all)          # TODO: implement 2G modem power control
+            interface.power_modem(cmd.all)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("modem_power: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

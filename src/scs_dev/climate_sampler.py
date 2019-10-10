@@ -187,8 +187,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("climate_sampler: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

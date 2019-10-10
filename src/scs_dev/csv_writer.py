@@ -90,12 +90,15 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("csv_writer: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
             print("csv_writer: finishing", file=sys.stderr)
 
-        if writer is not None:
+        if writer:
             writer.close()

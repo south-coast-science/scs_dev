@@ -127,7 +127,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("csv_logger", cmd.verbose)
+        SignalledExit.construct("csv_logger (%s)" % cmd.topic, cmd.verbose)
 
         for line in sys.stdin:
             jstr = line.strip()
@@ -142,7 +142,7 @@ if __name__ == '__main__':
                 except OSError as ex:
                     logger.writing_inhibited = True
 
-                    print("csv_logger: %s" % ex, file=sys.stderr)
+                    print("csv_logger (%s): %s" % (ex, cmd.topic), file=sys.stderr)
                     sys.stderr.flush()
 
             # echo...
@@ -154,12 +154,15 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
-        print("csv_logger: %s" % ex, file=sys.stderr)
+    except (BrokenPipeError, ConnectionResetError) as ex:
+        print("csv_logger (%s): %s" % (ex, cmd.topic), file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
-            print("csv_logger: finishing", file=sys.stderr)
+            print("csv_logger (%s): finishing" % cmd.topic, file=sys.stderr)
 
-        if logger is not None:
+        if logger:
             logger.close()

@@ -91,23 +91,22 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        scheduler.start()
-
         # signal handler...
         SignalledExit.construct("scheduler", cmd.verbose)
 
-        try:
-            while True:
-                time.sleep(1.0)
+        scheduler.start()
 
-        except SystemExit:
-            pass
+        while True:
+            time.sleep(1.0)
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("scheduler: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

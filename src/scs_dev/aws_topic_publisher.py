@@ -14,10 +14,11 @@ Messaging topics can be specified either by a project channel name, or by an exp
 name is used, the aws_topic_publisher utility requires system ID and AWS project configurations to be set.
 
 SYNOPSIS
-aws_topic_publisher.py { -t TOPIC | -c { C | G | P | S | X } } [-v]
+aws_topic_publisher.py { -t TOPIC | -c { C | G | P | S | X } } [-p UDS_PUB] [-v]
 
 EXAMPLES
-./control_receiver.py -r -v | ./aws_topic_publisher.py -v -cX > ~/SCS/pipes/mqtt_publication_pipe
+./climate_sampler.py -v -s scs-climate | \
+/home/pi/SCS/scs_dev/src/scs_dev/aws_topic_publisher.py -v -cC -p /home/pi/SCS/pipes/mqtt_publication.uds
 
 FILES
 ~/SCS/aws/aws_project.json
@@ -60,15 +61,16 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_publisher import CmdAWSTopicPublisher
+from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_host.sys.host import Host
 
 
-# TODO: need to move project handling out of osio, and make it common with aws.
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    topic = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -113,12 +115,18 @@ if __name__ == '__main__':
             print("aws_topic_publisher: %s" % topic, file=sys.stderr)
             sys.stderr.flush()
 
+        # comms...
+        writer = UDSWriter(cmd.uds_pub)
+
+        if cmd.verbose and cmd.uds_pub:
+            print("aws_topic_publisher: %s" % cmd.uds_pub, file=sys.stderr)
+            sys.stderr.flush()
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("aws_topic_publisher", cmd.verbose)
+        SignalledExit.construct("aws_topic_publisher (%s)" % topic, cmd.verbose)
 
         for line in sys.stdin:
             try:
@@ -130,19 +138,23 @@ if __name__ == '__main__':
 
             publication = Publication(topic, payload)
 
-            print(JSONify.dumps(publication))
-            sys.stdout.flush()
+            try:
+                writer.connect()
+                writer.write(JSONify.dumps(publication))
+
+            finally:
+                writer.close()
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
-        print("aws_topic_publisher: %s" % ex, file=sys.stderr)
+    except (BrokenPipeError, ConnectionResetError) as ex:
+        print("aws_topic_publisher (%s): %s" % (ex, topic), file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
-            print("aws_topic_publisher: finishing", file=sys.stderr)
-
-        if cmd.verbose:
-            print("aws_topic_publisher: finishing", file=sys.stderr)
+            print("aws_topic_publisher (%s): finishing" % topic, file=sys.stderr)

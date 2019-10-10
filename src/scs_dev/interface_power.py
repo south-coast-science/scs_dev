@@ -169,7 +169,7 @@ if __name__ == '__main__':
             power_gps(cmd.gps)
 
         if cmd.modem is not None:
-            pass                            # TODO: implement 2G modem power control
+            pass                            # 2G modem only - we don't care
 
         if cmd.ndir is not None:
             power_ndir(cmd.ndir)
@@ -185,8 +185,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("interface_power: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:

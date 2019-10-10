@@ -177,7 +177,7 @@ if __name__ == '__main__':
             print("osio_mqtt_client: %s" % client_auth, file=sys.stderr)
 
         # comms...
-        pub_comms = DomainSocket(cmd.uds_pub_addr) if cmd.uds_pub_addr else StdIO()
+        pub_comms = DomainSocket(cmd.uds_pub) if cmd.uds_pub else StdIO()
 
         # manager...
         manager = TopicManager(HTTPClient(), api_auth.api_key)
@@ -304,8 +304,11 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, TypeError) as ex:
+    except (BrokenPipeError, ConnectionResetError) as ex:
         print("osio_mqtt_client: %s" % ex, file=sys.stderr)
+
+    except SystemExit:
+        pass
 
     finally:
         if cmd and cmd.verbose:
