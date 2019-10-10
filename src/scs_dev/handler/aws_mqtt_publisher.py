@@ -134,6 +134,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         self.__report.client_state = self.__state.state
 
+        if self.__report.client_state == ClientStatus.WAITING:
+            self.__report.client_state = ClientStatus.CONNECTING
+
         if self.__report.client_state == ClientStatus.INHIBITED:
             # discard...
             self.__queue.dequeue()
