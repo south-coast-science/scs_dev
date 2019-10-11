@@ -28,9 +28,9 @@ class MQTTReporter(object):
         QueueStatus.NONE:           ['R', '0'],
         QueueStatus.INHIBITED:      ['G', '0'],
         QueueStatus.WAITING:        ['A', '0'],
-        QueueStatus.CONNECTING:     ['G', 'R'],
+        QueueStatus.CONNECTING:     ['A', 'R'],
         QueueStatus.PUBLISHING:     ['G', 'G'],
-        QueueStatus.QUEUING:        ['A', 'R'],
+        QueueStatus.QUEUING:        ['G', 'R'],
         QueueStatus.CLEARING:       ['G', 'A']
     }
 
