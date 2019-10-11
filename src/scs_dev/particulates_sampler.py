@@ -102,6 +102,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: handle OPC power-down issue (see OPCMonitor)
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

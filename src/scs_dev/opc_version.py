@@ -44,6 +44,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
+# TODO: handle OPC power-down issue
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -110,7 +112,7 @@ if __name__ == '__main__':
 
         print("opc_version: %s" % version, file=sys.stderr)
 
-        opc.power_off()
+        # opc.power_off()
 
 
     # ----------------------------------------------------------------------------------------------------------------

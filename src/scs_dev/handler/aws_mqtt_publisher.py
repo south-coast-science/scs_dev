@@ -60,7 +60,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
 
-        initial_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.DISCONNECTED
+        initial_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.WAITING
         self.__state = AWSMQTTState(initial_state, reporter)
 
         self.__conf = conf
@@ -80,6 +80,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def run(self):
         try:
+            if self.__conf.report_file:
+                self.__report.save(self.__conf.report_file)
+
             while True:
                 self.__process_messages()
                 time.sleep(self.__QUEUE_INSPECTION_INTERVAL)
@@ -134,12 +137,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         self.__report.client_state = self.__state.state
 
+        if self.__report.client_state == ClientStatus.WAITING:
+            self.__report.client_state = ClientStatus.CONNECTING
+
         if self.__report.client_state == ClientStatus.INHIBITED:
             # discard...
             self.__queue.dequeue()
             return
 
-        if self.__report.client_state == ClientStatus.DISCONNECTED:
+        if self.__report.client_state == ClientStatus.CONNECTING:
             # connect...
             if self.__connect():
                 self.__state.set_connected()
@@ -265,8 +271,8 @@ class AWSMQTTState(object):
     def set_disconnected(self):
         self.__latest_success = None
 
-        self.__state = ClientStatus.DISCONNECTED
-        self.__reporter.print("-> DISCONNECTED")
+        self.__state = ClientStatus.CONNECTING
+        self.__reporter.print("-> CONNECTING")
 
 
     # ----------------------------------------------------------------------------------------------------------------
