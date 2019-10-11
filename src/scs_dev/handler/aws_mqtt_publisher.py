@@ -80,6 +80,9 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def run(self):
         try:
+            if self.__conf.report_file:
+                self.__report.save(self.__conf.report_file)
+
             while True:
                 self.__process_messages()
                 time.sleep(self.__QUEUE_INSPECTION_INTERVAL)
