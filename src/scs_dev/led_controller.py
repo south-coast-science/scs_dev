@@ -12,7 +12,7 @@ an (un-managed) background process.
 
 The led_controller waits for data on stdin or the named Unix domain socket, then updates the state of the LEDs
 accordingly. Updates are in the form of a JSON array containing two single-character strings - the first represents
-80% of the duty cycle, the second 20%. If a steady state is required, the two values should be the same.
+70% of the duty cycle, the second 30%. If a steady state is required, the two values should be the same.
 
 When the led_controller starts, the LEDs remain in their previous state. When the led_controller terminates,
 the LEDs remain in their last state.
