@@ -50,5 +50,12 @@ class UDSWriter(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
+    @property
+    def address(self):
+        return self.__uds.address if self.__uds else None
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __str__(self, *args, **kwargs):
         return "UDSWriter:{uds:%s}" % self.__uds
