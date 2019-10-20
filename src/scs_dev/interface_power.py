@@ -50,7 +50,7 @@ from scs_host.sys.host import Host
 try:
     from scs_ndir.gas.ndir_conf import NDIRConf
 except ImportError:
-    from scs_core.gas.ndir_conf import NDIRConf
+    from scs_core.gas.ndir.ndir_conf import NDIRConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
