@@ -245,6 +245,6 @@ if __name__ == '__main__':
             interface.power_gases(False)
 
         if sampler:
-            sampler.stop()
+            sampler.stop()          # this powers down the NDIR
 
         I2C.close()
