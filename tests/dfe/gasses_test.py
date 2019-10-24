@@ -19,7 +19,7 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 try:
-    from scs_ndir.gas.ndir_conf import NDIRConf
+    from scs_ndir.gas.ndir.ndir_conf import NDIRConf
 except ImportError:
     from scs_core.gas.ndir.ndir_conf import NDIRConf
 

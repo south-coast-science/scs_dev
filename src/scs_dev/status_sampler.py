@@ -22,6 +22,9 @@ Fields which may be reported include:
 * Power supply condition
 * Temperature of the host processor
 
+If the power supply is being monitored, then the system will automatically shut down if commanded by the power supply
+microcontroller. This behaviour can be suppressed with the --no-shutdown flag.
+
 The status_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
 fields for:
 
