@@ -205,6 +205,10 @@ if __name__ == '__main__':
 
         interface.power_gases(True)
 
+        if ndir_monitor:
+            interface.power_ndir(True)
+            time.sleep(ndir_monitor.boot_time())
+
         if cmd.verbose and ndir_conf:
             print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
             sys.stderr.flush()
