@@ -33,10 +33,10 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-status_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+status_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-x] [-v]
 
 EXAMPLES
-./status_sampler.py -i60
+./status_sampler.py -i 60
 
 FILES
 ~/SCS/conf/schedule.json
@@ -81,7 +81,7 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.cmd.cmd_sampler import CmdSampler
+from scs_dev.cmd.cmd_status_sampler import CmdStatusSampler
 from scs_dev.sampler.status_sampler import StatusSampler
 
 from scs_dfe.gps.gps_conf import GPSConf
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
-    cmd = CmdSampler()
+    cmd = CmdStatusSampler()
 
     if cmd.verbose:
         print("status_sampler: %s" % cmd, file=sys.stderr)
@@ -150,7 +150,7 @@ if __name__ == '__main__':
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
-        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host, interface_model)
+        psu_monitor = None if psu_conf is None else psu_conf.psu_monitor(Host, interface_model, not cmd.no_shutdown)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
