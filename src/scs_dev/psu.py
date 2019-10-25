@@ -47,6 +47,14 @@ from scs_psu.psu.psu_conf import PSUConf
 
 # --------------------------------------------------------------------------------------------------------------------
 
+def prompt():
+    if cmd.interactive:
+        print('> ', file=sys.stderr, end='')
+        sys.stderr.flush()
+
+
+# --------------------------------------------------------------------------------------------------------------------
+
 if __name__ == '__main__':
 
     psu = None
@@ -100,18 +108,17 @@ if __name__ == '__main__':
 
         else:
             # use stdin...
-            if cmd.interactive:
-                print('> ', file=sys.stderr, end='')
-                sys.stderr.flush()
+            prompt()
 
             for line in sys.stdin:
-                response = psu.communicate(line.strip())
-                print(response)
-                sys.stdout.flush()
+                command = line.strip()
 
-                if cmd.interactive:
-                    print('> ', file=sys.stderr, end='')
-                    sys.stderr.flush()
+                if command:
+                    response = psu.communicate(command)
+                    print(response)
+                    sys.stdout.flush()
+
+                prompt()
 
 
     # ----------------------------------------------------------------------------------------------------------------
