@@ -40,9 +40,11 @@ from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
+from scs_host.comms.stdio import StdIO
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
+
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -100,18 +102,15 @@ if __name__ == '__main__':
 
         else:
             # use stdin...
-            if cmd.interactive:
-                print('> ', file=sys.stderr, end='')
-                sys.stderr.flush()
+            while True:
+                command = StdIO.prompt('> ')
 
-            for line in sys.stdin:
-                response = psu.communicate(line.strip())
+                if not command:
+                    continue
+
+                response = psu.communicate(command)
                 print(response)
                 sys.stdout.flush()
-
-                if cmd.interactive:
-                    print('> ', file=sys.stderr, end='')
-                    sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
