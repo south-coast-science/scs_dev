@@ -16,8 +16,8 @@ class CmdStatusSampler(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-x] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -x | -o }] "
+                                                    "[-v]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="file",
@@ -35,6 +35,9 @@ class CmdStatusSampler(object):
         self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
                                  help="suppress auto-shutdown")
 
+        self.__parser.add_option("--no-output", "-o", action="store_true", dest="no_output", default=False,
+                                 help="suppress reporting on stdout")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -45,6 +48,9 @@ class CmdStatusSampler(object):
 
     def is_valid(self):
         if self.__opts.semaphore is not None and self.__opts.interval is not None:
+            return False
+
+        if self.__opts.no_shutdown and self.__opts.no_output:
             return False
 
         if self.__opts.interval is None and self.__opts.samples is not None:
@@ -81,6 +87,11 @@ class CmdStatusSampler(object):
 
 
     @property
+    def no_output(self):
+        return self.__opts.no_output
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -92,5 +103,7 @@ class CmdStatusSampler(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdStatusSampler:{file:%s, semaphore:%s, interval:%s, samples:%s, no_shutdown:%s, verbose:%s}" % \
-                    (self.file, self.semaphore, self.interval, self.samples, self.no_shutdown, self.verbose)
+        return "CmdStatusSampler:{file:%s, semaphore:%s, interval:%s, samples:%s, no_shutdown:%s, no_output:%s, " \
+               "verbose:%s}" % \
+                    (self.file, self.semaphore, self.interval, self.samples, self.no_shutdown, self.no_output,
+                     self.verbose)

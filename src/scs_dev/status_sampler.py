@@ -25,8 +25,11 @@ Fields which may be reported include:
 If the power supply is being monitored, then the system will automatically shut down if commanded by the power supply
 microcontroller. This behaviour can be suppressed with the --no-shutdown flag.
 
-The status_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document with
-fields for:
+A --no-output mode is made available. When this flag is asserted, the status_sampler utility only monitors for shutdown
+conditions, and does not provide any reporting.
+
+The status_sampler writes its output to stdout, unless suppressed. As for all sensing utilities, the output format is a
+JSON document with fields for:
 
 * the unique tag of the device (if the system ID is set)
 * the recording date / time in ISO 8601 format
@@ -36,7 +39,7 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-status_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-x] [-v]
+status_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -x | -o }] [-v]
 
 EXAMPLES
 ./status_sampler.py -i 60
@@ -181,6 +184,10 @@ if __name__ == '__main__':
         SignalledExit.construct("status_sampler", cmd.verbose)
 
         sampler.start()
+
+        if cmd.no_output:
+            while True:
+                time.sleep(1.0)
 
         for sample in sampler.samples():
             if cmd.verbose:
