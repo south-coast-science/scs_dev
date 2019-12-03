@@ -36,7 +36,7 @@ try:
     interface_conf = InterfaceConf.load(Host)
 
     # OPCConf...
-    conf = OPCConf('N2', 5, False, None, None)
+    conf = OPCConf('N2', 5, False, None, None, [], None)
 
     # OPCMonitor...
     monitor = conf.opc_monitor(interface_conf.interface(), Host)
