@@ -9,6 +9,8 @@ import time
 from scs_core.sampler.sampler import Sampler
 
 
+# TODO: add sht  - None if use OPC-internal / if no rH source, exg values are None
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class ParticulatesSampler(Sampler):
