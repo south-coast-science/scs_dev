@@ -18,7 +18,7 @@ class ParticulatesSampler(Sampler):
     classdocs
     """
 
-    SCHEDULE_SEMAPHORE =    "scs-particulates"          # hard-coded path
+    SCHEDULE_SEMAPHORE =    "scs-particulates"              # hard-coded path
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -28,8 +28,8 @@ class ParticulatesSampler(Sampler):
         """
         Sampler.__init__(self, runner)
 
-        self.__tag = tag
-        self.__opc_monitor = opc_monitor
+        self.__tag = tag                                    # string
+        self.__opc_monitor = opc_monitor                    # OPCMonitor
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -60,6 +60,8 @@ class ParticulatesSampler(Sampler):
             return None
 
         return datum.as_sample(self.__tag)
+
+
 
 
     # ----------------------------------------------------------------------------------------------------------------

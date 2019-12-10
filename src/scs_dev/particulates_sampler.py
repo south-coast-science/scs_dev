@@ -85,6 +85,9 @@ import time
 from scs_core.data.json import JSONify
 from scs_core.data.localized_datetime import LocalizedDatetime
 
+from scs_core.particulate.exegesis.exegete_collection import ExegeteCollection
+from scs_core.particulate.exegesis.text import Text
+
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
@@ -96,6 +99,7 @@ from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
+from scs_dfe.climate.sht_conf import SHTConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -109,6 +113,7 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     opc = None
+    sht = None
     sampler = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -159,12 +164,21 @@ if __name__ == '__main__':
 
         interface = interface_conf.interface()
 
-        if interface is None:
-            print("particulates_sampler: Interface not available.", file=sys.stderr)
-            exit(1)
+        # exegetes...
+        exegete_collection = ExegeteCollection.construct(opc_conf.exegete_names)
 
-        if cmd.verbose and interface:
-            print("particulates_sampler: %s" % interface, file=sys.stderr)
+        # SHTConf...
+        if exegete_collection.uses_external_sht():
+            sht_conf = SHTConf.load(Host)
+
+            if sht_conf is None:
+                print("particulates_sampler: SHTConf not available.", file=sys.stderr)
+                exit(1)
+
+            # SHT...
+            sht = sht_conf.ext_sht()
+
+            print("particulates_sampler: %s" % sht, file=sys.stderr)
 
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(interface, Host)
@@ -179,7 +193,6 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
             sys.stderr.flush()
-
 
         # ------------------------------------------------------------------------------------------------------------
         # check...
@@ -197,16 +210,24 @@ if __name__ == '__main__':
 
         sampler.start()
 
-        for sample in sampler.samples():
-            if sample is None:
+        for opc_sample in sampler.samples():
+            if opc_sample is None:
                 continue
+
+            # data interpretation...
+            if exegete_collection.has_members():
+                internal_sht_sample = opc_sample.values.get('sht')
+                external_sht_sample = None if sht is None else sht.sample()
+
+                text = Text.construct_from_jdict(opc_sample.values)
+                opc_sample.exegeses = exegete_collection.interpret(text, internal_sht_sample, external_sht_sample)
 
             if cmd.verbose:
                 now = LocalizedDatetime.now()
-                print("%s: particulates: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
+                print("%s: particulates: %s" % (now.as_time(), opc_sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
-            print(JSONify.dumps(sample))
+            print(JSONify.dumps(opc_sample))
             sys.stdout.flush()
 
 
