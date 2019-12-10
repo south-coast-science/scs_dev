@@ -174,7 +174,7 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     def __connect(self):
         try:
-            success = self.__client.connect(self.__auth)
+            success = self.__client.connect(self.__auth, self.__conf.debug)
 
             if success:
                 self.__reporter.print("connect: done")
