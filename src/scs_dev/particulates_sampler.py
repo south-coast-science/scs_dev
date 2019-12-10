@@ -28,10 +28,11 @@ on the OPC, and stops the OPC fan.
 The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON
 document with fields for:
 
-* the unique tag of the device (if the system ID is set)
-* a source identifier ("N2" or "N3")
-* the recording date / time in ISO 8601 format
-* a value field containing the sensed values
+* tag - the unique tag of the device (if the system ID is set)
+* src - a source identifier ("N2" or "N3")
+* rec - the recording date / time in ISO 8601 format
+* val - a value field containing the sensed values
+* exg - data interpretations, as specified by opc_conf.py
 
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
 controlled by an independent scheduling process via a Unix semaphore.
@@ -47,19 +48,14 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLES
-OPC-N2:
-{"tag": "scs-be2-2", "src": "N2", "rec": "2018-11-11T09:05:10.424+00:00",
-"val": {"per": 10.0, "pm1": 8.1, "pm2p5": 12.1, "pm10": 12.9,
-"bins": [142, 63, 48, 28, 10, 13, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-"mtf1": 42, "mtf3": 44, "mtf5": 46, "mtf7": 59}}
-
-OPC-N3:
-{"tag": "scs-be2-3", "src": "N3", "rec": "2018-11-17T12:06:45.605+00:00",
-"val": {"per": 4.5, "pm1": 12.0, "pm2p5": 19.6, "pm10": 79.0,
-"bins": [708, 27, 8, 3, 3, 3, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-"mtf1": 81, "mtf3": 98, "mtf5": 97, "mtf7": 118,
-"sht": {"hmd": 37.3, "tmp": 24.7}}}
+DOCUMENT EXAMPLE (OPC-N3):
+{"tag": "scs-be2-3", "src": "N3", "rec": "2019-12-10T15:24:04Z",
+"val": {"per": 4.9, "pm1": 5.6, "pm2p5": 6.7, "pm10": 6.8,
+"bin": [338, 42, 4, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+"mtf1": 83, "mtf3": 101, "mtf5": 0, "mtf7": 0, "sfr": 0.61,
+"sht": {"hmd": 32.1, "tmp": 30.7}},
+"exg": {"iseceen2v1": {"pm1": 3.9, "pm2p5": 4.2, "pm10": 4.8},
+"isecsen2v2": {"pm1": 4.7, "pm2p5": 5.1, "pm10": 6.1}}}
 
 SEE ALSO
 scs_dev/opc_cleaner
