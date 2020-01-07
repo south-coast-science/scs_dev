@@ -216,7 +216,7 @@ if __name__ == '__main__':
                 external_sht_sample = None if sht is None else sht.sample()
 
                 text = Text.construct_from_jdict(opc_sample.values)
-                opc_sample.exegeses = exegete_collection.interpret(text, internal_sht_sample, external_sht_sample)
+                opc_sample.exegeses = exegete_collection.interpretation(text, internal_sht_sample, external_sht_sample)
 
             if cmd.verbose:
                 now = LocalizedDatetime.now()
