@@ -144,7 +144,6 @@ if __name__ == '__main__':
 
         if cmd.verbose and cmd.uds_pub:
             print("csv_log_reader: %s" % writer, file=sys.stderr)
-            sys.stderr.flush()
 
         sys.stderr.flush()
 
