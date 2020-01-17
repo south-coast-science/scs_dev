@@ -20,7 +20,7 @@ class CmdOSIOTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-o] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } [-o] [-v]",
                                               version="%prog 1.0")
 
         # compulsory...

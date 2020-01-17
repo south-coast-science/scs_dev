@@ -47,6 +47,7 @@ tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 SEE ALSO
+scs_dev/csv_log_reader
 scs_dev/csv_reader
 scs_dev/csv_writer
 scs_mfr/csv_logger_conf
@@ -110,7 +111,7 @@ if __name__ == '__main__':
             print("csv_logger: %s" % conf, file=sys.stderr)
 
         # CSVLog...
-        log = None if conf is None else CSVLog(conf.root_path, cmd.topic, tag)
+        log = None if conf is None else CSVLog(conf.root_path, cmd.topic_name, tag)
 
         if log and cmd.verbose:
             print("csv_logger: %s" % log, file=sys.stderr)
@@ -127,7 +128,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("csv_logger (%s)" % cmd.topic, cmd.verbose)
+        SignalledExit.construct("csv_logger (%s)" % cmd.topic_name, cmd.verbose)
 
         for line in sys.stdin:
             jstr = line.strip()
@@ -142,7 +143,7 @@ if __name__ == '__main__':
                 except OSError as ex:
                     logger.writing_inhibited = True
 
-                    print("csv_logger (%s): %s" % (ex, cmd.topic), file=sys.stderr)
+                    print("csv_logger (%s): %s" % (ex, cmd.topic_name), file=sys.stderr)
                     sys.stderr.flush()
 
             # echo...
@@ -155,14 +156,14 @@ if __name__ == '__main__':
     # end...
 
     except (BrokenPipeError, ConnectionResetError) as ex:
-        print("csv_logger (%s): %s" % (ex, cmd.topic), file=sys.stderr)
+        print("csv_logger (%s): %s" % (ex, cmd.topic_name), file=sys.stderr)
 
     except SystemExit:
         pass
 
     finally:
         if cmd and cmd.verbose:
-            print("csv_logger (%s): finishing" % cmd.topic, file=sys.stderr)
+            print("csv_logger (%s): finishing" % cmd.topic_name, file=sys.stderr)
 
         if logger:
             logger.close()

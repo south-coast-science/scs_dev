@@ -69,7 +69,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        reader = CSVReader(cmd.filename)
+        reader = CSVReader(filename=cmd.filename)
 
         if cmd.verbose:
             print("csv_reader: %s" % reader, file=sys.stderr)
@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
         first = True
 
-        for datum in reader.rows:
+        for datum in reader.rows():
             if cmd.array:
                 if first:
                     print(datum, end='')
