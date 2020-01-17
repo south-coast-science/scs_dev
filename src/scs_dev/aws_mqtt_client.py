@@ -115,9 +115,6 @@ if __name__ == '__main__':
             print("aws_mqtt_client: ClientAuth not available.", file=sys.stderr)
             exit(1)
 
-        if cmd.verbose:
-            print("aws_mqtt_client: %s" % auth, file=sys.stderr)
-
         # comms...
         source = UDSReader(cmd.uds_pub)
 

@@ -18,8 +18,8 @@ class CmdAWSTopicSubscriber(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC | -c { C | G | P | S | X } } [-s UDS_SUB] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } [-s UDS_SUB] "
+                                                    "[-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
