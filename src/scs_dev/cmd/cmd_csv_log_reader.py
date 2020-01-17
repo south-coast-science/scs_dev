@@ -18,22 +18,25 @@ class CmdCSVLogReader(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_NAME -s START | -f } [-w] [-p UDS_PUB] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_NAME -s START | -f } [-n] [-w] [-p UDS_PUB] [-v]",
                                               version="%prog 1.0")
 
-        # manual specification...
+        # manual data specification...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_name",
                                  help="topic name")
 
         self.__parser.add_option("--start", "-s", type="string", nargs=1, action="store", dest="start",
                                  help="ISO 8601 datetime start")
 
-        # server specification...
+        # server data specification...
         self.__parser.add_option("--fill", "-f", action="store_true", dest="fill",
                                  help="find logged documents more recent than server latest")
 
-        # general...
-        self.__parser.add_option("--wrapper", "-w", action="store_true", dest="include_wrapper", default=False,
+        # output...
+        self.__parser.add_option("--nullify", "-n", action="store_true", dest="nullify", default=False,
+                                 help="convert empty strings to nulls")
+
+        self.__parser.add_option("--wrapper", "-w", action="store_true", dest="wrapper", default=False,
                                  help="use topic wrapper")
 
         self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
@@ -76,8 +79,13 @@ class CmdCSVLogReader(object):
 
 
     @property
-    def include_wrapper(self):
-        return self.__opts.include_wrapper
+    def nullify(self):
+        return self.__opts.nullify
+
+
+    @property
+    def wrapper(self):
+        return self.__opts.wrapper
 
 
     @property
@@ -97,5 +105,5 @@ class CmdCSVLogReader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogReader:{topic_name:%s, start:%s, fill:%s, include_wrapper:%s, uds_pub:%s, verbose:%s}" % \
-               (self.topic_name, self.start, self.fill, self.include_wrapper, self.uds_pub, self.verbose)
+        return "CmdCSVLogReader:{topic_name:%s, start:%s, fill:%s, nullify:%s, wrapper:%s, uds_pub:%s, verbose:%s}" % \
+               (self.topic_name, self.start, self.fill, self.nullify, self.wrapper, self.uds_pub, self.verbose)

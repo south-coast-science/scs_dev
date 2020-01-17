@@ -29,7 +29,7 @@ Note that the csv_log_reader utility is only able to find missing server documen
 it is not able to infill gaps within the server data timeline.
 
 SYNOPSIS
-csv_log_reader.py { -t TOPIC_NAME -s START | -f } [-w] [-p UDS_PUB] [-v]
+csv_log_reader.py { -t TOPIC_NAME -s START | -f } [-n] [-w] [-p UDS_PUB] [-v]
 
 EXAMPLES
 ./csv_log_reader.py -vfw -p ~/SCS/pipes/mqtt_publication.uds
@@ -44,8 +44,8 @@ scs_mfr/system_id
 
 BUGS
 The csv_log_reader utility is not aware of the classes that were used to create the documents that it is
-processing. As a result, any empty string found in a CSV cell is output as-is, even though the field may have
-been been a missing numeric that was represented as null.
+processing. As a result, there is an ambiguity over empty strings in CSV cells. For compatibility with AWS
+DynamoDB, the --nullify flag should be used to convert these values to null.
 """
 
 import sys
@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
         for topic, log in logs.items():
             # CSVLogReader...
-            reader = CSVLogReader(log)
+            reader = CSVLogReader(log, cmd.nullify)
 
             if cmd.verbose:
                 print("csv_log_reader: topic: %s" % topic, file=sys.stderr)
@@ -180,7 +180,7 @@ if __name__ == '__main__':
                 try:
                     # documents...
                     for datum in reader.documents(file, 'rec'):
-                        if cmd.include_wrapper:
+                        if cmd.wrapper:
                             publication = Publication(topic, datum)
                             jdict = publication.as_json()
                         else:
