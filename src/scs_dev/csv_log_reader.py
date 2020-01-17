@@ -41,6 +41,11 @@ scs_dev/csv_writer
 scs_mfr/aws_api_auth
 scs_mfr/csv_logger_conf
 scs_mfr/system_id
+
+BUGS
+The csv_log_reader utility is not aware of the classes that were used to create the documents that it is
+processing. As a result, any empty string found in a CSV cell is output as-is, even though the field may have
+been been a missing numeric that was represented as null.
 """
 
 import sys
