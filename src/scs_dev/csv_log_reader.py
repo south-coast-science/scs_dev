@@ -43,9 +43,7 @@ scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
 BUGS
-The csv_log_reader utility is not aware of the classes that were used to create the documents that it is
-processing. As a result, there is an ambiguity over empty strings in CSV cells. For compatibility with AWS
-DynamoDB, the --nullify flag should be used to convert these values to null.
+For compatibility with AWS DynamoDB, the --nullify flag should be used to convert empty string values to null.
 """
 
 import sys
