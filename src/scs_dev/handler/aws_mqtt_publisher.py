@@ -2,13 +2,6 @@
 Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-        QueueReport.STATUS_NONE:            "",
-        QueueReport.STATUS_INHIBITED:       "PUBLISHING INHIBITED",
-        QueueReport.STATUS_DISCONNECTED:    "CONNECTING",
-        QueueReport.STATUS_PUBLISHING:      "PUBLISHING DATA",
-        QueueReport.STATUS_QUEUING:         "QUEUING DATA",
-        QueueReport.STATUS_CLEARING:        "CLEARING DATA BACKLOG "
 """
 
 import json
@@ -45,8 +38,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
     __CONNECT_TIME =                3.0         # seconds
     __CONNECT_RETRY_TIME =          2.0         # seconds
-
-    __POST_PUBLISH_TIME =           0.1         # seconds - was 0.5
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -161,8 +152,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
             self.__publish_message(publication)
             self.__queue.dequeue()
 
-            time.sleep(self.__POST_PUBLISH_TIME)
-
             return
 
         else:
@@ -271,8 +260,11 @@ class AWSMQTTState(object):
     def set_disconnected(self):
         self.__latest_success = None
 
+        if self.__state != ClientStatus.CONNECTED:
+            return
+
         self.__state = ClientStatus.CONNECTING
-        self.__reporter.print("-> CONNECTING")
+        self.__reporter.print("-> DISCONNECTED")
 
 
     # ----------------------------------------------------------------------------------------------------------------
