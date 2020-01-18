@@ -18,8 +18,8 @@ class CmdCSVLogReader(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_NAME -s START | -f } [-n] [-w] [-p UDS_PUB] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_NAME -s START | -f } [-n] [-w [-q PRIORITY]] "
+                                                    "[-p UDS_PUB] [-v]", version="%prog 1.0")
 
         # manual data specification...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_name",
@@ -39,6 +39,9 @@ class CmdCSVLogReader(object):
         self.__parser.add_option("--wrapper", "-w", action="store_true", dest="wrapper", default=False,
                                  help="use topic wrapper")
 
+        self.__parser.add_option("--queue-priority", "-q", type="int", nargs=1, action="store", dest="priority",
+                                 default=0, help="queue priority for wrapper (default 0)")
+
         self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
                                  help="write documents to UDS instead of stdout")
 
@@ -56,6 +59,9 @@ class CmdCSVLogReader(object):
             return False
 
         if self.topic_name is not None and self.start is None:
+            return False
+
+        if self.priority is not None and not self.wrapper:
             return False
 
         return True
@@ -89,6 +95,11 @@ class CmdCSVLogReader(object):
 
 
     @property
+    def priority(self):
+        return self.__opts.priority
+
+
+    @property
     def uds_pub(self):
         return self.__opts.uds_pub
 
@@ -105,5 +116,7 @@ class CmdCSVLogReader(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogReader:{topic_name:%s, start:%s, fill:%s, nullify:%s, wrapper:%s, uds_pub:%s, verbose:%s}" % \
-               (self.topic_name, self.start, self.fill, self.nullify, self.wrapper, self.uds_pub, self.verbose)
+        return "CmdCSVLogReader:{topic_name:%s, start:%s, fill:%s, nullify:%s, wrapper:%s, priority:%s, uds_pub:%s, " \
+               "verbose:%s}" % \
+               (self.topic_name, self.start, self.fill, self.nullify, self.wrapper, self.priority, self.uds_pub,
+                self.verbose)

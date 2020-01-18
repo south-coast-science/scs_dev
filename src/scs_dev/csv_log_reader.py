@@ -178,7 +178,7 @@ if __name__ == '__main__':
                     # documents...
                     for datum in reader.documents(file, 'rec'):
                         if cmd.wrapper:
-                            publication = Publication(topic, datum)
+                            publication = Publication(topic, cmd.priority, datum)
                             jdict = publication.as_json()
                         else:
                             jdict = datum
@@ -192,9 +192,12 @@ if __name__ == '__main__':
 
                         documents += 1
 
+                        print("documents: %d" % documents, file=sys.stderr)
+                        sys.stderr.flush()
+
                 except CSVReaderException as ex:
                     if cmd.verbose:
-                        print("csv_log_reader: abandoning file at row %d: %s" % (documents, ex), file=sys.stderr)
+                        print("csv_log_reader: abandoning file: %s" % ex, file=sys.stderr)
                         sys.stderr.flush()
                         continue
 

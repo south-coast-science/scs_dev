@@ -18,8 +18,8 @@ class CmdAWSTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } [-p UDS_PUB] "
-                                                    "[-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } "
+                                                    "[-q PRIORITY] [-p UDS_PUB] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
@@ -29,6 +29,9 @@ class CmdAWSTopicPublisher(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--queue-priority", "-q", type="int", nargs=1, action="store", dest="priority",
+                                 default=1, help="queue priority (default 1)")
+
         self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
                                  help="write publications to UDS instead of stdout")
 
@@ -66,6 +69,11 @@ class CmdAWSTopicPublisher(object):
 
 
     @property
+    def priority(self):
+        return self.__opts.priority
+
+
+    @property
     def uds_pub(self):
         return self.__opts.uds_pub
 
@@ -82,4 +90,5 @@ class CmdAWSTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdAWSTopicPublisher:{topic:%s, channel:%s, verbose:%s}" % (self.topic, self.channel, self.verbose)
+        return "CmdAWSTopicPublisher:{topic:%s, channel:%s, priority:%s, verbose:%s}" % \
+               (self.topic, self.channel, self.priority, self.verbose)

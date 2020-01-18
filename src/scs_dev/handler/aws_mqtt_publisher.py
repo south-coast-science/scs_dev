@@ -6,6 +6,7 @@ Created on 27 Sep 2018
 
 import json
 import time
+import sys
 
 from collections import OrderedDict
 from multiprocessing import Manager
@@ -190,6 +191,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         try:
             datum = json.loads(message, object_pairs_hook=OrderedDict)
+
+            print("datum: %s" % str(datum), file=sys.stderr)
 
             return Publication.construct_from_jdict(datum)
 
