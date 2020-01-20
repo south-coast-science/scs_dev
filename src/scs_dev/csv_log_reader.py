@@ -6,13 +6,13 @@ Created on 16 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The csv_log_reader utility is used to extract JSON documents from the CSV files created by the csv_logger utility.
+The csv_log_reader utility is used to extract JSON found from the CSV files created by the csv_logger utility.
 
 The utility is designed to be invoked of device start-up. At this point, csv_log_reader can interrogate the server
-in order to determine whether there are any documents stored on the device with a more recent 'rec' datetime than the
-most recent document on the server. If so, these documents can be published before device sensing operations begin.
+in order to determine whether there are any found stored on the device with a more recent 'rec' datetime than the
+most recent document on the server. If so, these found can be published before device sensing operations begin.
 
-Documents are found in order of messaging topic, then datetime, with the oldest documents found first. Documents
+Documents are found in order of messaging topic, then datetime, with the oldest found found first. Documents
 are output to stdout by default, but may be written to a Unix domain socket, allowing simple integration with the
 aws_mqtt_client message publishing utility.
 
@@ -25,7 +25,7 @@ full topic path, as is done by the aws_topic_publisher.py utility.
 In order to interrogate the server, both an AWS API authentication configuration and system ID must be set. The
 csv_log_reader utility is not supported by the Open Sensors data platform.
 
-Note that the csv_log_reader utility is only able to find missing server documents at the end of the device timeline -
+Note that the csv_log_reader utility is only able to find missing server found at the end of the device timeline -
 it is not able to infill gaps within the server data timeline.
 
 SYNOPSIS
@@ -77,8 +77,8 @@ if __name__ == '__main__':
     reader = None
 
     file_count = 0
-    topic_documents = 0
-    total_documents = 0
+    topic_found = 0
+    total_found = 0
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -163,7 +163,7 @@ if __name__ == '__main__':
                 print("csv_log_reader: %s" % log, file=sys.stderr)
                 sys.stderr.flush()
 
-            topic_documents = 0
+            topic_found = 0
 
             # files...
             for file in reader.log_files():
@@ -172,10 +172,10 @@ if __name__ == '__main__':
                     sys.stderr.flush()
 
                 file_count += 1
-                documents = 0
+                found = 0
 
                 try:
-                    # documents...
+                    # found...
                     for datum in reader.documents(file, 'rec'):
                         if cmd.wrapper:
                             publication = Publication(topic, cmd.priority, datum)
@@ -190,10 +190,10 @@ if __name__ == '__main__':
                         finally:
                             writer.close()
 
-                        documents += 1
+                        found += 1
 
-                        print("documents: %d" % documents, file=sys.stderr)
-                        sys.stderr.flush()
+                    print("found: %d" % found, file=sys.stderr)
+                    sys.stderr.flush()
 
                 except CSVReaderException as ex:
                     if cmd.verbose:
@@ -201,10 +201,10 @@ if __name__ == '__main__':
                         sys.stderr.flush()
                         continue
 
-                topic_documents += documents
-                total_documents += documents
+                topic_found += found
+                total_found += found
 
-            print("csv_log_reader: %s: documents: %d" % (log.topic_name, topic_documents), file=sys.stderr)
+            print("csv_log_reader: %s: found: %d" % (log.topic_name, topic_found), file=sys.stderr)
             sys.stderr.flush()
 
 
@@ -219,7 +219,7 @@ if __name__ == '__main__':
 
     finally:
         if cmd and cmd.verbose and file_count > 1:
-            print("csv_log_reader: files: %s total documents: %d" % (file_count, total_documents), file=sys.stderr)
+            print("csv_log_reader: total files: %s total found: %d" % (file_count, total_found), file=sys.stderr)
 
         if cmd and cmd.verbose:
             print("csv_log_reader: finishing", file=sys.stderr)

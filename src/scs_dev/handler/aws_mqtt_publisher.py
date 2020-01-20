@@ -6,7 +6,6 @@ Created on 27 Sep 2018
 
 import json
 import time
-import sys
 
 from collections import OrderedDict
 from multiprocessing import Manager
@@ -139,14 +138,8 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         if self.__report.client_state == ClientStatus.CONNECTING:
             # connect...
-            if self.__connect():
-                self.__state.set_connected()
-                time.sleep(self.__CONNECT_TIME)
-
-            else:
-                time.sleep(self.__CONNECT_RETRY_TIME)
-
-            return
+            if not self.__connect():
+                return
 
         if self.__report.client_state == ClientStatus.CONNECTED:
             # publish...
@@ -168,10 +161,15 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
             if success:
                 self.__reporter.print("connect: done")
+                self.__state.set_connected()
+                time.sleep(self.__CONNECT_TIME)
+
                 return True
 
             else:
                 self.__reporter.print("connect: failed")
+                time.sleep(self.__CONNECT_RETRY_TIME)
+
                 return False
 
         except OSError as ex:
@@ -191,9 +189,6 @@ class AWSMQTTPublisher(SynchronisedProcess):
 
         try:
             datum = json.loads(message, object_pairs_hook=OrderedDict)
-
-            print("datum: %s" % str(datum), file=sys.stderr)
-
             return Publication.construct_from_jdict(datum)
 
         except (TypeError, ValueError) as ex:
