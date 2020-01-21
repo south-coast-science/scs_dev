@@ -3,7 +3,7 @@ Created on 13 Jul 2019
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
-https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pipe-cat-or-tail-f
+https://realpython.com/python-sockets/#multi-connection-server
 """
 
 import os

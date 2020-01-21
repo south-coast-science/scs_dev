@@ -69,7 +69,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        reader = CSVReader(filename=cmd.filename)
+        reader = CSVReader.construct_for_file(cmd.filename)
 
         if cmd.verbose:
             print("csv_reader: %s" % reader, file=sys.stderr)
