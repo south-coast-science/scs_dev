@@ -23,7 +23,7 @@ class CmdMQTTClient(object):
 
         # optional...
         self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
-                                 help="read publications from UDS instead of stdin")
+                                 default=None, help="read publications from UDS instead of stdin")
 
         self.__parser.add_option("--sub", "-s", action="store_true", dest="uds_sub",
                                  help="write subscriptions to UDS instead of stdout")

@@ -33,7 +33,7 @@ class CmdAWSTopicPublisher(object):
                                  default=1, help="queue priority (default 1)")
 
         self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
-                                 help="write publications to UDS instead of stdout")
+                                 default=None, help="write publications to UDS instead of stdout")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
