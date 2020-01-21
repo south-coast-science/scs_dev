@@ -19,6 +19,8 @@ class AWSMQTTSubscriptionHandler(object):
     classdocs
     """
 
+    __MESSAGE_PRIORITY = 0
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self, reporter, comms=None, echo=False):
@@ -38,7 +40,7 @@ class AWSMQTTSubscriptionHandler(object):
         payload = message.payload.decode()
         payload_jdict = json.loads(payload)
 
-        publication = Publication(message.topic, payload_jdict)
+        publication = Publication(message.topic, self.__MESSAGE_PRIORITY, payload_jdict)
 
         try:
             self.__comms.connect()

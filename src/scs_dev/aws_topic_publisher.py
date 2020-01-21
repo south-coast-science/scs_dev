@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
             payload = jdict
 
-            publication = Publication(topic, payload)
+            publication = Publication(topic, cmd.priority, payload)
 
             try:
                 writer.connect()

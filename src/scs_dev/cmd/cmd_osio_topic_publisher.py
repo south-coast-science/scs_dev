@@ -20,8 +20,8 @@ class CmdOSIOTopicPublisher(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } [-o] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } "
+                                                    "[-q PRIORITY] [-o] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
@@ -31,6 +31,9 @@ class CmdOSIOTopicPublisher(object):
                                  help="publication channel")
 
         # optional...
+        self.__parser.add_option("--queue-priority", "-q", type="int", nargs=1, action="store", dest="priority",
+                                 default=1, help="queue priority (default 1)")
+
         self.__parser.add_option("--override", "-o", action="store_true", dest="override", default=False,
                                  help="override OSIO reception datetime")
 
@@ -68,6 +71,11 @@ class CmdOSIOTopicPublisher(object):
 
 
     @property
+    def priority(self):
+        return self.__opts.priority
+
+
+    @property
     def override(self):
         return self.__opts.override
 
@@ -84,5 +92,5 @@ class CmdOSIOTopicPublisher(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdOSIOTopicPublisher:{topic:%s, channel:%s, override:%s, verbose:%s}" % \
-                    (self.topic, self.channel, self.override, self.verbose)
+        return "CmdOSIOTopicPublisher:{topic:%s, channel:%s, priority:%s, override:%s, verbose:%s}" % \
+                    (self.topic, self.channel, self.priority, self.override, self.verbose)
