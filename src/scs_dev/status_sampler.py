@@ -147,9 +147,6 @@ if __name__ == '__main__':
         interface = None if interface_conf is None else interface_conf.interface()
         interface_model = None if interface_conf is None else interface_conf.model
 
-        if cmd.verbose and interface:
-            print("status_sampler: %s" % interface, file=sys.stderr)
-
         # GPS...
         gps_conf = GPSConf.load(Host)
         gps_monitor = None if cmd.no_output or gps_conf is None else gps_conf.gps_monitor(interface, Host, cmd.verbose)
