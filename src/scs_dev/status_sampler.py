@@ -180,10 +180,10 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("status_sampler", cmd.verbose)
 
-        proc = sampler.start()
+        sampler.start()
 
         if cmd.no_output:
-            proc.join()
+            time.sleep(1.0)
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -201,7 +201,7 @@ if __name__ == '__main__':
     except (BrokenPipeError, ConnectionResetError) as ex:
         print("status_sampler: %s" % ex, file=sys.stderr)
 
-    except SystemExit:
+    except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:

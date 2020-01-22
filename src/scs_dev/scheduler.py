@@ -92,10 +92,8 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("scheduler", cmd.verbose)
 
-        proc = scheduler.start()
-
-        if proc is not None:
-            proc.join()
+        scheduler.start()
+        scheduler.join()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -104,7 +102,7 @@ if __name__ == '__main__':
     except (BrokenPipeError, ConnectionResetError) as ex:
         print("scheduler: %s" % ex, file=sys.stderr)
 
-    except SystemExit:
+    except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
