@@ -139,7 +139,7 @@ if __name__ == '__main__':
             else:
                 payload = jdict
 
-            publication = Publication(topic, cmd.priority, payload)
+            publication = Publication(topic, payload)
 
             print(JSONify.dumps(publication))
             sys.stdout.flush()

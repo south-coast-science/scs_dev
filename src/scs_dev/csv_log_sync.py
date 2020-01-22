@@ -185,7 +185,7 @@ if __name__ == '__main__':
                         datum = json.loads(row, object_pairs_hook=OrderedDict)
 
                         if cmd.wrapper:
-                            publication = Publication(topic, 0, datum)
+                            publication = Publication(topic, datum)
                             jdict = publication.as_json()
                         else:
                             jdict = datum
