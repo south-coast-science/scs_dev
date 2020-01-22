@@ -130,6 +130,8 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("csv_logger (%s)" % cmd.topic_name, cmd.verbose)
 
+        # TODO: start log reader here
+
         for line in sys.stdin:
             jstr = line.strip()
 

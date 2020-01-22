@@ -43,10 +43,8 @@ scs_mfr/schedule
 """
 
 import sys
-import time
 
 from scs_core.sys.signalled_exit import SignalledExit
-
 from scs_core.sync.schedule import Schedule
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
@@ -94,10 +92,11 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("scheduler", cmd.verbose)
 
-        scheduler.start()
+        proc = scheduler.start()
 
-        while True:
-            time.sleep(1.0)
+        if proc is not None:
+            proc.join()
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...

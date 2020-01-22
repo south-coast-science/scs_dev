@@ -103,7 +103,7 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
-# TODO: deal with the case of slow-to-start subsystem monitors
+# TODO: move PSUMonitor into separate command line utility
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -183,11 +183,10 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("status_sampler", cmd.verbose)
 
-        sampler.start()
+        proc = sampler.start()
 
         if cmd.no_output:
-            while True:
-                time.sleep(1.0)
+            proc.join()
 
         for sample in sampler.samples():
             if cmd.verbose:
