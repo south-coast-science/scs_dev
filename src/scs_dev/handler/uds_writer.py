@@ -8,12 +8,14 @@ https://realpython.com/python-sockets/#multi-connection-server
 
 import sys
 
+from scs_core.comms.writer import Writer
+
 from scs_host.comms.domain_socket import DomainSocket
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class UDSWriter(object):
+class UDSWriter(Writer):
     """
     classdocs
     """
