@@ -44,7 +44,6 @@ import sys
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -141,8 +140,7 @@ if __name__ == '__main__':
         SignalledExit.construct("csv_log_sync", cmd.verbose)
 
         # read...
-        queue = CSVLogCursorQueue.construct_for_log(log, 'rec')
-        reader = CSVLogReader(queue, empty_string_as_null=cmd.nullify, verbose=cmd.verbose)
+        reader = CSVLogReader(log.cursor_queue('rec'), empty_string_as_null=cmd.nullify, verbose=cmd.verbose)
 
         reader.run(halt_on_empty_queue=True)
 
