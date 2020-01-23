@@ -44,7 +44,6 @@ import sys
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.csv.csv_log import CSVLog
 from scs_core.csv.csv_log_cursor_queue import CSVLogCursorQueue
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
@@ -120,7 +119,7 @@ if __name__ == '__main__':
             # log...
             for byline in manager.find_bylines_for_device(system_id.message_tag()):
                 if byline.topic_name() == cmd.topic_name:
-                    log = CSVLog(conf.root_path, cmd.topic_name, system_id.message_tag(), byline.rec.datetime)
+                    log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
                     break
 
             if log is None:
@@ -130,7 +129,7 @@ if __name__ == '__main__':
 
         else:
             # log...
-            log = CSVLog(conf.root_path, cmd.topic_name, system_id.message_tag(), cmd.start.datetime)
+            log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=cmd.start.datetime)
 
         sys.stderr.flush()
 

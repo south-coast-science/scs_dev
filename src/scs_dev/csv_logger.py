@@ -60,7 +60,6 @@ access to the storage medium.
 
 import sys
 
-from scs_core.csv.csv_log import CSVLog
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -107,11 +106,15 @@ if __name__ == '__main__':
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
 
-        if conf and cmd.verbose:
+        if conf is None:
+            print("csv_logger: CSVLoggerConf not available.", file=sys.stderr)
+            exit(1)
+
+        if cmd.verbose:
             print("csv_logger: %s" % conf, file=sys.stderr)
 
         # CSVLog...
-        log = None if conf is None else CSVLog(conf.root_path, cmd.topic_name, tag)
+        log = conf.csv_log(cmd.topic_name, tag=tag)
 
         if log and cmd.verbose:
             print("csv_logger: %s" % log, file=sys.stderr)
