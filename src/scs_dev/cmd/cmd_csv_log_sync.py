@@ -18,12 +18,8 @@ class CmdCSVLogSync(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -t TOPIC_NAME { -s START | -f } [-n] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog { -s START | -f } [-n] [-v] TOPIC_NAME",
                                               version="%prog 1.0")
-
-        # compulsory...
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_name",
-                                 default=None, help="topic name")
 
         # manual data specification...
         self.__parser.add_option("--start", "-s", type="string", nargs=1, action="store", dest="start",
@@ -59,11 +55,6 @@ class CmdCSVLogSync(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def topic_name(self):
-        return self.__opts.topic_name
-
-
-    @property
     def start(self):
         return None if self.__opts.start is None else LocalizedDatetime.construct_from_iso8601(self.__opts.start)
 
@@ -83,6 +74,11 @@ class CmdCSVLogSync(object):
         return self.__opts.verbose
 
 
+    @property
+    def topic_name(self):
+        return self.__args[0] if len(self.__args) > 0 else None
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -90,5 +86,5 @@ class CmdCSVLogSync(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogSync:{topic_name:%s, start:%s, fill:%s, nullify:%s, verbose:%s}" % \
-               (self.topic_name, self.start, self.fill, self.nullify, self.verbose)
+        return "CmdCSVLogSync:{start:%s, fill:%s, nullify:%s, verbose:%s, topic_name:%s}" % \
+               (self.start, self.fill, self.nullify, self.verbose, self.topic_name)
