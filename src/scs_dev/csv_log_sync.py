@@ -22,7 +22,7 @@ Note that the csv_log_sync utility is only able to find missing server found at 
 it is not able to infill gaps within the server data timeline.
 
 SYNOPSIS
-csv_log_sync.py { -s START | -f } [-n] [-v]  TOPIC_NAME
+csv_log_sync.py { -s START | -f } [-n] [-v] TOPIC_NAME
 
 EXAMPLES
 ./csv_log_sync.py  -vf climate
