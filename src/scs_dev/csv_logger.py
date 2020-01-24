@@ -145,6 +145,7 @@ if __name__ == '__main__':
 
             if cmd.verbose:
                 print("csv_logger (%s): timeline_start: %s" % (cmd.topic_name, timeline_start), file=sys.stderr)
+                sys.stderr.flush()
 
             read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
 
