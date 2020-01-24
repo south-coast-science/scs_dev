@@ -116,10 +116,8 @@ if __name__ == '__main__':
                 print("csv_log_sync: %s" % manager, file=sys.stderr)
 
             # log...
-            for byline in manager.find_bylines_for_device(system_id.message_tag()):
-                if byline.topic_name() == cmd.topic_name:
-                    log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
-                    break
+            byline = manager.find_byline_for_device_topic(system_id.message_tag(), cmd.topic_name)
+            log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
 
             if log is None:
                 if cmd.verbose:
@@ -140,6 +138,7 @@ if __name__ == '__main__':
         SignalledExit.construct("csv_log_sync", cmd.verbose)
 
         # read...
+        report_file = sys.stderr if cmd.verbose else None
         reader = CSVLogReader(log.cursor_queue('rec'), empty_string_as_null=cmd.nullify, verbose=cmd.verbose)
 
         reader.run(halt_on_empty_queue=True)
