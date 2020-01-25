@@ -71,6 +71,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
+from scs_dev.handler.csv_log_reporter import CSVLogReporter
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
@@ -84,6 +85,7 @@ if __name__ == '__main__':
     writer = None
     read_log = None
     reader = None
+    reporter = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -149,6 +151,9 @@ if __name__ == '__main__':
 
             read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
 
+            # CSVLogReporter...
+            reporter = CSVLogReporter("csv_logger", cmd.topic_name, cmd.verbose)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -158,8 +163,10 @@ if __name__ == '__main__':
 
         # log reader...
         if cmd.echo:
-            reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, verbose=cmd.verbose)
+            reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, reporter=reporter)
             reader.start()
+
+        # TODO: if the filesystem is inaccessible, write to stdout directly
 
         # log writer...
         for line in sys.stdin:

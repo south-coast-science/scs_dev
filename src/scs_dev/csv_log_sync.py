@@ -51,6 +51,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_log_sync import CmdCSVLogSync
+from scs_dev.handler.csv_log_reporter import CSVLogReporter
 
 from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
@@ -128,6 +129,9 @@ if __name__ == '__main__':
             # log...
             log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=cmd.start.datetime)
 
+        # CSVLogReporter...
+        reporter = CSVLogReporter('csv_log_sync', cmd.topic_name, cmd.verbose)
+
         sys.stderr.flush()
 
 
@@ -139,7 +143,7 @@ if __name__ == '__main__':
 
         # read...
         report_file = sys.stderr if cmd.verbose else None
-        reader = CSVLogReader(log.cursor_queue('rec'), empty_string_as_null=cmd.nullify, verbose=cmd.verbose)
+        reader = CSVLogReader(log.cursor_queue('rec'), empty_string_as_null=cmd.nullify, reporter=reporter)
 
         reader.run(halt_on_empty_queue=True)
 
