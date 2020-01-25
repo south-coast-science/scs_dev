@@ -141,7 +141,7 @@ if __name__ == '__main__':
             # BylineManager...
             manager = BylineManager(HTTPClient(), api_auth)
 
-            # read_log...
+            # CSVLogReader...
             byline = manager.find_byline_for_device_topic(system_id.message_tag(), cmd.topic_name)
             timeline_start = None if byline is None else byline.rec.datetime
 
@@ -149,10 +149,10 @@ if __name__ == '__main__':
                 print("csv_logger (%s): timeline_start: %s" % (cmd.topic_name, timeline_start), file=sys.stderr)
                 sys.stderr.flush()
 
-            read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
-
-            # CSVLogReporter...
             reporter = CSVLogReporter("csv_logger", cmd.topic_name, cmd.verbose)
+
+            read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
+            reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, reporter=reporter)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -163,10 +163,7 @@ if __name__ == '__main__':
 
         # log reader...
         if cmd.echo:
-            reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, reporter=reporter)
             reader.start()
-
-        # TODO: if the filesystem is inaccessible, write to stdout directly
 
         # log writer...
         for line in sys.stdin:
@@ -190,7 +187,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
+    except (BrokenPipeError, ConnectionResetError, RuntimeError) as ex:
         print("csv_logger (%s): %s" % (cmd.topic_name, ex), file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):
