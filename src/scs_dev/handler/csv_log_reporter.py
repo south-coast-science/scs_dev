@@ -36,16 +36,16 @@ class CSVLogReporter(CSVLogReaderReporter):
             sys.stderr.flush()
 
 
-    def closing(self, cursor, row_count):
+    def closing(self, cursor, read_count):
         if self.__verbose:
-            print("%s (%s): closing: %s: rows: %s" % (self.__script_name, self.__topic_name, cursor, row_count),
+            print("%s (%s): closing: %s: read: %s" % (self.__script_name, self.__topic_name, cursor, read_count),
                   file=sys.stderr)
             sys.stderr.flush()
 
 
-    def timeout(self, cursor):
+    def timeout(self, cursor, read_count):
         if self.__verbose:
-            print("%s (%s): TimeoutError: %s" % (self.__script_name, self.__topic_name, cursor),
+            print("%s (%s): TimeoutError: %s: read: %s" % (self.__script_name, self.__topic_name, cursor, read_count),
                   file=sys.stderr)
             sys.stderr.flush()
 
