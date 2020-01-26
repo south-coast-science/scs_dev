@@ -18,13 +18,10 @@ class CmdCSVLogSync(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_NAME -s START | -f } [-n]] "
-                                                    "[-p UDS_PUB] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -s START | -f } [-n] [-v] TOPIC_NAME",
+                                              version="%prog 1.0")
 
         # manual data specification...
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic_name",
-                                 help="topic name")
-
         self.__parser.add_option("--start", "-s", type="string", nargs=1, action="store", dest="start",
                                  help="ISO 8601 datetime start")
 
@@ -36,12 +33,6 @@ class CmdCSVLogSync(object):
         self.__parser.add_option("--nullify", "-n", action="store_true", dest="nullify", default=False,
                                  help="convert empty strings to nulls")
 
-        self.__parser.add_option("--wrapper", "-w", action="store_true", dest="wrapper", default=False,
-                                 help="use topic wrapper")
-
-        self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
-                                 default=None, help="write documents to UDS instead of stdout")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -52,21 +43,16 @@ class CmdCSVLogSync(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.topic_name) == bool(self.fill):
+        if self.topic_name is None:
             return False
 
-        if self.topic_name is not None and self.start is None:
+        if bool(self.start) == bool(self.fill):
             return False
 
         return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def topic_name(self):
-        return self.__opts.topic_name
-
 
     @property
     def start(self):
@@ -84,18 +70,13 @@ class CmdCSVLogSync(object):
 
 
     @property
-    def wrapper(self):
-        return self.__opts.wrapper
-
-
-    @property
-    def uds_pub(self):
-        return self.__opts.uds_pub
-
-
-    @property
     def verbose(self):
         return self.__opts.verbose
+
+
+    @property
+    def topic_name(self):
+        return self.__args[0] if len(self.__args) > 0 else None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -105,5 +86,5 @@ class CmdCSVLogSync(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogSync:{topic_name:%s, start:%s, fill:%s, nullify:%s, wrapper:%s, uds_pub:%s, verbose:%s}" % \
-               (self.topic_name, self.start, self.fill, self.nullify, self.wrapper, self.uds_pub, self.verbose)
+        return "CmdCSVLogSync:{start:%s, fill:%s, nullify:%s, verbose:%s, topic_name:%s}" % \
+               (self.start, self.fill, self.nullify, self.verbose, self.topic_name)

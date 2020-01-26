@@ -103,7 +103,7 @@ except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
 
-# TODO: deal with the case of slow-to-start subsystem monitors
+# TODO: move PSUMonitor into separate command line utility
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -147,9 +147,6 @@ if __name__ == '__main__':
         interface = None if interface_conf is None else interface_conf.interface()
         interface_model = None if interface_conf is None else interface_conf.model
 
-        if cmd.verbose and interface:
-            print("status_sampler: %s" % interface, file=sys.stderr)
-
         # GPS...
         gps_conf = GPSConf.load(Host)
         gps_monitor = None if cmd.no_output or gps_conf is None else gps_conf.gps_monitor(interface, Host, cmd.verbose)
@@ -186,8 +183,7 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.no_output:
-            while True:
-                time.sleep(1.0)
+            time.sleep(1.0)
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -205,7 +201,7 @@ if __name__ == '__main__':
     except (BrokenPipeError, ConnectionResetError) as ex:
         print("status_sampler: %s" % ex, file=sys.stderr)
 
-    except SystemExit:
+    except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
