@@ -29,9 +29,10 @@ The path into the JSON document is used to name the column in the header row, wi
 All the leaf nodes of the first JSON document are included in the CSV. If subsequent JSON documents in the input stream
 contain fields that were not in this first document, these extra fields are ignored.
 
-If the "echo" (-e) flag is used, then the csv_logger utility writes the received data to stdout. The csv_logger will
-write to stdout irrespective of whether a csv_logger_conf is specified, or whether logging can continue (for example,
-because of a filesystem problem).
+If the --echo flag is used, then the csv_logger utility writes the received data to stdout. When the utility starts,
+the historic data API is queried to find the most recent record for the topic. The log reader child process then
+outputs any data on the device that is missing from the data store before outputting new records. Valid AWS API
+credentials are required.
 
 SYNOPSIS
 csv_logger.py [-e] [-v] TOPIC
@@ -50,12 +51,13 @@ SEE ALSO
 scs_dev/csv_log_sync
 scs_dev/csv_reader
 scs_dev/csv_writer
+scs_mfr/aws_api_auth
 scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
 BUGS
-If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to re-establish
-access to the storage medium.
+If any filesystem problem is encountered then both logging and output are inhibited, and no further attempt is made to
+re-establish access to the storage medium.
 """
 
 import sys
