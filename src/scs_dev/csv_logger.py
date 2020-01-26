@@ -85,9 +85,7 @@ if __name__ == '__main__':
 
     cmd = None
     writer = None
-    read_log = None
     reader = None
-    reporter = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
