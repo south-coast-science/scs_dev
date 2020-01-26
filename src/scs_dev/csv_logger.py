@@ -47,7 +47,7 @@ tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 SEE ALSO
-scs_dev/csv_log_reader
+scs_dev/csv_log_sync
 scs_dev/csv_reader
 scs_dev/csv_writer
 scs_mfr/csv_logger_conf
@@ -60,7 +60,10 @@ access to the storage medium.
 
 import sys
 
-from scs_core.csv.csv_log import CSVLog
+from scs_core.aws.client.api_auth import APIAuth
+from scs_core.aws.manager.byline_manager import BylineManager
+
+from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -68,7 +71,9 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
+from scs_dev.handler.csv_log_reporter import CSVLogReporter
 
+from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
 
@@ -77,7 +82,10 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     cmd = None
-    logger = None
+    writer = None
+    read_log = None
+    reader = None
+    reporter = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -90,7 +98,7 @@ if __name__ == '__main__':
             exit(2)
 
         if cmd.verbose:
-            print("csv_logger: %s" % cmd, file=sys.stderr)
+            print("csv_logger (%s): %s" % (cmd.topic_name, cmd), file=sys.stderr)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -100,28 +108,51 @@ if __name__ == '__main__':
         system_id = SystemID.load(Host)
 
         if system_id and cmd.verbose:
-            print("csv_logger: %s" % system_id, file=sys.stderr)
+            print("csv_logger (%s): %s" % (cmd.topic_name, system_id), file=sys.stderr)
 
         tag = None if system_id is None else system_id.message_tag()
 
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
 
-        if conf and cmd.verbose:
-            print("csv_logger: %s" % conf, file=sys.stderr)
-
-        # CSVLog...
-        log = None if conf is None else CSVLog(conf.root_path, cmd.topic_name, tag)
-
-        if log and cmd.verbose:
-            print("csv_logger: %s" % log, file=sys.stderr)
-
-        # CSVLogger...
-        logger = None if log is None else CSVLogger(Host, log, conf.delete_oldest, conf.write_interval)
+        if conf is None:
+            print("csv_logger (%s): CSVLoggerConf not available." % cmd.topic_name, file=sys.stderr)
+            exit(1)
 
         if cmd.verbose:
-            print("csv_logger: %s" % logger, file=sys.stderr)
+            print("csv_logger (%s): %s" % (cmd.topic_name, conf), file=sys.stderr)
+
+        # write_logger...
+        write_log = conf.csv_log(cmd.topic_name, tag=tag)
+        writer = CSVLogger(Host, write_log, conf.delete_oldest, conf.write_interval)
+
+        if cmd.verbose:
+            print("csv_logger (%s): %s" % (cmd.topic_name, writer), file=sys.stderr)
             sys.stderr.flush()
+
+        if cmd.echo:
+            # APIAuth...
+            api_auth = APIAuth.load(Host)
+
+            if api_auth is None:
+                print("csv_logger (%s): APIAuth not available." % cmd.topic_name, file=sys.stderr)
+                exit(1)
+
+            # BylineManager...
+            manager = BylineManager(HTTPClient(), api_auth)
+
+            # CSVLogReader...
+            byline = manager.find_byline_for_device_topic(system_id.message_tag(), cmd.topic_name)
+            timeline_start = None if byline is None else byline.rec.datetime
+
+            if cmd.verbose:
+                print("csv_logger (%s): timeline_start: %s" % (cmd.topic_name, timeline_start), file=sys.stderr)
+                sys.stderr.flush()
+
+            reporter = CSVLogReporter("csv_logger", cmd.topic_name, cmd.verbose)
+
+            read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
+            reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, reporter=reporter)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -130,40 +161,44 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("csv_logger (%s)" % cmd.topic_name, cmd.verbose)
 
+        # log reader...
+        if cmd.echo:
+            reader.start()
+
+        # log writer...
         for line in sys.stdin:
             jstr = line.strip()
 
             if jstr is None:
                 break
 
-            if logger:
-                try:
-                    logger.write(jstr)
+            try:
+                file_path = writer.write(jstr)
 
-                except OSError as ex:
-                    logger.writing_inhibited = True
+                if cmd.echo:
+                    reader.set_live(file_path)
 
-                    print("csv_logger (%s): %s" % (ex, cmd.topic_name), file=sys.stderr)
-                    sys.stderr.flush()
-
-            # echo...
-            if cmd.echo:
-                print(jstr)
-                sys.stdout.flush()
+            except OSError as ex:
+                writer.writing_inhibited = True
+                print("csv_logger (%s): %s" % (cmd.topic_name, ex), file=sys.stderr)
+                sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
-        print("csv_logger (%s): %s" % (ex, cmd.topic_name), file=sys.stderr)
+    except (BrokenPipeError, ConnectionResetError, RuntimeError) as ex:
+        print("csv_logger (%s): %s" % (cmd.topic_name, ex), file=sys.stderr)
 
-    except SystemExit:
+    except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
         if cmd and cmd.verbose:
             print("csv_logger (%s): finishing" % cmd.topic_name, file=sys.stderr)
 
-        if logger:
-            logger.close()
+        if writer:
+            writer.close()
+
+        if reader:
+            reader.stop()
