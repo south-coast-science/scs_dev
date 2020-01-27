@@ -175,7 +175,7 @@ if __name__ == '__main__':
                 file_path = writer.write(jstr)
 
                 if cmd.echo:
-                    reader.set_live(file_path)
+                    reader.include(file_path)
 
             except OSError as ex:
                 writer.writing_inhibited = True
