@@ -107,10 +107,9 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        if system_id and cmd.verbose:
-            print("csv_logger (%s): %s" % (cmd.topic_name, system_id), file=sys.stderr)
-
-        tag = None if system_id is None else system_id.message_tag()
+        if system_id is None:
+            print("csv_logger (%s): SystemID not available." % cmd.topic_name, file=sys.stderr)
+            exit(1)
 
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
@@ -123,7 +122,7 @@ if __name__ == '__main__':
             print("csv_logger (%s): %s" % (cmd.topic_name, conf), file=sys.stderr)
 
         # write_logger...
-        write_log = conf.csv_log(cmd.topic_name, tag=tag)
+        write_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag())
         writer = CSVLogger(Host, write_log, conf.delete_oldest, conf.write_interval)
 
         if cmd.verbose:
@@ -176,7 +175,7 @@ if __name__ == '__main__':
                 file_path = writer.write(jstr)
 
                 if cmd.echo:
-                    reader.set_live(file_path)
+                    reader.include(file_path)
 
             except OSError as ex:
                 writer.writing_inhibited = True
