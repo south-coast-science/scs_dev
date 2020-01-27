@@ -183,7 +183,8 @@ if __name__ == '__main__':
         sampler.start()
 
         if cmd.no_output:
-            time.sleep(1.0)
+            while True:
+                time.sleep(1.0)
 
         for sample in sampler.samples():
             if cmd.verbose:
