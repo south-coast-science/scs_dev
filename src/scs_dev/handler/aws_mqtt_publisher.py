@@ -49,6 +49,9 @@ class AWSMQTTPublisher(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
+        if self.__conf.inhibit_publishing:
+            return
+
         # report...
         self.__status.client_state = ClientStatus.CONNECTING
         self.__report()
@@ -67,6 +70,9 @@ class AWSMQTTPublisher(object):
 
 
     def disconnect(self):
+        if self.__conf.inhibit_publishing:
+            return
+
         # disconnect...
         self.__client.disconnect()
 
@@ -77,6 +83,9 @@ class AWSMQTTPublisher(object):
 
 
     def publish(self, publication):
+        if self.__conf.inhibit_publishing:
+            return
+
         # report...
         self.__status.length = 1                # indicate that document(s) have been presented for publication
 
