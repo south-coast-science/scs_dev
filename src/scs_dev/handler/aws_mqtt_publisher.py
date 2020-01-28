@@ -78,7 +78,7 @@ class AWSMQTTPublisher(object):
 
     def publish(self, publication):
         # report...
-        self.__status.length = 1
+        self.__status.length = 1                # indicate that document(s) have been presented for publication
 
         # publish...
         while True:
