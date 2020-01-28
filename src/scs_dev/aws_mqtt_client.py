@@ -194,10 +194,10 @@ if __name__ == '__main__':
         for message in source.messages():
             # receive...
             try:
-                json.loads(message)
+                jdict = json.loads(message)
 
             except (TypeError, ValueError) as ex:
-                reporter.print("datum: %s" % message)
+                reporter.print("%s: %s" % (ex, message))
                 continue
 
             if cmd.echo:
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             if conf.inhibit_publishing:
                 continue
 
-            publication = Publication.construct_from_jdict(json.loads(message))
+            publication = Publication.construct_from_jdict(jdict)
 
             if publication is None:
                 continue
@@ -235,8 +235,5 @@ if __name__ == '__main__':
         if publisher:
             publisher.disconnect()
 
-        # if queue:
-        #     queue.stop()
-
         if reporter:
-            reporter.print("exiting")
+            reporter.print("finishing")
