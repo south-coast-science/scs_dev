@@ -4,13 +4,8 @@ Created on 27 Sep 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import json
 import time
 
-from collections import OrderedDict
-from multiprocessing import Manager
-
-from AWSIoTPythonSDK.exception.operationError import operationError
 from AWSIoTPythonSDK.exception.operationTimeoutException import operationTimeoutException
 
 from scs_core.aws.client.client_auth import ClientAuth
@@ -18,312 +13,102 @@ from scs_core.aws.client.mqtt_client import MQTTClient
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
-from scs_core.data.message_queue import MessageQueue
-from scs_core.data.publication import Publication
 from scs_core.data.queue_report import QueueReport, ClientStatus
-
-from scs_core.sync.synchronised_process import SynchronisedProcess
 
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class AWSMQTTPublisher(SynchronisedProcess):
+class AWSMQTTPublisher(object):
     """
     classdocs
     """
 
-    __QUEUE_INSPECTION_INTERVAL =   2.0
-
     __CONNECT_TIME =                3.0         # seconds
-    __CONNECT_RETRY_TIME =          2.0         # seconds
+    __CONNECT_RETRY_TIME =         10.0         # seconds
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, conf: MQTTConf, auth: ClientAuth, queue: MessageQueue, client: MQTTClient,
-                 reporter: MQTTReporter):
+    def __init__(self, conf: MQTTConf, auth: ClientAuth, client: MQTTClient, reporter: MQTTReporter):
         """
         Constructor
         """
-        manager = Manager()
-
-        SynchronisedProcess.__init__(self, AWSMQTTReport(manager.dict()))
-
-        initial_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.WAITING
-        self.__state = AWSMQTTState(initial_state, reporter)
-
         self.__conf = conf
         self.__auth = auth
-        self.__queue = queue
         self.__client = client
         self.__reporter = reporter
 
-        self.__report = QueueReport(0, initial_state, False)
-        self.__report.save(self.__conf.report_file)
-
-        self.__reporter.set_led(self.__report)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # SynchronisedProcess implementation...
-
-    def run(self):
-        try:
-            if self.__conf.report_file:
-                self.__report.save(self.__conf.report_file)
-
-            while True:
-                self.__process_messages()
-                time.sleep(self.__QUEUE_INSPECTION_INTERVAL)
-
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
-            pass
-
-
-    def stop(self):
-        try:
-            self.__disconnect()
-            self.__state.set_disconnected()
-
-            self.__reporter.set_led(self.__report)
-
-            self.__report.delete(self.__conf.report_file)
-
-            super().stop()
-
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
-            pass
+        # report...
+        client_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.WAITING
+        self.__status = QueueReport(0, client_state, False)
+        self.__report()
 
 
     # ----------------------------------------------------------------------------------------------------------------
-    # state management...
 
-    def __process_messages(self):
-        while True:
-            self.__report.length = self.__queue.length()
+    def connect(self):
+        # report...
+        self.__status.client_state = ClientStatus.CONNECTING
+        self.__report()
 
-            if self.__report.length is None or self.__report.length < 1:
-                return
+        # connect...
+        while not self.__client.connect(self.__auth, self.__conf.debug):
+            self.__reporter.print("connect: failed")
+            time.sleep(self.__CONNECT_RETRY_TIME)
 
-            self.__reporter.set_led(self.__report)
+        time.sleep(self.__CONNECT_TIME)
 
-            if self.__conf.report_file:
-                self.__report.save(self.__conf.report_file)
-
-            self.__reporter.print("queue: %s" % self.__report.length)
-
-            try:
-                self.__process_message(self.__next_message())
-
-            except Exception as ex:
-                self.__reporter.print("pms: %s" % ex.__class__.__name__)
+        # report...
+        self.__reporter.print("connect: done")
+        self.__status.client_state = ClientStatus.CONNECTED
+        self.__report()
 
 
-    def __process_message(self, publication):
-        if publication is None:
-            self.__queue.dequeue()
-            return
-
-        self.__report.client_state = self.__state.state
-
-        if self.__report.client_state == ClientStatus.WAITING:
-            self.__report.client_state = ClientStatus.CONNECTING
-
-        if self.__report.client_state == ClientStatus.INHIBITED:
-            # discard...
-            self.__queue.dequeue()
-            return
-
-        if self.__report.client_state == ClientStatus.CONNECTING:
-            # connect...
-            if not self.__connect():
-                return
-
-        if self.__report.client_state == ClientStatus.CONNECTED:
-            # publish...
-            self.__publish_message(publication)
-            self.__queue.dequeue()
-
-            return
-
-        else:
-            raise ValueError("unknown AWSMQTTState: %s" % self.__report.client_state)
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # connection management...
-
-    def __connect(self):
-        try:
-            success = self.__client.connect(self.__auth, self.__conf.debug)
-
-            if success:
-                self.__reporter.print("connect: done")
-                self.__state.set_connected()
-                time.sleep(self.__CONNECT_TIME)
-
-                return True
-
-            else:
-                self.__reporter.print("connect: failed")
-                time.sleep(self.__CONNECT_RETRY_TIME)
-
-                return False
-
-        except OSError as ex:
-            self.__reporter.print("connect: %s" % ex)
-            return False
-
-
-    def __disconnect(self):
+    def disconnect(self):
+        # disconnect...
         self.__client.disconnect()
 
-
-    # ----------------------------------------------------------------------------------------------------------------
-    # message management...
-
-    def __next_message(self):
-        message = self.__queue.next()
-
-        try:
-            datum = json.loads(message, object_pairs_hook=OrderedDict)
-            return Publication.construct_from_jdict(datum)
-
-        except (TypeError, ValueError) as ex:
-            self.__reporter.print("next_message: %s" % ex)
-
-            return None
+        # report...
+        self.__reporter.print("disconnect: done")
+        self.__status.client_state = ClientStatus.WAITING
+        self.__report()
 
 
-    def __publish_message(self, publication):
-        self.__report.publish_success = False
+    def publish(self, publication):
+        # report...
+        self.__status.length = 1                # indicate that document(s) have been presented for publication
 
-        try:
-            start_time = time.time()
+        # publish...
+        while True:
+            try:
+                start = time.time()
+                reached_paho = self.__client.publish(publication)
+                elapsed = time.time() - start
 
-            reached_paho = self.__client.publish(publication)
-            elapsed_time = time.time() - start_time
+                self.__reporter.print("paho: %s: %0.3f" % ("1" if reached_paho else "0", elapsed))
+                break
 
-            self.__reporter.print("paho: %s: %0.3f" % ("1" if reached_paho else "0", elapsed_time))
+            except operationTimeoutException:
+                # report...
+                self.__status.publish_success = False
+                self.__report()
 
-            self.__report.publish_success = reached_paho
-
-        except operationTimeoutException:
-            pass
-
-        except (OSError, operationError) as ex:
-            self.__reporter.print("pm: %s" % ex.__class__.__name__)
+        # report...
+        self.__status.publish_success = True
+        self.__report()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __str__(self, *args, **kwargs):
-        return "AWSMQTTPublisher:{state:%s, conf:%s, auth:%s, queue:%s, client:%s, reporter:%s, report:%s}" % \
-               (self.__state, self.__conf, self.__auth, self.__queue, self.__client, self.__reporter, self.__report)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class AWSMQTTState(object):
-    """
-    classdocs
-    """
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, state, reporter):
-        """
-        Constructor
-        """
-        self.__state = state                        # ClientStatus
-        self.__reporter = reporter                  # MQTTReporter
-
-        self.__latest_success = None                # bool
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def set_connected(self):
-        self.__latest_success = time.time()
-
-        if self.__state == ClientStatus.CONNECTED:
-            return
-
-        self.__state = ClientStatus.CONNECTED
-        self.__reporter.print("-> CONNECTED")
-
-
-    def set_disconnected(self):
-        self.__latest_success = None
-
-        if self.__state != ClientStatus.CONNECTED:
-            return
-
-        self.__state = ClientStatus.CONNECTING
-        self.__reporter.print("-> DISCONNECTED")
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def state(self):
-        return self.__state
+    def __report(self):
+        self.__status.save(self.__conf.report_file)
+        self.__reporter.set_led(self.__status)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "AWSMQTTState:{state:%s, latest_success:%s}}" %  (self.__state, self.__latest_success)
-
-
-# --------------------------------------------------------------------------------------------------------------------
-
-class AWSMQTTReport(object):
-    """
-    classdocs
-    """
-
-    __PUB_TIME =            'pub_time'
-    __QUEUE_LENGTH =        'queue_length'
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __init__(self, value):
-        """
-        Constructor
-        """
-        self.__value = value
-
-        self.pub_time = 0
-        self.queue_length = 0
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    @property
-    def pub_time(self):
-        return self.__value[self.__PUB_TIME]
-
-
-    @pub_time.setter
-    def pub_time(self, pub_time):
-        self.__value[self.__PUB_TIME] = pub_time
-
-
-    @property
-    def queue_length(self):
-        return self.__value[self.__QUEUE_LENGTH]
-
-
-    @queue_length.setter
-    def queue_length(self, queue_length):
-        self.__value[self.__QUEUE_LENGTH] = queue_length
-
-
-    # ----------------------------------------------------------------------------------------------------------------
-
-    def __str__(self, *args, **kwargs):
-        return "AWSMQTTReport:{pub_time:%s, queue_length:%s}}" % (self.pub_time, self.queue_length)
+        return "AWSMQTTPublisher:{conf:%s, auth:%s, client:%s, reporter:%s, report:%s}" % \
+               (self.__conf, self.__auth, self.__client, self.__reporter, self.__status)
