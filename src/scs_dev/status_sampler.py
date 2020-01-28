@@ -149,7 +149,7 @@ if __name__ == '__main__':
 
         # GPS...
         gps_conf = GPSConf.load(Host)
-        gps_monitor = None if cmd.no_output or gps_conf is None else gps_conf.gps_monitor(interface, Host, cmd.verbose)
+        gps_monitor = None if cmd.no_output or gps_conf is None else gps_conf.gps_monitor(interface, Host)
 
         # PSUMonitor...
         psu_conf = PSUConf.load(Host)
