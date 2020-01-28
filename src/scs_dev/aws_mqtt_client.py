@@ -56,7 +56,7 @@ from scs_core.aws.config.project import Project
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
-from scs_core.data.message_queue import MessageQueue
+from scs_core.data.publication import Publication
 
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
@@ -78,7 +78,6 @@ if __name__ == '__main__':
 
     source = None
     reporter = None
-    queue = None
     publisher = None
 
 
@@ -171,17 +170,7 @@ if __name__ == '__main__':
 
         # client...
         client = MQTTClient(*subscribers)
-
-        if cmd.verbose:
-            print("aws_mqtt_client: %s" % client, file=sys.stderr)
-
-        # message buffer...
-        queue = MessageQueue(conf.queue_size)
-        queue.start()
-
-        # message listener...
-        publisher = AWSMQTTPublisher(conf, auth, queue, client, reporter)
-        publisher.start()
+        publisher = AWSMQTTPublisher(conf, auth, client, reporter)
 
         if cmd.verbose:
             print("aws_mqtt_client: %s" % publisher, file=sys.stderr)
@@ -193,6 +182,10 @@ if __name__ == '__main__':
 
         # signal handler...
         SignalledExit.construct("aws_mqtt_client", cmd.verbose)
+
+        # client...
+        if not conf.inhibit_publishing:
+            publisher.connect()
 
         # data source...
         source.connect()
@@ -214,7 +207,13 @@ if __name__ == '__main__':
             if conf.inhibit_publishing:
                 continue
 
-            queue.enqueue(message)
+            publication = Publication.construct_from_jdict(json.loads(message))
+
+            if publication is None:
+                continue
+
+            # publish...
+            publisher.publish(publication)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -234,10 +233,10 @@ if __name__ == '__main__':
             source.close()
 
         if publisher:
-            publisher.stop()
+            publisher.disconnect()
 
-        if queue:
-            queue.stop()
+        # if queue:
+        #     queue.stop()
 
         if reporter:
             reporter.print("exiting")
