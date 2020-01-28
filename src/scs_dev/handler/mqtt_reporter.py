@@ -24,16 +24,14 @@ class MQTTReporter(object):
     classdocs
     """
 
-    __CLIENT_STATUS = {
+    __QUEUE_STATE = {
         QueueStatus.NONE:           ['R', '0'],
         QueueStatus.INHIBITED:      ['G', '0'],
         QueueStatus.WAITING:        ['A', '0'],
-        QueueStatus.CONNECTING:     ['A', 'R'],
+        QueueStatus.CONNECTING:     ['G', 'A'],
         QueueStatus.PUBLISHING:     ['G', 'G'],
-        QueueStatus.QUEUING:        ['G', 'R'],
-        QueueStatus.CLEARING:       ['G', 'A']
+        QueueStatus.QUEUING:        ['G', 'R']
     }
-
 
     # ----------------------------------------------------------------------------------------------------------------
 
@@ -60,7 +58,7 @@ class MQTTReporter(object):
         if self.__led_uds is None:
             return
 
-        colours = self.__CLIENT_STATUS[report.status()]
+        colours = self.__QUEUE_STATE[report.queue_state()]
 
         try:
             self.__led_uds.connect()

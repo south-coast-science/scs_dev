@@ -35,13 +35,12 @@ class AWSMQTTPublisher(object):
         """
         Constructor
         """
-
         self.__conf = conf
         self.__auth = auth
         self.__client = client
         self.__reporter = reporter
 
-        # status report...
+        # report...
         client_state = ClientStatus.INHIBITED if conf.inhibit_publishing else ClientStatus.WAITING
         self.__status = QueueReport(0, client_state, False)
         self.__report()
@@ -50,7 +49,7 @@ class AWSMQTTPublisher(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def connect(self):
-        # status report...
+        # report...
         self.__status.client_state = ClientStatus.CONNECTING
         self.__report()
 
@@ -61,7 +60,7 @@ class AWSMQTTPublisher(object):
 
         time.sleep(self.__CONNECT_TIME)
 
-        # status report...
+        # report...
         self.__reporter.print("connect: done")
         self.__status.client_state = ClientStatus.CONNECTED
         self.__report()
@@ -71,29 +70,32 @@ class AWSMQTTPublisher(object):
         # disconnect...
         self.__client.disconnect()
 
-        # status report...
+        # report...
         self.__reporter.print("disconnect: done")
         self.__status.client_state = ClientStatus.WAITING
         self.__report()
 
 
     def publish(self, publication):
+        # report...
+        self.__status.length = 1
+
         # publish...
         while True:
             try:
-                start_time = time.time()
-
+                start = time.time()
                 reached_paho = self.__client.publish(publication)
-                elapsed_time = time.time() - start_time
+                elapsed = time.time() - start
 
-                self.__reporter.print("paho: %s: %0.3f" % ("1" if reached_paho else "0", elapsed_time))
+                self.__reporter.print("paho: %s: %0.3f" % ("1" if reached_paho else "0", elapsed))
                 break
 
             except operationTimeoutException:
-                continue
+                # report...
+                self.__status.publish_success = False
+                self.__report()
 
-        # status report...
-        self.__status.length = 1
+        # report...
         self.__status.publish_success = True
         self.__report()
 
