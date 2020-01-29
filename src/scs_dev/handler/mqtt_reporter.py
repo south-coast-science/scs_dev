@@ -25,12 +25,14 @@ class MQTTReporter(object):
     """
 
     __QUEUE_STATE = {
-        QueueStatus.NONE:           ['R', '0'],
-        QueueStatus.INHIBITED:      ['G', '0'],
-        QueueStatus.WAITING:        ['A', '0'],
-        QueueStatus.CONNECTING:     ['G', 'A'],
-        QueueStatus.PUBLISHING:     ['G', 'G'],
-        QueueStatus.QUEUING:        ['G', 'R']
+        QueueStatus.NONE:               ['R', '0'],
+        QueueStatus.INHIBITED:          ['G', '0'],
+        QueueStatus.STARTING:           ['A', '0'],
+        QueueStatus.CONNECTING:         ['G', 'A'],
+        QueueStatus.WAITING_FOR_DATA:   ['G', 'A'],
+        QueueStatus.PUBLISHING:         ['G', 'G'],
+        QueueStatus.CLEARING:           ['G', 'G'],
+        QueueStatus.QUEUING:            ['G', 'R']
     }
 
     # ----------------------------------------------------------------------------------------------------------------
