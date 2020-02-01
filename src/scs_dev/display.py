@@ -31,6 +31,7 @@ sudo apt-get install libopenjp2-7
 """
 
 import sys
+import time
 
 from scs_core.comms.mqtt_conf import MQTTConf
 
@@ -95,11 +96,7 @@ if __name__ == '__main__':
         # DisplayConf...
         conf = DisplayConf.load(Host)
 
-        if conf is None:
-            print("display: DisplayConf not available.", file=sys.stderr)
-            exit(1)
-
-        monitor = conf.monitor(queue_report_filename, gps_report_filename)
+        monitor = None if conf is None else conf.monitor(queue_report_filename, gps_report_filename)
 
         if cmd.verbose and monitor:
             print("display: %s" % monitor, file=sys.stderr)
@@ -108,11 +105,15 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        if interface:
+        if monitor and interface:
             interface.power_opc(True)                       # otherwise the SPI bus is held low
 
         # signal handler...
         SignalledExit.construct("display", cmd.verbose)
+
+        if monitor is None:
+            while True:
+                time.sleep(1.0)
 
         monitor.start()
 
