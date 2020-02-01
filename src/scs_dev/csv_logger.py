@@ -151,10 +151,6 @@ if __name__ == '__main__':
             reporter = CSVLogReporter("csv_logger", cmd.topic_name, cmd.verbose)
 
             read_log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=timeline_start)
-
-            print("*** csv_logger: read_log: %s" % read_log, file=sys.stderr)
-            sys.stderr.flush()
-
             reader = CSVLogReader(read_log.cursor_queue('rec'), empty_string_as_null=True, reporter=reporter)
 
 
