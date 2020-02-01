@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
         if monitor is None:
             while True:
-                time.sleep(1.0)
+                time.sleep(1.0)                             # for systems with no DisplayConf but common systemctl
 
         monitor.start()
 
