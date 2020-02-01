@@ -50,6 +50,13 @@ class CSVLogReporter(CSVLogReaderReporter):
             sys.stderr.flush()
 
 
+    def exception(self, ex):
+        if self.__verbose:
+            print("%s (%s): %s" % (self.__script_name, self.__topic_name, ex),
+                  file=sys.stderr)
+            sys.stderr.flush()
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
