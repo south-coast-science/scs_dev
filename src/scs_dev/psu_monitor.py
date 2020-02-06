@@ -9,8 +9,9 @@ DESCRIPTION
 The psu_monitor utility is used to report on the PSU status, and to manage shutdown events initiated by the user
 (operations pin / switch / shutdown button) or by the PSU itself (loss of power).
 
-Frequency of reporting is specified by the --interval flag. Note that the frequency of polling for user and PSU
-events is hard-coded, and is typically every second.
+If the --config-interval flag is used, frequency of reporting is specified by the PSU configuration. Alternatively,
+the reporting interval can be set explicitly with the --interval flag. Note that the frequency of polling for user
+and PSU events is hard-coded, and is typically every second.
 
 Unless inhibited by the --no-output flag, the report is written to stdout. If the PSU configuration specifies a report
 file path, then the PSU status report is (also) written to this file. When the utility terminates, the file is deleted.
@@ -19,17 +20,17 @@ The status_sampler utility reads the PSU report file, if available. The psu_moni
 therefore be set to match the status_sampler reporting frequency.
 
 SYNOPSIS
-psu_monitor.py -i INTERVAL [-x] [-o] [-v]
+psu_monitor.py { -c | -i INTERVAL } [-x] [-o] [-v]
 
 EXAMPLES
-./psu_monitor.py -i 60
+./psu_monitor.py -i 60 -x
 
 DOCUMENT EXAMPLE - OUTPUT
 {"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 15.6, "prot-batt": 0.0}
 
 SEE ALSO
 scs_dev/status_sampler
-scs_mfr/psu_conf
+scs_mfr/conf
 """
 
 import sys
@@ -55,7 +56,7 @@ from scs_psu.psu.psu_conf import PSUConf
 
 if __name__ == '__main__':
 
-    psu_conf = None
+    conf = None
     psu_monitor = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -78,16 +79,16 @@ if __name__ == '__main__':
         interface_model = None if interface_conf is None else interface_conf.model
 
         # PSUMonitor...
-        psu_conf = PSUConf.load(Host)
+        conf = PSUConf.load(Host)
 
-        if psu_conf is None:
+        if conf is None:
             print("psu_monitor: PSUConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print("psu_monitor: %s" % psu_conf, file=sys.stderr)
+            print("psu_monitor: %s" % conf, file=sys.stderr)
 
-        psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.shutdown)
+        psu_monitor = conf.psu_monitor(Host, interface_model, cmd.shutdown)
 
         if psu_monitor is None:
             print("psu_monitor: PSUMonitor not available.", file=sys.stderr)
@@ -98,7 +99,10 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # IntervalTimer...
-        timer = IntervalTimer(cmd.interval)
+        interval = conf.reporting_interval if cmd.config_interval else cmd.interval
+
+        timer = IntervalTimer(interval)
+
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -110,7 +114,7 @@ if __name__ == '__main__':
 
         while timer.true():
             status = psu_monitor.sample()
-            status.save(psu_conf.report_file)
+            status.save(conf.report_file)
 
             if cmd.output:
                 print(JSONify.dumps(status.as_json()))
@@ -133,7 +137,7 @@ if __name__ == '__main__':
         if psu_monitor:
             psu_monitor.stop()
 
-        if psu_conf:
-            Filesystem.rm(psu_conf.report_file)
+        if conf:
+            Filesystem.rm(conf.report_file)
 
         I2C.close()

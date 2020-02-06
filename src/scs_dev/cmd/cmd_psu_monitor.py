@@ -16,11 +16,14 @@ class CmdPSUMonitor(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -i INTERVAL [-x] [-o] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -c | -i INTERVAL } [-x] [-o] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
                                  help="sampling interval in seconds")
+
+        self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
+                                 help="use PSU config interval specification")
 
         # optional...
         self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
@@ -38,13 +41,18 @@ class CmdPSUMonitor(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.__opts.interval is not None:
+        if bool(self.__opts.config_interval) == bool(self.__opts.interval):
             return False
 
         return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def config_interval(self):
+        return self.__opts.config_interval
+
 
     @property
     def interval(self):
@@ -73,5 +81,5 @@ class CmdPSUMonitor(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPSUMonitor:{interval:%s, no_shutdown:%s, no_output:%s, verbose:%s}" % \
-                    (self.interval, self.__opts.no_shutdown, self.__opts.no_output, self.verbose)
+        return "CmdPSUMonitor:{config_interval:%s, interval:%s, no_shutdown:%s, no_output:%s, verbose:%s}" % \
+                    (self.config_interval, self.interval, self.__opts.no_shutdown, self.__opts.no_output, self.verbose)
