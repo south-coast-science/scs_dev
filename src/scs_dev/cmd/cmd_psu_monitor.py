@@ -23,7 +23,7 @@ class CmdPSUMonitor(object):
                                  help="sampling interval in seconds")
 
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
-                                 help="use PSU config interval specification")
+                                 help="use PSU configuration interval specification")
 
         # optional...
         self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
