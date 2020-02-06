@@ -64,6 +64,10 @@ if __name__ == '__main__':
 
     cmd = CmdPSUMonitor()
 
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
     if cmd.verbose:
         print("psu_monitor: %s" % cmd, file=sys.stderr)
 
@@ -99,7 +103,14 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # IntervalTimer...
+        if cmd.config_interval and conf.reporting_interval is None:
+            print("psu_monitor: PSUConf reporting interval is None", file=sys.stderr)
+            exit(1)
+
         interval = conf.reporting_interval if cmd.config_interval else cmd.interval
+
+        print("interval: %s" % interval)
+        sys.stdout.flush()
 
         timer = IntervalTimer(interval)
 
@@ -114,6 +125,10 @@ if __name__ == '__main__':
 
         while timer.true():
             status = psu_monitor.sample()
+
+            if status is None:
+                continue
+
             status.save(conf.report_file)
 
             if cmd.output:
