@@ -9,25 +9,25 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdStatusSampler(object):
+class CmdPSUMonitor(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -i INTERVAL [-x] [-o] [-v]", version="%prog 1.0")
 
-        # optional...
-        self.__parser.add_option("--semaphore", "-s", type="string", nargs=1, action="store", dest="semaphore",
-                                 help="sampling controlled by SEMAPHORE")
-
+        # compulsory...
         self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
                                  help="sampling interval in seconds")
 
-        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
-                                 help="number of samples (1 if interval not specified)")
+        # optional...
+        self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
+                                 help="suppress auto-shutdown")
+
+        self.__parser.add_option("--no-output", "-o", action="store_true", dest="no_output", default=False,
+                                 help="suppress reporting on stdout")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -38,10 +38,7 @@ class CmdStatusSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.__opts.semaphore is not None and self.__opts.interval is not None:
-            return False
-
-        if self.__opts.interval is None and self.__opts.samples is not None:
+        if self.__opts.interval is not None:
             return False
 
         return True
@@ -50,18 +47,18 @@ class CmdStatusSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def semaphore(self):
-        return self.__opts.semaphore
-
-
-    @property
     def interval(self):
-        return 0 if self.__opts.interval is None else self.__opts.interval
+        return self.__opts.interval
 
 
     @property
-    def samples(self):
-        return 1 if self.__opts.interval is None else self.__opts.samples
+    def shutdown(self):
+        return not self.__opts.no_shutdown
+
+
+    @property
+    def output(self):
+        return not self.__opts.no_output
 
 
     @property
@@ -76,5 +73,5 @@ class CmdStatusSampler(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdStatusSampler:{semaphore:%s, interval:%s, samples:%s, verbose:%s}" % \
-                    (self.semaphore, self.interval, self.samples, self.verbose)
+        return "CmdPSUMonitor:{interval:%s, no_shutdown:%s, no_output:%s, verbose:%s}" % \
+                    (self.interval, self.__opts.no_shutdown, self.__opts.no_output, self.verbose)
