@@ -31,7 +31,7 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, airnow, interface, gps_monitor, psu_monitor):
+    def __init__(self, runner, tag, airnow, interface, gps_monitor, psu_conf):
         """
         Constructor
         """
@@ -42,17 +42,13 @@ class StatusSampler(Sampler):
 
         self.__interface = interface
         self.__gps_monitor = gps_monitor
-        self.__psu_monitor = psu_monitor
+        self.__psu_conf = psu_conf
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def start(self):
         try:
-            # start...
-            if self.__psu_monitor:
-                self.__psu_monitor.start()
-
             if self.__gps_monitor:
                 self.__gps_monitor.start()
 
@@ -62,9 +58,6 @@ class StatusSampler(Sampler):
 
     def stop(self):
         try:
-            if self.__psu_monitor:
-                self.__psu_monitor.stop()
-
             if self.__gps_monitor:
                 self.__gps_monitor.stop()
 
@@ -101,18 +94,19 @@ class StatusSampler(Sampler):
 
         uptime = UptimeDatum.construct_from_report(None, report)
 
-        # psu_monitor...
-        psu_monitor_status = None if self.__psu_monitor is None else self.__psu_monitor.sample()
+        # PSUReport...
+        psu_report_class = self.__psu_conf.psu_report_class()
+        psu_report = None if psu_report_class is None else psu_report_class.load(self.__psu_conf.report_file)
 
         # datum...
         recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
 
         return StatusSample(self.__tag, self.__airnow, recorded, timezone, position, temperature,
-                            schedule, uptime, psu_monitor_status)
+                            schedule, uptime, psu_report)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, interface:%s, gps_monitor:%s, psu_monitor:%s}" % \
-               (self.runner, self.__tag, self.__airnow, self.__interface, self.__gps_monitor, self.__psu_monitor)
+        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, interface:%s, gps_monitor:%s, psu_conf:%s}" % \
+               (self.runner, self.__tag, self.__airnow, self.__interface, self.__gps_monitor, self.__psu_conf)
