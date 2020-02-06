@@ -56,13 +56,17 @@ from scs_psu.psu.psu_conf import PSUConf
 
 if __name__ == '__main__':
 
-    conf = None
+    psu_conf = None
     psu_monitor = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
     cmd = CmdPSUMonitor()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
 
     if cmd.verbose:
         print("psu_monitor: %s" % cmd, file=sys.stderr)
@@ -79,16 +83,16 @@ if __name__ == '__main__':
         interface_model = None if interface_conf is None else interface_conf.model
 
         # PSUMonitor...
-        conf = PSUConf.load(Host)
+        psu_conf = PSUConf.load(Host)
 
-        if conf is None:
+        if psu_conf is None:
             print("psu_monitor: PSUConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
-            print("psu_monitor: %s" % conf, file=sys.stderr)
+            print("psu_monitor: %s" % psu_conf, file=sys.stderr)
 
-        psu_monitor = conf.psu_monitor(Host, interface_model, cmd.shutdown)
+        psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.shutdown)
 
         if psu_monitor is None:
             print("psu_monitor: PSUMonitor not available.", file=sys.stderr)
@@ -99,7 +103,11 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # IntervalTimer...
-        interval = conf.reporting_interval if cmd.config_interval else cmd.interval
+        if cmd.config_interval and psu_conf.reporting_interval is None:
+            print("psu_monitor: PSUConf reporting interval is None", file=sys.stderr)
+            exit(1)
+
+        interval = psu_conf.reporting_interval if cmd.config_interval else cmd.interval
 
         timer = IntervalTimer(interval)
 
@@ -114,7 +122,11 @@ if __name__ == '__main__':
 
         while timer.true():
             status = psu_monitor.sample()
-            status.save(conf.report_file)
+
+            if status is None:
+                continue
+
+            status.save(psu_conf.report_file)
 
             if cmd.output:
                 print(JSONify.dumps(status.as_json()))
@@ -137,7 +149,7 @@ if __name__ == '__main__':
         if psu_monitor:
             psu_monitor.stop()
 
-        if conf:
-            Filesystem.rm(conf.report_file)
+        if psu_conf:
+            Filesystem.rm(psu_conf.report_file)
 
         I2C.close()
