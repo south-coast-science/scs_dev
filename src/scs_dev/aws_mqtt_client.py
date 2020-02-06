@@ -241,4 +241,4 @@ if __name__ == '__main__':
             Filesystem.rm(conf.report_file)
 
         if reporter:
-            reporter.print("finishing")
+            reporter.print("finished")
