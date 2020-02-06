@@ -6,6 +6,8 @@ Created on 27 Sep 2018
 
 import time
 
+from socket import gaierror
+
 from AWSIoTPythonSDK.exception.operationTimeoutException import operationTimeoutException
 
 from scs_core.aws.client.client_auth import ClientAuth
@@ -57,9 +59,19 @@ class AWSMQTTPublisher(object):
         self.__report()
 
         # connect...
-        while not self.__client.connect(self.__auth, self.__conf.debug):
-            self.__reporter.print("connect: failed")
-            time.sleep(self.__CONNECT_RETRY_TIME)
+        while True:
+            try:
+                if self.__client.connect(self.__auth, self.__conf.debug):
+                    break
+
+                self.__reporter.print("connect: failed")
+                time.sleep(self.__CONNECT_RETRY_TIME)
+                continue
+
+            except gaierror as ex:                                  # Temporary failure in name resolution
+                self.__reporter.print("connect: %s" % ex)
+                time.sleep(self.__CONNECT_RETRY_TIME)
+                continue
 
         time.sleep(self.__CONNECT_TIME)
 

@@ -58,6 +58,7 @@ from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.publication import Publication
 
+from scs_core.sys.filesystem import Filesystem
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -76,6 +77,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    conf = None
     source = None
     reporter = None
     publisher = None
@@ -235,5 +237,8 @@ if __name__ == '__main__':
         if publisher:
             publisher.disconnect()
 
+        if conf:
+            Filesystem.rm(conf.report_file)
+
         if reporter:
-            reporter.print("finishing")
+            reporter.print("finished")
