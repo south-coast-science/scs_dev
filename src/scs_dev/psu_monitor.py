@@ -109,9 +109,6 @@ if __name__ == '__main__':
 
         interval = conf.reporting_interval if cmd.config_interval else cmd.interval
 
-        print("interval: %s" % interval)
-        sys.stdout.flush()
-
         timer = IntervalTimer(interval)
 
 
