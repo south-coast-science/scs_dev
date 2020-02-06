@@ -12,8 +12,8 @@ The psu_monitor utility is used to report on the PSU status, and to manage shutd
 Frequency of reporting is specified by the --interval flag. Note that the frequency of polling for user and PSU
 events is hard-coded, and is typically every second.
 
-If the PSU configuration specifies a report file path, then the PSU status report is written to this file. Unless
-inhibited by the --no-output flag, the report is (also) written to stdout.
+Unless inhibited by the --no-output flag, the report is written to stdout. If the PSU configuration specifies a report
+file path, then the PSU status report is (also) written to this file. When the utility terminates, the file is deleted.
 
 The status_sampler utility reads the PSU report file, if available. The psu_monitor reporting frequency should
 therefore be set to match the status_sampler reporting frequency.
@@ -37,6 +37,8 @@ import sys
 from scs_core.data.json import JSONify
 
 from scs_core.sync.interval_timer import IntervalTimer
+
+from scs_core.sys.filesystem import Filesystem
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_psu_monitor import CmdPSUMonitor
@@ -53,6 +55,7 @@ from scs_psu.psu.psu_conf import PSUConf
 
 if __name__ == '__main__':
 
+    psu_conf = None
     psu_monitor = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -129,5 +132,8 @@ if __name__ == '__main__':
 
         if psu_monitor:
             psu_monitor.stop()
+
+        if psu_conf:
+            Filesystem.rm(psu_conf.report_file)
 
         I2C.close()
