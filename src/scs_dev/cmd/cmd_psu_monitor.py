@@ -19,11 +19,11 @@ class CmdPSUMonitor(object):
         self.__parser = optparse.OptionParser(usage="%prog { -c | -i INTERVAL } [-x] [-o] [-v]", version="%prog 1.0")
 
         # compulsory...
-        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
-                                 default=None, help="sampling interval in seconds")
-
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
                                  help="use PSU configuration interval specification")
+
+        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
+                                 default=None, help="sampling interval in seconds")
 
         # optional...
         self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
