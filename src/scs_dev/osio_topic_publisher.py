@@ -78,6 +78,7 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdOSIOTopicPublisher()
+
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
         exit(2)

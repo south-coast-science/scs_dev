@@ -20,7 +20,7 @@ class CmdPSUMonitor(object):
 
         # compulsory...
         self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
-                                 help="sampling interval in seconds")
+                                 default=None, help="sampling interval in seconds")
 
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
                                  help="use PSU configuration interval specification")
@@ -41,7 +41,10 @@ class CmdPSUMonitor(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.__opts.config_interval) == bool(self.__opts.interval):
+        if not self.config_interval and self.interval is None:
+            return False
+
+        if self.config_interval and self.interval is not None:
             return False
 
         return True
