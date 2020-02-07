@@ -221,7 +221,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
+    except (BrokenPipeError, ConnectionRefusedError, ConnectionResetError) as ex:
         print("aws_mqtt_client: %s" % ex, file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):
