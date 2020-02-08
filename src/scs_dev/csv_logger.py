@@ -186,7 +186,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError, RuntimeError) as ex:
+    except (ConnectionError, RuntimeError) as ex:
         print("csv_logger (%s): %s" % (cmd.topic_name, ex), file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):

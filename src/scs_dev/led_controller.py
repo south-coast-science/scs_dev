@@ -136,7 +136,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
+    except ConnectionError as ex:
         print("led_controller: %s" % ex, file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):

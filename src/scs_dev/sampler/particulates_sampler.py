@@ -49,7 +49,7 @@ class ParticulatesSampler(Sampler):
         try:
             self.__opc_monitor.stop()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 

@@ -149,7 +149,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
+    except ConnectionError as ex:
         print("osio_topic_publisher: %s" % ex, file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):

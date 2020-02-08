@@ -149,7 +149,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionRefusedError, ConnectionResetError) as ex:
+    except ConnectionError as ex:
         print("aws_topic_publisher (%s): %s" % (ex, topic), file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):

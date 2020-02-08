@@ -52,7 +52,7 @@ class StatusSampler(Sampler):
             if self.__gps_monitor:
                 self.__gps_monitor.start()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -61,7 +61,7 @@ class StatusSampler(Sampler):
             if self.__gps_monitor:
                 self.__gps_monitor.stop()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 

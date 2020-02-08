@@ -44,8 +44,8 @@ class AWSMQTTSubscriptionHandler(object):
             self.__comms.connect()
             self.__comms.write(JSONify.dumps(publication), False)
 
-        except ConnectionRefusedError:
-            self.__reporter.print("connection refused for %s" % self.__comms.address)
+        except ConnectionError:
+            self.__reporter.print("connect: %s" % self.__comms.address)
 
         finally:
             self.__comms.close()
