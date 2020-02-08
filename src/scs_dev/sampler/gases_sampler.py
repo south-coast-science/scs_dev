@@ -47,7 +47,7 @@ class GasesSampler(Sampler):
             while self.__ndir_monitor.sample() is None:
                 time.sleep(1.0)
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 
@@ -58,7 +58,7 @@ class GasesSampler(Sampler):
 
             self.__ndir_monitor.stop()
 
-        except (BrokenPipeError, KeyboardInterrupt, SystemExit):
+        except (ConnectionError, KeyboardInterrupt, SystemExit):
             pass
 
 

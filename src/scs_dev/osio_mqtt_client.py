@@ -102,8 +102,8 @@ class OSIOMQTTHandler(object):
             self.__comms.connect()
             self.__comms.write(JSONify.dumps(pub), False)
 
-        except ConnectionRefusedError:
-            self.__reporter.print("connection refused for %s" % self.__comms.address)
+        except ConnectionError:
+            self.__reporter.print("connection: %s" % self.__comms.address)
 
         finally:
             self.__comms.close()
@@ -304,7 +304,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionResetError) as ex:
+    except ConnectionError as ex:
         print("osio_mqtt_client: %s" % ex, file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):

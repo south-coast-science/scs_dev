@@ -102,7 +102,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except (BrokenPipeError, ConnectionRefusedError, ConnectionResetError) as ex:
+    except ConnectionError as ex:
         print("led: %s" % ex, file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):
