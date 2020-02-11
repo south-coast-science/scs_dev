@@ -6,7 +6,7 @@ Created on 20 Oct 2016
 
 import subprocess
 
-from scs_core.data.localized_datetime import LocalizedDatetime
+from scs_core.data.datetime import LocalizedDatetime
 
 from scs_core.location.timezone_conf import TimezoneConf
 

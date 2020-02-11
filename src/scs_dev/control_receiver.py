@@ -78,8 +78,8 @@ from scs_core.control.command import Command
 from scs_core.control.control_datum import ControlDatum
 from scs_core.control.control_receipt import ControlReceipt
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.signalled_exit import SignalledExit
