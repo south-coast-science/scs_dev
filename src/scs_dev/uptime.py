@@ -27,8 +27,8 @@ scs_dev/ps
 
 import subprocess
 
+from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
-from scs_core.data.localized_datetime import LocalizedDatetime
 
 from scs_core.sys.uptime_datum import UptimeDatum
 
