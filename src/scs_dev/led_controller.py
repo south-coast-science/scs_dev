@@ -28,6 +28,7 @@ DOCUMENT EXAMPLE
 {"colour0": "R", "colour1": "G"}
 
 SEE ALSO
+scs_dev/interface_power
 scs_dev/led
 
 RESOURCES
