@@ -29,6 +29,7 @@ scs_dev/opc_cleaner
 scs_dev/opc_power
 scs_dev/particulates_sampler
 scs_mfr/opc_conf
+scs_mfr/opc_firmware_conf
 """
 
 import sys
@@ -44,6 +45,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
+# TODO: move to scs_mfr
+# TODO: add serial number reporting
 # TODO: handle OPC power-down issue
 
 # --------------------------------------------------------------------------------------------------------------------

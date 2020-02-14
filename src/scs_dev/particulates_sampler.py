@@ -64,6 +64,7 @@ scs_dev/opc_version
 scs_dev/scheduler
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
+scs_mfr/opc_firmware_conf
 scs_mfr/schedule
 scs_mfr/system_id
 
