@@ -68,7 +68,7 @@ class AWSMQTTPublisher(object):
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue
 
-            except gaierror as ex:                                  # Temporary failure in name resolution
+            except (OSError, gaierror) as ex:           # Network is unreachable, Temporary failure in name resolution
                 self.__reporter.print("connect: %s" % ex)
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue
