@@ -54,6 +54,7 @@ DOCUMENT EXAMPLE - OUTPUT
 "up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
 
 SEE ALSO
+scs_dev/interface_power
 scs_dev/psu_monitor
 scs_dev/scheduler
 

@@ -42,7 +42,6 @@ setup(
         'src/scs_dev/modem_power.py',
         'src/scs_dev/ndir_sampler.py',
         'src/scs_dev/node.py',
-        'src/scs_dev/opc_power.py',
         'src/scs_dev/osio_mqtt_client.py',
         'src/scs_dev/osio_topic_publisher.py',
         'src/scs_dev/osio_topic_subscriber.py',

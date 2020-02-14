@@ -58,13 +58,14 @@ DOCUMENT EXAMPLE (OPC-N3):
 "isecsen2v2": {"pm1": 4.7, "pm2p5": 5.1, "pm10": 6.1}}}
 
 SEE ALSO
+scs_dev/interface_power
 scs_dev/opc_cleaner
-scs_dev/opc_power
-scs_dev/opc_version
 scs_dev/scheduler
+
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 scs_mfr/opc_firmware_conf
+scs_mfr/opc_version
 scs_mfr/schedule
 scs_mfr/system_id
 
@@ -102,8 +103,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
-# TODO: handle OPC power-down issue (see OPCMonitor)
 
 # --------------------------------------------------------------------------------------------------------------------
 
