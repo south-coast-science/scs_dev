@@ -83,8 +83,12 @@ import time
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
-# from scs_core.particulate.exegesis.exegete_collection import ExegeteCollection
-# from scs_core.particulate.exegesis.text import Text
+try:
+    from scs_exegesis.particulate.exegete_collection import ExegeteCollection
+except ImportError:
+    from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
+
+from scs_core.exegesis.particulate.text import Text
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
