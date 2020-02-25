@@ -167,6 +167,11 @@ if __name__ == '__main__':
         # exegetes...
         exegete_collection = ExegeteCollection.construct(opc_conf.exegete_names)
 
+        for name in opc_conf.exegete_names:
+            if not exegete_collection.has_member(name):
+                print("particulates_sampler: WARNING: exegete '%s' is not available." % name, file=sys.stderr)
+                sys.stderr.flush()
+
         # SHTConf...
         if exegete_collection.uses_external_sht():
             sht_conf = SHTConf.load(Host)
