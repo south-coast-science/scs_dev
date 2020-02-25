@@ -99,9 +99,9 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
+from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
-from scs_dfe.climate.sht_conf import SHTConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
