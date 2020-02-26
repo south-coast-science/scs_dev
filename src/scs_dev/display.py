@@ -71,6 +71,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # software update...
+        software_report = Host.software_update_report()
+
         # MQTTConf...
         mqtt_conf = MQTTConf.load(Host)
         queue_report_filename = None if mqtt_conf is None else mqtt_conf.report_file
@@ -99,7 +102,7 @@ if __name__ == '__main__':
             print("display: DisplayConf not available.", file=sys.stderr)
             exit(1)
 
-        monitor = conf.monitor(queue_report_filename, gps_report_filename)
+        monitor = conf.monitor(software_report, queue_report_filename, gps_report_filename)
 
         if cmd.verbose and monitor:
             print("display: %s" % monitor, file=sys.stderr)
