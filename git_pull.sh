@@ -2,7 +2,6 @@
 
 # copy this file to the ~/SCS directory and edit as required...
 
-
 GIT_PATH=~/SCS/scs_airnow/                  # comment out if the package is not installed
 echo ${GIT_PATH}
 git -C ${GIT_PATH} pull
@@ -64,4 +63,3 @@ git -C ${GIT_PATH} pull
 echo '-'
 
 date +%y-%m-%d > ~/SCS/latest_update.txt
-
