@@ -10,8 +10,6 @@ import time
 
 from socket import gaierror
 
-from AWSIoTPythonSDK.exception.AWSIoTExceptions import connectError
-from AWSIoTPythonSDK.exception.AWSIoTExceptions import connectTimeoutException
 from AWSIoTPythonSDK.exception.operationTimeoutException import operationTimeoutException
 
 from scs_core.aws.client.client_auth import ClientAuth
@@ -72,7 +70,7 @@ class AWSMQTTPublisher(object):
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue
 
-            except (connectError, connectTimeoutException, OSError, gaierror) as ex:
+            except (OSError, gaierror) as ex:
                 self.__reporter.print("connect: %s" % ex)
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue
