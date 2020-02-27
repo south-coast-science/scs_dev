@@ -57,6 +57,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    conf = None
     interface = None
     monitor = None
 
@@ -99,10 +100,15 @@ if __name__ == '__main__':
             print("display: %s" % interface, file=sys.stderr)
 
         # DisplayConf...
-        conf = DisplayConf.load(Host)
+        try:
+            conf = DisplayConf.load(Host)
 
-        if conf is None:
-            print("display: DisplayConf not available.", file=sys.stderr)
+            if conf is None:
+                print("display: DisplayConf not set.", file=sys.stderr)
+                exit(1)
+
+        except NotImplementedError:
+            print("display: not available.", file=sys.stderr)
             exit(1)
 
         monitor = conf.monitor(software_report, queue_report_filename, gps_report_filename)
