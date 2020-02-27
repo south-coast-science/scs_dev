@@ -2,6 +2,8 @@
 Created on 27 Sep 2018
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
+import AWSIoTPythonSDK.exception.AWSIoTExceptions as AWSIoTExceptions
+
 """
 
 import time
@@ -68,7 +70,7 @@ class AWSMQTTPublisher(object):
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue
 
-            except (OSError, gaierror) as ex:           # Network is unreachable, Temporary failure in name resolution
+            except (OSError, gaierror) as ex:
                 self.__reporter.print("connect: %s" % ex)
                 time.sleep(self.__CONNECT_RETRY_TIME)
                 continue

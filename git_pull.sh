@@ -32,6 +32,11 @@ echo ${GIT_PATH}
 git -C ${GIT_PATH} pull
 echo '-'
 
+GIT_PATH=~/SCS/scs_display_inky/            # comment out if the package is not installed
+echo ${GIT_PATH}
+git -C ${GIT_PATH} pull
+echo '-'
+
 GIT_PATH=~/SCS/scs_host_bbe_southern/       # replace with the appropriate host package, as necessary
 echo ${GIT_PATH}
 git -C ${GIT_PATH} pull
