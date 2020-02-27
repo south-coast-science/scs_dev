@@ -42,7 +42,10 @@ from scs_dev.handler.uds_reader import UDSReader
 from scs_dfe.gps.gps_conf import GPSConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_display.display.display_conf import DisplayConf
+try:
+    from scs_display.display.display_conf import DisplayConf
+except ImportError:
+    from scs_core.display.display_conf import DisplayConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
@@ -54,6 +57,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    conf = None
     interface = None
     monitor = None
 
@@ -96,10 +100,15 @@ if __name__ == '__main__':
             print("display: %s" % interface, file=sys.stderr)
 
         # DisplayConf...
-        conf = DisplayConf.load(Host)
+        try:
+            conf = DisplayConf.load(Host)
 
-        if conf is None:
-            print("display: DisplayConf not available.", file=sys.stderr)
+            if conf is None:
+                print("display: DisplayConf not set.", file=sys.stderr)
+                exit(1)
+
+        except NotImplementedError:
+            print("display: not available.", file=sys.stderr)
             exit(1)
 
         monitor = conf.monitor(software_report, queue_report_filename, gps_report_filename)
