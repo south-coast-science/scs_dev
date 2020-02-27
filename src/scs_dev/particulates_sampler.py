@@ -169,7 +169,8 @@ if __name__ == '__main__':
 
         for name in opc_conf.exegete_names:
             if not exegete_collection.has_member(name):
-                print("particulates_sampler: WARNING: exegete '%s' is not available." % name, file=sys.stderr)
+                print("particulates_sampler: WARNING: exegete '%s' is not available - ignoring." % name,
+                      file=sys.stderr)
                 sys.stderr.flush()
 
         # SHTConf...
