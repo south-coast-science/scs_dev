@@ -15,14 +15,15 @@ provided on the command line.
 
 Documents are found in order of datetime, with the oldest found found first.
 
-In order to interrogate the server, both an AWS API authentication configuration and system ID must be set. The
-csv_log_sync utility is not supported by the Open Sensors data platform.
+In order to interrogate the server, both an AWS API authentication configuration and system ID must be set. If the
+topic is not supplied as an absolute path, the AWS project must also be set. The csv_log_sync utility is not supported
+by the Open Sensors data platform.
 
 Note that the csv_log_sync utility is only able to find missing server found at the end of the device timeline -
 it is not able to infill gaps within the server data timeline.
 
 SYNOPSIS
-csv_log_sync.py { -s START | -f } [-n] [-v] TOPIC_NAME
+csv_log_sync.py { -s START | -f } [-n] [-a] [-v] TOPIC
 
 EXAMPLES
 ./csv_log_sync.py  -vf climate
@@ -32,6 +33,7 @@ scs_dev/csv_logger
 scs_dev/csv_reader
 scs_dev/csv_writer
 scs_mfr/aws_api_auth
+scs_mfr/aws_project
 scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
@@ -42,6 +44,7 @@ For compatibility with AWS DynamoDB, the --nullify flag should be used to conver
 import sys
 
 from scs_core.aws.client.api_auth import APIAuth
+from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
 from scs_core.csv.csv_log_reader import CSVLogReader
@@ -99,10 +102,28 @@ if __name__ == '__main__':
             print("csv_log_sync: CSVLoggerConf not available.", file=sys.stderr)
             exit(1)
 
-        if cmd.verbose:
-            print("csv_log_sync: %s" % conf, file=sys.stderr)
-
         if cmd.fill:
+            # topic...
+            if cmd.absolute:
+                topic = cmd.topic
+
+            else:
+                # Project...
+                project = Project.load(Host)
+
+                if project is None:
+                    print("csv_log_sync: Project not available.", file=sys.stderr)
+                    exit(1)
+
+                topic = project.subject_path(cmd.topic, system_id)
+
+                if topic is None:
+                    print("csv_log_sync: no topic found for subject '%s'." % cmd.topic, file=sys.stderr)
+                    exit(2)
+
+                if cmd.verbose:
+                    print("csv_log_sync (%s): topic: %s" % (cmd.topic, topic), file=sys.stderr)
+
             # APIAuth...
             api_auth = APIAuth.load(Host)
 
@@ -117,20 +138,20 @@ if __name__ == '__main__':
                 print("csv_log_sync: %s" % manager, file=sys.stderr)
 
             # log...
-            byline = manager.find_byline_for_device_topic(system_id.message_tag(), cmd.topic_name)
-            log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
+            byline = manager.find_byline_for_device_topic(system_id.message_tag(), topic)
+            log = conf.csv_log(cmd.topic, tag=system_id.message_tag(), timeline_start=byline.rec.datetime)
 
             if log is None:
                 if cmd.verbose:
-                    print("csv_log_sync: no backlog was found for topic %s" % cmd.topic_name, file=sys.stderr)
+                    print("csv_log_sync: no backlog was found for topic %s" % cmd.topic, file=sys.stderr)
                 exit(0)
 
         else:
             # log...
-            log = conf.csv_log(cmd.topic_name, tag=system_id.message_tag(), timeline_start=cmd.start.datetime)
+            log = conf.csv_log(cmd.topic, tag=system_id.message_tag(), timeline_start=cmd.start.datetime)
 
         # CSVLogReporter...
-        reporter = CSVLogReporter('csv_log_sync', cmd.topic_name, cmd.verbose)
+        reporter = CSVLogReporter('csv_log_sync', cmd.topic, cmd.verbose)
 
         sys.stderr.flush()
 

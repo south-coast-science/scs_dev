@@ -18,12 +18,12 @@ class CSVLogReporter(CSVLogReaderReporter):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, script_name, topic_name, verbose):
+    def __init__(self, script_name, topic_subject, verbose):
         """
         Constructor
         """
         self.__script_name = script_name                    # string
-        self.__topic_name = topic_name                      # string
+        self.__topic_subject = topic_subject                # string
         self.__verbose = bool(verbose)                      # bool
 
 
@@ -31,28 +31,29 @@ class CSVLogReporter(CSVLogReaderReporter):
 
     def opening(self, cursor):
         if self.__verbose:
-            print("%s (%s): reading: %s" % (self.__script_name, self.__topic_name, cursor),
+            print("%s (%s): reading: %s" % (self.__script_name, self.__topic_subject, cursor),
                   file=sys.stderr)
             sys.stderr.flush()
 
 
     def closing(self, cursor, read_count):
         if self.__verbose:
-            print("%s (%s): closing: %s: read: %s" % (self.__script_name, self.__topic_name, cursor, read_count),
+            print("%s (%s): closing: %s: read: %s" % (self.__script_name, self.__topic_subject, cursor, read_count),
                   file=sys.stderr)
             sys.stderr.flush()
 
 
     def timeout(self, cursor, read_count):
         if self.__verbose:
-            print("%s (%s): TimeoutError: %s: read: %s" % (self.__script_name, self.__topic_name, cursor, read_count),
+            print("%s (%s): TimeoutError: %s: read: %s" %
+                  (self.__script_name, self.__topic_subject, cursor, read_count),
                   file=sys.stderr)
             sys.stderr.flush()
 
 
     def exception(self, ex):
         if self.__verbose:
-            print("%s (%s): %s" % (self.__script_name, self.__topic_name, ex),
+            print("%s (%s): %s" % (self.__script_name, self.__topic_subject, ex),
                   file=sys.stderr)
             sys.stderr.flush()
 
@@ -60,5 +61,5 @@ class CSVLogReporter(CSVLogReaderReporter):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogReporter:{script_name:%s, topic_name:%s, verbose:%s}" % \
-               (self.__script_name, self.__topic_name, self.__verbose)
+        return "CSVLogReporter:{script_name:%s, topic_subject:%s, verbose:%s}" % \
+               (self.__script_name, self.__topic_subject, self.__verbose)

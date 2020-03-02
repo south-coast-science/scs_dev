@@ -108,6 +108,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: what happens when climate data is not available?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

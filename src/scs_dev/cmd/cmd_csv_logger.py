@@ -16,9 +16,12 @@ class CmdCSVLogger(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-e] [-v] TOPIC_NAME", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-a] [-e] [-v] TOPIC", version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--absolute", "-a", action="store_true", dest="absolute", default=False,
+                                 help="absolute topic path (default is find from AWS project)")
+
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 
@@ -40,6 +43,11 @@ class CmdCSVLogger(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
+    def absolute(self):
+        return self.__opts.absolute
+
+
+    @property
     def echo(self):
         return self.__opts.echo
 
@@ -50,7 +58,7 @@ class CmdCSVLogger(object):
 
 
     @property
-    def topic_name(self):
+    def topic(self):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
@@ -61,4 +69,5 @@ class CmdCSVLogger(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogger:{echo:%s, verbose:%s, topic_name:%s}" % (self.echo, self.verbose, self.topic_name)
+        return "CmdCSVLogger:{absolute:%s, echo:%s, verbose:%s, topic_subject:%s}" % \
+               (self.absolute, self.echo, self.verbose, self.topic)

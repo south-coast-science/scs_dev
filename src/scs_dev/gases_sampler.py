@@ -111,8 +111,6 @@ except ImportError:
     from scs_core.gas.ndir.ndir_conf import NDIRConf
 
 
-# TODO: there must be a better way to deal with the import error stuff!
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
