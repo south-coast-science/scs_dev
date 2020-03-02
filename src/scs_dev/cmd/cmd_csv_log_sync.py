@@ -18,7 +18,7 @@ class CmdCSVLogSync(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -s START | -f } [-n] [-v] TOPIC_NAME",
+        self.__parser = optparse.OptionParser(usage="%prog { -s START | -f } [-n] [-a] [-v] TOPIC",
                                               version="%prog 1.0")
 
         # manual data specification...
@@ -33,6 +33,9 @@ class CmdCSVLogSync(object):
         self.__parser.add_option("--nullify", "-n", action="store_true", dest="nullify", default=False,
                                  help="convert empty strings to nulls")
 
+        self.__parser.add_option("--absolute", "-a", action="store_true", dest="absolute", default=False,
+                                 help="absolute topic path (default is find from AWS project)")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -43,7 +46,7 @@ class CmdCSVLogSync(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.topic_name is None:
+        if self.topic is None:
             return False
 
         if bool(self.start) == bool(self.fill):
@@ -70,12 +73,17 @@ class CmdCSVLogSync(object):
 
 
     @property
+    def absolute(self):
+        return self.__opts.absolute
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
 
     @property
-    def topic_name(self):
+    def topic(self):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
@@ -86,5 +94,5 @@ class CmdCSVLogSync(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdCSVLogSync:{start:%s, fill:%s, nullify:%s, verbose:%s, topic_name:%s}" % \
-               (self.start, self.fill, self.nullify, self.verbose, self.topic_name)
+        return "CmdCSVLogSync:{start:%s, fill:%s, nullify:%s, absolute:%s, verbose:%s, topic:%s}" % \
+               (self.start, self.fill, self.nullify, self.absolute, self.verbose, self.topic)
