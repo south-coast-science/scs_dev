@@ -54,6 +54,8 @@ from collections import OrderedDict
 
 from scs_core.aws.config.project import Project
 
+from scs_core.comms.uds_writer import UDSWriter
+
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
@@ -61,7 +63,6 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_publisher import CmdAWSTopicPublisher
-from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_host.sys.host import Host
 

@@ -40,12 +40,13 @@ scs_dev/led_controller
 
 import sys
 
+from scs_core.comms.uds_writer import UDSWriter
+
 from scs_core.data.json import JSONify
 
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led import CmdLED
-from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_dfe.led.led_state import LEDState
 
