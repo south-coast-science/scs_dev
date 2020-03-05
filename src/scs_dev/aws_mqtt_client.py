@@ -55,6 +55,8 @@ from scs_core.aws.client.mqtt_client import MQTTClient, MQTTSubscriber
 from scs_core.aws.config.project import Project
 
 from scs_core.comms.mqtt_conf import MQTTConf
+from scs_core.comms.uds_reader import UDSReader
+from scs_core.comms.uds_writer import UDSWriter
 
 from scs_core.data.publication import Publication
 
@@ -67,8 +69,6 @@ from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 from scs_dev.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_dev.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
-from scs_dev.handler.uds_reader import UDSReader
-from scs_dev.handler.uds_writer import UDSWriter
 
 from scs_host.sys.host import Host
 
