@@ -38,12 +38,13 @@ https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pi
 import json
 import sys
 
-from scs_core.sys.signalled_exit import SignalledExit
+from scs_core.comms.uds_reader import UDSReader
 
 from scs_core.data.json import JSONify
 
+from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
-from scs_dev.handler.uds_reader import UDSReader
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
