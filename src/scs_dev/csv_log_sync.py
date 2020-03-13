@@ -132,7 +132,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # BylineManager...
-            manager = BylineManager(HTTPClient(), api_auth)
+            manager = BylineManager(HTTPClient(True), api_auth)
 
             if cmd.verbose:
                 print("csv_log_sync: %s" % manager, file=sys.stderr)
