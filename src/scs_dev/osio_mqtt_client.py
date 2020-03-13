@@ -180,7 +180,7 @@ if __name__ == '__main__':
         pub_comms = DomainSocket(cmd.uds_pub) if cmd.uds_pub else StdIO()
 
         # manager...
-        manager = TopicManager(HTTPClient(), api_auth.api_key)
+        manager = TopicManager(HTTPClient(True), api_auth.api_key)
 
         # check topics...
         unavailable = False

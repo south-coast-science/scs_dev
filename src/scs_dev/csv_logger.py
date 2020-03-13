@@ -158,7 +158,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # BylineManager...
-            manager = BylineManager(HTTPClient(), api_auth)
+            manager = BylineManager(HTTPClient(True), api_auth)
 
             # CSVLogReader...
             byline = manager.find_byline_for_device_topic(system_id.message_tag(), topic)
