@@ -19,7 +19,9 @@ The osio_mqtt_client utility requires both the OpenSensors.io API key and client
 
 On some system configurations, the success or failure of each message send attempt can be signalled to a two-colour LED.
 
-Only one MQTT client should run at any one time, per TCP/IP host.
+Note: this utility waits forever for a network connection and domain name server.
+
+Warning: only one MQTT client should run at any one time, per TCP/IP host.
 
 SYNOPSIS
 osio_mqtt_client.py [-p UDS_PUB] [-s] { -c { C | G | P | S | X } (UDS_SUB_1) | [SUB_TOPIC_1 (UDS_SUB_1) ..

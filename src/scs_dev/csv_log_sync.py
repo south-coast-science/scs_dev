@@ -19,8 +19,10 @@ In order to interrogate the server, both an AWS API authentication configuration
 topic is not supplied as an absolute path, the AWS project must also be set. The csv_log_sync utility is not supported
 by the Open Sensors data platform.
 
-Note that the csv_log_sync utility is only able to find missing server found at the end of the device timeline -
+Note: the csv_log_sync utility is only able to find missing server found at the end of the device timeline -
 it is not able to infill gaps within the server data timeline.
+
+Note: this utility waits forever for a network connection and domain name server.
 
 SYNOPSIS
 csv_log_sync.py { -s START | -f } [-n] [-a] [-v] TOPIC
