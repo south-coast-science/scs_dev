@@ -34,6 +34,8 @@ the historic data API is queried to find the most recent record for the topic. T
 outputs any data on the device that is missing from the data store before outputting new records. Valid AWS API
 credentials and configuration are required.
 
+Note: this utility waits forever for a network connection and domain name server.
+
 SYNOPSIS
 csv_logger.py [-a] [-e] [-v] TOPIC
 
