@@ -51,6 +51,8 @@ import random
 import sys
 import time
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
@@ -69,7 +71,6 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_mqtt_client import CmdMQTTClient
 from scs_dev.handler.mqtt_reporter import MQTTReporter
 
-from scs_host.client.http_client import HTTPClient
 from scs_host.client.mqtt_client import MQTTClient, MQTTSubscriber
 
 from scs_host.comms.domain_socket import DomainSocket
