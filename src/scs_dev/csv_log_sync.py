@@ -49,6 +49,8 @@ from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
+from scs_core.client.http_client import HTTPClient
+
 from scs_core.csv.csv_log_reader import CSVLogReader
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
@@ -58,7 +60,6 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_csv_log_sync import CmdCSVLogSync
 from scs_dev.handler.csv_log_reporter import CSVLogReporter
 
-from scs_host.client.http_client import HTTPClient
 from scs_host.sys.host import Host
 
 
