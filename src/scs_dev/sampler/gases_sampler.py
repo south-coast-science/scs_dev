@@ -85,7 +85,7 @@ class GasesSampler(Sampler):
         except OSError:
             electrochem_datum = self.__gas_sensors.null_datum()
 
-        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
+        recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
         return GasesSample(self.__tag, recorded, ndir_datum, electrochem_datum, sht_datum)
 

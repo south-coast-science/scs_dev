@@ -47,7 +47,7 @@ class ClimateSampler(Sampler):
 
         # TODO: get the altitude from GPS if necessary
 
-        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
+        recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
         return ClimateSample(self.__tag, recorded, sht_sample, barometer_sample)
 

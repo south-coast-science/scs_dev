@@ -184,7 +184,7 @@ if __name__ == '__main__':
 
             # receipt...
             if cmd.receipt:
-                now = LocalizedDatetime.now()
+                now = LocalizedDatetime.now().utc()
                 receipt = ControlReceipt.construct_from_datum(datum, now, command, key)
 
                 print(JSONify.dumps(receipt))

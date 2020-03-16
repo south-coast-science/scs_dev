@@ -99,7 +99,7 @@ class StatusSampler(Sampler):
         psu_report = None if psu_report_class is None else psu_report_class.load(self.__psu_conf.report_file)
 
         # datum...
-        recorded = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
+        recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
         return StatusSample(self.__tag, self.__airnow, recorded, timezone, position, temperature,
                             schedule, uptime, psu_report)
