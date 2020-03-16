@@ -51,7 +51,7 @@ class MQTTReporter(object):
         if not self.__verbose:
             return
 
-        now = LocalizedDatetime.now()
+        now = LocalizedDatetime.now().utc()
         print("%s:         mqtt: %s" % (now.as_time(), status), file=sys.stderr)
         sys.stderr.flush()
 

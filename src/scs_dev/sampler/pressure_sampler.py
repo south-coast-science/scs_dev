@@ -38,7 +38,7 @@ class PressureSampler(Sampler):
     def sample(self):
         datum = self.__barometer.sample(self.__altitude)      # TODO: get the altitude from GPS if necessary
 
-        rec = LocalizedDatetime.now()      # after sampling, so that we can monitor resource contention
+        rec = LocalizedDatetime.now() .utc()        # after sampling, so that we can monitor resource contention
 
         return datum.as_sample(self.__tag, rec)
 

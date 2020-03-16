@@ -231,7 +231,7 @@ if __name__ == '__main__':
                 opc_sample.exegeses = exegete_collection.interpretation(text, internal_sht_sample, external_sht_sample)
 
             if cmd.verbose:
-                now = LocalizedDatetime.now()
+                now = LocalizedDatetime.now().utc()
                 print("%s: particulates: %s" % (now.as_time(), opc_sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
