@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
         for sample in sampler.samples():
             if cmd.verbose:
-                now = LocalizedDatetime.now()
+                now = LocalizedDatetime.now().utc()
                 print("%s:     pressure: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
