@@ -150,6 +150,7 @@ if __name__ == '__main__':
 
             if cmd.verbose:
                 print("csv_logger (%s): topic: %s" % (cmd.topic, topic), file=sys.stderr)
+                sys.stderr.flush()
 
         # reader...
         if cmd.echo:
