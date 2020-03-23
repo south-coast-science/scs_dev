@@ -6,12 +6,12 @@ Created on 25 Jan 2020
 
 import sys
 
-from scs_core.csv.csv_log_reader import CSVLogReaderReporter
+from scs_core.csv.csv_log_reader import CSVLogReporter
 
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CSVLogReporter(CSVLogReaderReporter):
+class CSVLoggerReporter(CSVLogReporter):
     """
     classdocs
     """
@@ -28,6 +28,13 @@ class CSVLogReporter(CSVLogReaderReporter):
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    def timeline_start(self, timeline_start):
+        if self.__verbose:
+            print("%s (%s): timeline_start: %s" % (self.__script_name, self.__topic_subject, timeline_start),
+                  file=sys.stderr)
+            sys.stderr.flush()
+
 
     def opening(self, cursor):
         if self.__verbose:
@@ -61,5 +68,5 @@ class CSVLogReporter(CSVLogReaderReporter):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CSVLogReporter:{script_name:%s, topic_subject:%s, verbose:%s}" % \
+        return "CSVLoggerReporter:{script_name:%s, topic_subject:%s, verbose:%s}" % \
                (self.__script_name, self.__topic_subject, self.__verbose)
