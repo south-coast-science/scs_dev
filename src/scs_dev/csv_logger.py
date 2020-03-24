@@ -34,7 +34,7 @@ the historic data API is queried to find the most recent record for the topic. T
 outputs any data on the device that is missing from the data store before outputting new records. Valid AWS API
 credentials and configuration are required.
 
-Note: this utility waits forever for a network connection and domain name server.
+Note: echoing cannot begin until a network connection has been established.
 
 SYNOPSIS
 csv_logger.py [-a] [-e] [-v] TOPIC
@@ -59,7 +59,7 @@ scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
 BUGS
-If any filesystem problem is encountered then both logging and output are inhibited, and no further attempt is made to
+If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to
 re-establish access to the storage medium.
 """
 
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 
         # reader...
         if cmd.echo:
-            # topic...
+            # literal topic...
             if cmd.absolute:
                 topic_path = cmd.topic
 
@@ -157,13 +157,12 @@ if __name__ == '__main__':
                 print("csv_logger (%s): APIAuth not available." % cmd.topic, file=sys.stderr)
                 exit(1)
 
-            # BylineManager...
+            # CSVLogQueueBuilder...
             manager = BylineManager(HTTPClient(True), api_auth)
+            queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
             reporter = CSVLoggerReporter("csv_logger", cmd.topic, cmd.verbose)
-            queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
-
             reader = CSVLogReader(queue_builder, empty_string_as_null=True, reporter=reporter)
 
             if cmd.verbose:
@@ -188,6 +187,8 @@ if __name__ == '__main__':
             if jstr is None:
                 break
 
+            # TODO: direct echo if writing is inhibited and echo is on
+
             try:
                 file_path = writer.write(jstr)
 
@@ -196,6 +197,7 @@ if __name__ == '__main__':
 
             except OSError as ex:
                 writer.writing_inhibited = True
+                # TODO: stop reader
                 print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
                 sys.stderr.flush()
 
