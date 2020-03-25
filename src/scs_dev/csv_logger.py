@@ -34,7 +34,7 @@ the historic data API is queried to find the most recent record for the topic. T
 outputs any data on the device that is missing from the data store before outputting new records. Valid AWS API
 credentials and configuration are required.
 
-Note: this utility waits forever for a network connection and domain name server.
+Note: echoing cannot begin until a network connection has been established.
 
 SYNOPSIS
 csv_logger.py [-a] [-e] [-v] TOPIC
@@ -59,8 +59,9 @@ scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
 BUGS
-If any filesystem problem is encountered then both logging and output are inhibited, and no further attempt is made to
-re-establish access to the storage medium.
+If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to
+re-establish access to the storage medium. In this state - if echoing is enabled - the utility will directly
+echo stdin to stdout.
 """
 
 import sys
@@ -91,6 +92,7 @@ if __name__ == '__main__':
     cmd = None
     writer = None
     reader = None
+    file_path = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -132,7 +134,7 @@ if __name__ == '__main__':
 
         # reader...
         if cmd.echo:
-            # topic...
+            # literal topic...
             if cmd.absolute:
                 topic_path = cmd.topic
 
@@ -157,13 +159,12 @@ if __name__ == '__main__':
                 print("csv_logger (%s): APIAuth not available." % cmd.topic, file=sys.stderr)
                 exit(1)
 
-            # BylineManager...
+            # CSVLogQueueBuilder...
             manager = BylineManager(HTTPClient(True), api_auth)
+            queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
             reporter = CSVLoggerReporter("csv_logger", cmd.topic, cmd.verbose)
-            queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
-
             reader = CSVLogReader(queue_builder, empty_string_as_null=True, reporter=reporter)
 
             if cmd.verbose:
@@ -177,12 +178,12 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("csv_logger (%s)" % cmd.topic, cmd.verbose)
 
-        # log reader...
+        # start reader...
         if cmd.echo:
             reader.start()
 
-        # log writer...
         for line in sys.stdin:
+            # write...
             jstr = line.strip()
 
             if jstr is None:
@@ -191,13 +192,30 @@ if __name__ == '__main__':
             try:
                 file_path = writer.write(jstr)
 
-                if cmd.echo:
-                    reader.include(file_path)
-
             except OSError as ex:
-                writer.writing_inhibited = True
-                print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
+                print("csv_logger (%s): %s: %s" % (cmd.topic, ex.__class__.__name__, ex), file=sys.stderr)
                 sys.stderr.flush()
+
+                writer.writing_inhibited = True
+
+                if reader:
+                    reader.stop()
+
+            if not cmd.echo:
+                continue
+
+            # direct echo...
+            if writer.writing_inhibited:
+                print("csv_logger (%s): no CSV access" % cmd.topic, file=sys.stderr)
+                sys.stderr.flush()
+
+                print(jstr)
+                sys.stdout.flush()
+
+                continue
+
+            # manage reader...
+            reader.include(file_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
