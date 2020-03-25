@@ -60,7 +60,8 @@ scs_mfr/system_id
 
 BUGS
 If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to
-re-establish access to the storage medium.
+re-establish access to the storage medium. In this state - if echoing is enabled - the utility will directly
+echo stdin to stdout.
 """
 
 import sys
@@ -91,6 +92,7 @@ if __name__ == '__main__':
     cmd = None
     writer = None
     reader = None
+    file_path = None
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -176,30 +178,44 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("csv_logger (%s)" % cmd.topic, cmd.verbose)
 
-        # log reader...
+        # start reader...
         if cmd.echo:
             reader.start()
 
-        # log writer...
         for line in sys.stdin:
+            # write...
             jstr = line.strip()
 
             if jstr is None:
                 break
 
-            # TODO: direct echo if writing is inhibited and echo is on
-
             try:
                 file_path = writer.write(jstr)
 
-                if cmd.echo:
-                    reader.include(file_path)
-
             except OSError as ex:
-                writer.writing_inhibited = True
-                # TODO: reader should stop on empty queue
-                print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
+                print("csv_logger (%s): %s: %s" % (cmd.topic, ex.__class__.__name__, ex), file=sys.stderr)
                 sys.stderr.flush()
+
+                writer.writing_inhibited = True
+
+                if reader:
+                    reader.stop()
+
+            if not cmd.echo:
+                continue
+
+            # direct echo...
+            if writer.writing_inhibited:
+                print("csv_logger (%s): no CSV access" % cmd.topic, file=sys.stderr)
+                sys.stderr.flush()
+
+                print(jstr)
+                sys.stdout.flush()
+
+                continue
+
+            # manage reader...
+            reader.include(file_path)
 
 
     # ----------------------------------------------------------------------------------------------------------------
