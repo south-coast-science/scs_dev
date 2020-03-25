@@ -197,7 +197,7 @@ if __name__ == '__main__':
 
             except OSError as ex:
                 writer.writing_inhibited = True
-                # TODO: stop reader
+                # TODO: reader should stop on empty queue
                 print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
                 sys.stderr.flush()
 
