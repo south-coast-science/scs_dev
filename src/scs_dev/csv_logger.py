@@ -59,9 +59,8 @@ scs_mfr/csv_logger_conf
 scs_mfr/system_id
 
 BUGS
-If any filesystem problem is encountered then logging is inhibited, and no further attempt is made to
-re-establish access to the storage medium. In this state - if echoing is enabled - the utility will directly
-echo stdin to stdout.
+If any filesystem problem is encountered then the reader child process is stopped, and the utility directly echoes
+stdin to stdout from then on. No attempt is made to restart the reader process.
 """
 
 import sys
