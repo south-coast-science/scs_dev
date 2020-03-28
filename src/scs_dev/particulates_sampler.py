@@ -108,8 +108,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: what happens when climate data is not available?
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -225,7 +223,14 @@ if __name__ == '__main__':
             # data interpretation...
             if exegete_collection.has_members():
                 internal_sht_sample = opc_sample.values.get('sht')
-                external_sht_sample = None if sht is None else sht.sample()
+
+                try:
+                    external_sht_sample = None if sht is None else sht.sample()
+
+                except OSError as ex:
+                    external_sht_sample = None
+                    print("particulates_sampler: %s" % ex, file=sys.stderr)
+                    sys.stderr.flush()
 
                 text = Text.construct_from_jdict(opc_sample.values)
                 opc_sample.exegeses = exegete_collection.interpretation(text, internal_sht_sample, external_sht_sample)
