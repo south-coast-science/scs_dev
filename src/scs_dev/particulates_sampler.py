@@ -169,13 +169,7 @@ if __name__ == '__main__':
         # exegetes...
         exegete_collection = ExegeteCollection.construct(opc_conf.exegete_names)
 
-        print("exegete_collection:%s" % [str(exegete) for exegete in exegete_collection.members()], file=sys.stderr)
-        sys.stderr.flush()
-
         for name in opc_conf.exegete_names:
-            print("name: %s" % name, file=sys.stderr)
-            sys.stderr.flush()
-
             if not exegete_collection.has_member(name):
                 print("particulates_sampler: WARNING: exegete '%s' is not available - ignoring." % name,
                       file=sys.stderr)
