@@ -47,9 +47,13 @@ try:
 except ImportError:
     from scs_core.display.display_conf import DisplayConf
 
+try:
+    from scs_psu.psu.psu_conf import PSUConf
+except ImportError:
+    from scs_core.psu.psu_conf import PSUConf
+
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
-
 
 # TODO: handle OPC power-down issue
 
@@ -77,6 +81,11 @@ if __name__ == '__main__':
 
         # software update...
         software_report = Host.software_update_report()
+
+        # PSUConf...
+        psu_conf = PSUConf.load(Host)
+        psu_report_filename = None if psu_conf is None else psu_conf.report_file
+        psu_report_class = None if psu_conf is None else psu_conf.psu_report_class()
 
         # MQTTConf...
         mqtt_conf = MQTTConf.load(Host)
@@ -111,7 +120,8 @@ if __name__ == '__main__':
             print("display: not available.", file=sys.stderr)
             exit(1)
 
-        monitor = conf.monitor(software_report, queue_report_filename, gps_report_filename)
+        monitor = conf.monitor(software_report, psu_report_class, psu_report_filename, queue_report_filename,
+                               gps_report_filename)
 
         if cmd.verbose and monitor:
             print("display: %s" % monitor, file=sys.stderr)
