@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
         for message in source.messages():
             try:
-                jdict = json.loads(message, object_pairs_hook=OrderedDict)
+                jdict = json.loads(message, object_hook=OrderedDict)
             except ValueError:
                 continue
 
