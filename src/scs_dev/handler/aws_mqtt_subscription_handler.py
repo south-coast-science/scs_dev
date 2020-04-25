@@ -41,7 +41,7 @@ class AWSMQTTSubscriptionHandler(object):
         publication = Publication(message.topic, payload_jdict)
 
         try:
-            self.__comms.connect()
+            self.__comms.connect(wait_for_availability=True)
             self.__comms.write(JSONify.dumps(publication), False)
 
         except ConnectionError:
