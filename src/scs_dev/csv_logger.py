@@ -158,6 +158,10 @@ if __name__ == '__main__':
                 print("csv_logger (%s): APIAuth not available." % cmd.topic, file=sys.stderr)
                 exit(1)
 
+            if api_auth.endpoint is None or api_auth.api_key is None:
+                print("csv_logger (%s): APIAuth is incomplete: %s" % api_auth, file=sys.stderr)
+                exit(1)
+
             # CSVLogQueueBuilder...
             manager = BylineManager(HTTPClient(True), api_auth)
             queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
