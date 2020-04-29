@@ -184,7 +184,8 @@ if __name__ == '__main__':
             # SHT...
             sht = sht_conf.ext_sht()
 
-            print("particulates_sampler: %s" % sht, file=sys.stderr)
+            if cmd.verbose:
+                print("particulates_sampler: %s" % sht, file=sys.stderr)
 
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(interface, Host)
