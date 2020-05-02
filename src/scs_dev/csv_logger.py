@@ -159,7 +159,7 @@ if __name__ == '__main__':
                 exit(1)
 
             if api_auth.endpoint is None or api_auth.api_key is None:
-                print("csv_logger (%s): APIAuth is incomplete: %s" % api_auth, file=sys.stderr)
+                print("csv_logger (%s): APIAuth is incomplete: %s" % (cmd.topic, api_auth), file=sys.stderr)
                 exit(1)
 
             # CSVLogQueueBuilder...
