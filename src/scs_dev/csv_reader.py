@@ -13,7 +13,7 @@ from their container by a period ('.') character, and JSON array members separat
 colon (':') character.
 
 The first row of the CSV file (or stdin input) is assumed to be a header row. If there are more columns in the body of
-the CSV than in the header, excess values are ignored.
+the CSV than in the header, excess values are ignored. Header cells may not be empty.
 
 By default, output is in the form of a sequence of JSON documents, separated by newlines. If the array (-a) option is
 selected, output is in the form of a JSON array - the output opens with a '[' character, documents are separated by
@@ -69,7 +69,16 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        reader = CSVReader.construct_for_file(cmd.filename)
+        try:
+            reader = CSVReader.construct_for_file(cmd.filename)
+
+        except FileNotFoundError:
+            print("csv_reader: file not found: %s" % cmd.filename, file=sys.stderr)
+            exit(1)
+
+        except KeyError as ex:
+            print("csv_reader: empty header cell in: %s." % ex, file=sys.stderr)
+            exit(1)
 
         if cmd.verbose:
             print("csv_reader: %s" % reader, file=sys.stderr)
