@@ -40,8 +40,6 @@ import sys
 
 from scs_core.comms.uds_reader import UDSReader
 
-from scs_core.data.json import JSONify
-
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
@@ -61,6 +59,7 @@ if __name__ == '__main__':
 
     controller = None
     reader = None
+    prev_state = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -122,17 +121,19 @@ if __name__ == '__main__':
 
             state = LEDState.construct_from_jdict(jdict)
 
-            if state is None:
+            if state is None or state == prev_state:
                 continue
 
             if cmd.verbose:
-                print("led_controller: %s" % JSONify.dumps(state), file=sys.stderr)
+                print("led_controller: %s" % state, file=sys.stderr)
                 sys.stderr.flush()
 
             if not state.is_valid():
                 continue
 
             controller.set_state(state)
+
+            prev_state = state
 
 
     # ----------------------------------------------------------------------------------------------------------------
