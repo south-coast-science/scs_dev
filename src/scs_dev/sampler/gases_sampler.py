@@ -73,16 +73,19 @@ class GasesSampler(Sampler):
         try:
             ndir_datum = None if self.__ndir_monitor is None else self.__ndir_monitor.sample()
         except OSError:
+            # noinspection PyUnresolvedReferences
             ndir_datum = self.__ndir_monitor.null_datum()
 
         try:
             sht_datum = None if self.__sht is None else self.__sht.sample()
         except OSError:
+            # noinspection PyUnresolvedReferences
             sht_datum = self.__sht.null_datum()
 
         try:
             electrochem_datum = None if self.__gas_sensors is None else self.__gas_sensors.sample(sht_datum)
         except OSError:
+            # noinspection PyUnresolvedReferences
             electrochem_datum = self.__gas_sensors.null_datum()
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
