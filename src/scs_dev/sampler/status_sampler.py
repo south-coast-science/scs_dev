@@ -79,6 +79,7 @@ class StatusSampler(Sampler):
         try:
             interface_temp = None if self.__interface is None else self.__interface.temp()
         except OSError:
+            # noinspection PyUnresolvedReferences
             interface_temp = self.__interface.null_datum()
 
         mcu_temp = Host.mcu_temp()
