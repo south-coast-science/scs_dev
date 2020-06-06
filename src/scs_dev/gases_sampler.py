@@ -168,7 +168,7 @@ if __name__ == '__main__':
 
         # SHT...
         sht_conf = SHTConf.load(Host)
-        sht = None if sht_conf is None else sht_conf.int_sht()
+        sht = None if sht_conf is None else sht_conf.int_sht()          # TODO: consider change to ext_sht()
 
         if cmd.verbose and sht_conf:
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
