@@ -92,7 +92,7 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("psu_monitor: %s" % psu_conf, file=sys.stderr)
 
-        psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.shutdown)
+        psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.ignore_standby)
 
         if psu_monitor is None:
             print("psu_monitor: PSUMonitor not available.", file=sys.stderr)
