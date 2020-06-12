@@ -26,8 +26,8 @@ class CmdPSUMonitor(object):
                                  default=None, help="sampling interval in seconds")
 
         # optional...
-        self.__parser.add_option("--no-shutdown", "-x", action="store_true", dest="no_shutdown", default=False,
-                                 help="suppress auto-shutdown")
+        self.__parser.add_option("--ignore-standby", "-x", action="store_true", dest="ignore_standby", default=False,
+                                 help="ignore PSU standby status")
 
         self.__parser.add_option("--no-output", "-o", action="store_true", dest="no_output", default=False,
                                  help="suppress reporting on stdout")
@@ -63,8 +63,8 @@ class CmdPSUMonitor(object):
 
 
     @property
-    def shutdown(self):
-        return not self.__opts.no_shutdown
+    def ignore_standby(self):
+        return self.__opts.ignore_standby
 
 
     @property
@@ -84,5 +84,5 @@ class CmdPSUMonitor(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPSUMonitor:{config_interval:%s, interval:%s, no_shutdown:%s, no_output:%s, verbose:%s}" % \
-                    (self.config_interval, self.interval, self.__opts.no_shutdown, self.__opts.no_output, self.verbose)
+        return "CmdPSUMonitor:{config_interval:%s, interval:%s, ignore_standby:%s, no_output:%s, verbose:%s}" % \
+                    (self.config_interval, self.interval, self.ignore_standby, self.__opts.no_output, self.verbose)
