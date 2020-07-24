@@ -83,6 +83,10 @@ from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 
 from scs_host.sys.host import Host
 
+# mount -o remount,ro /srv/SCS_logging
+
+# TODO: Jun 19 08:36:59 arm sh[13353]: csv_logger (climate): [Errno 30] Read-only file system:
+#  '/srv/removable_data_storage/2020-06/scs-bgx-431-climate-2020-06-19-08-36-59.csv'
 
 # --------------------------------------------------------------------------------------------------------------------
 
