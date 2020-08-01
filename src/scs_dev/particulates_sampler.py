@@ -206,7 +206,7 @@ if __name__ == '__main__':
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
             interface.power_opc(True)
-            opc_monitor.operations_off()            # display may need the power to remain on
+            opc_monitor.operations_off()            # display may need the SPI power to remain on
 
             if cmd.verbose:
                 print("particulates_sampler: no schedule - stalled", file=sys.stderr)
