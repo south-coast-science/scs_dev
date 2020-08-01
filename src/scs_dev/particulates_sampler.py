@@ -108,8 +108,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: OPC must not be powered up if schedule does not contain scs-particulates
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
