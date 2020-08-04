@@ -165,6 +165,10 @@ if __name__ == '__main__':
         # check...
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            if cmd.verbose:
+                print("status_sampler: no schedule - stalled", file=sys.stderr)
+                sys.stderr.flush()
+
             while True:
                 time.sleep(1.0)
 
