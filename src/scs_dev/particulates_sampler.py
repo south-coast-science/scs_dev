@@ -77,8 +77,13 @@ RESOURCES
 https://en.wikipedia.org/wiki/ISO_8601
 """
 
+import json
 import sys
 import time
+
+from collections import OrderedDict
+
+from scs_core.comms.uds_client import UDSClient
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
@@ -89,6 +94,8 @@ except ImportError:
     from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
 
 from scs_core.exegesis.particulate.text import Text
+
+from scs_core.sample.sample import Sample
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
@@ -114,7 +121,11 @@ if __name__ == '__main__':
 
     opc = None
     sht = None
+    client = None
     sampler = None
+
+    internal_sht_sample = None
+    external_sht_sample = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -164,6 +175,13 @@ if __name__ == '__main__':
 
         interface = interface_conf.interface()
 
+        # inference client...
+        if opc_conf.inference:
+            client = UDSClient(opc_conf.inference)
+
+            if cmd.verbose:
+                print("particulates_sampler: %s" % client, file=sys.stderr)
+
         # exegetes...
         exegete_collection = ExegeteCollection.construct(opc_conf.exegete_names)
 
@@ -174,7 +192,7 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
         # SHTConf...
-        if exegete_collection.uses_external_sht():
+        if exegete_collection.uses_external_sht() or opc_conf.inference:
             sht_conf = SHTConf.load(Host)
 
             if sht_conf is None:
@@ -215,24 +233,25 @@ if __name__ == '__main__':
             while True:
                 time.sleep(1.0)
 
+        # TODO: warn if inference UDS is not present?
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
-
-        print("particulates_sampler: started run", file=sys.stderr)
-        sys.stderr.flush()
 
         # signal handler...
         SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         sampler.start()
 
+        if client:
+            client.connect()
+
         for opc_sample in sampler.samples():
             if opc_sample is None:
                 continue
 
-            # data interpretation...
-            if exegete_collection.has_members():
+            # climate...
+            if exegete_collection.has_members() or opc_conf.inference:
                 internal_sht_sample = opc_sample.values.get('sht')
 
                 try:
@@ -243,9 +262,22 @@ if __name__ == '__main__':
                     print("particulates_sampler: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
 
+            # exegesis...
+            if exegete_collection.has_members():
                 text = Text.construct_from_jdict(opc_sample.values)
                 opc_sample.exegeses = exegete_collection.interpretation(text, internal_sht_sample, external_sht_sample)
 
+            # inference...
+            if opc_conf.inference:
+                combined = {"particulates": opc_sample.as_json(), "climate": external_sht_sample.as_json()}
+
+                client.request(JSONify.dumps(combined))
+                response = client.wait_for_response()
+
+                jdict = json.loads(response, object_hook=OrderedDict)
+                opc_sample = Sample.construct_from_jdict(jdict)
+
+            # report...
             if cmd.verbose:
                 now = LocalizedDatetime.now().utc()
                 print("%s: particulates: %s" % (now.as_time(), opc_sample.rec.as_time()), file=sys.stderr)
@@ -270,5 +302,8 @@ if __name__ == '__main__':
 
         if sampler:
             sampler.stop()
+
+        if client:
+            client.disconnect()
 
         I2C.close()
