@@ -233,7 +233,6 @@ if __name__ == '__main__':
             while True:
                 time.sleep(1.0)
 
-        # TODO: warn if inference UDS is not present?
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -261,6 +260,7 @@ if __name__ == '__main__':
                     external_sht_sample = None
                     print("particulates_sampler: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
+                    exit(1)
 
             # exegesis...
             if exegete_collection.has_members():
@@ -276,6 +276,8 @@ if __name__ == '__main__':
 
                 if response is None:
                     print("particulates_sampler: inference rejected for: %s" % combined, file=sys.stderr)
+                    sys.stdout.flush()
+                    continue
 
                 else:
                     jdict = json.loads(response, object_hook=OrderedDict)
