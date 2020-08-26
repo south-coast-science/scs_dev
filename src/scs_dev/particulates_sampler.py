@@ -78,6 +78,7 @@ https://en.wikipedia.org/wiki/ISO_8601
 """
 
 import json
+import logging
 import sys
 import time
 
@@ -139,6 +140,10 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
+        # logger...
+        logger = logging.getLogger(__name__)
+        logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+
         # Schedule...
         schedule = Schedule.load(Host)
 
@@ -177,7 +182,7 @@ if __name__ == '__main__':
 
         # inference client...
         if opc_conf.inference:
-            client = UDSClient(opc_conf.inference)
+            client = UDSClient(opc_conf.inference, logger)
 
             if cmd.verbose:
                 print("particulates_sampler: %s" % client, file=sys.stderr)
