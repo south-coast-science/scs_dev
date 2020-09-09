@@ -59,6 +59,8 @@ class GasesSampler(Sampler):
             self.__scd30.start_periodic_measurement(ambient_pressure_kpa=actual_press)
             time.sleep(scd30_conf.sample_interval)
 
+            self.__scd30.sample()
+
 
     def sample(self):
         try:
