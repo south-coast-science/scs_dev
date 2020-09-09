@@ -55,7 +55,7 @@ FILES
 ~/SCS/conf/afe_baseline.json
 ~/SCS/conf/afe_calib.json
 ~/SCS/conf/interface_conf.json
-~/SCS/conf/ndir_conf.json
+~/SCS/conf/scd30_conf.json
 ~/SCS/conf/pt1000_calib.json
 ~/SCS/conf/sht_conf.json
 ~/SCS/conf/schedule.json
@@ -74,7 +74,7 @@ scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
 scs_mfr/interface_conf
-scs_mfr/ndir_conf
+scs_mfr/scd30_conf
 scs_mfr/pt1000_calib
 scs_mfr/schedule
 scs_mfr/sht_conf
