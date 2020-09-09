@@ -43,6 +43,8 @@ fields for:
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
 controlled by an independent scheduling process via a Unix semaphore.
 
+Support for the Alphasense NDIR was withdrawn on 9 Sep 2020.
+
 SYNOPSIS
 gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
@@ -110,6 +112,9 @@ try:
 except ImportError:
     from scs_core.gas.ndir.ndir_conf import NDIRConf
 
+
+# TODO: replace NDIR with SCD30
+# TODO: consider change to ext_sht()
 
 # --------------------------------------------------------------------------------------------------------------------
 

@@ -13,6 +13,8 @@ from scs_core.sample.gases_sample import GasesSample
 from scs_core.sampler.sampler import Sampler
 
 
+# TODO: replace NDIR with SCD30
+
 # --------------------------------------------------------------------------------------------------------------------
 
 class GasesSampler(Sampler):
