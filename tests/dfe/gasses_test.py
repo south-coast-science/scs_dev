@@ -80,6 +80,7 @@ try:
 
         jstr = JSONify.dumps(datum)
         print(jstr)
+        print("=")
 
 finally:
     if interface:
