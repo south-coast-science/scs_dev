@@ -57,6 +57,7 @@ FILES
 ~/SCS/conf/interface_conf.json
 ~/SCS/conf/scd30_conf.json
 ~/SCS/conf/pt1000_calib.json
+~/SCS/conf/scd30_conf.json
 ~/SCS/conf/sht_conf.json
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
