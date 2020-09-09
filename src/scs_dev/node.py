@@ -5,10 +5,12 @@ Created on 11 Apr 2017
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+source repo: scs_analysis
+
 DESCRIPTION
 The node utility is used to extract a node or nodes from within a JSON document. Data is presented as a sequence of
-documents on stdin, and the extracted node(s) are passed to stdout. The extracted node may be a leaf node or an internal
-node.
+documents on stdin, and the extracted node(s) are passed to stdout. Alternatively to stdin, a single JSON document
+can be read from a file.The extracted node may be a leaf node or an internal node.
 
 By default, only the specified nodes are passed to the output. In the --exclude mode, all nodes are passed to stdout,
 with the exception of the specified nodes. In the default mode, if no node path is specified, the whole input document
@@ -22,7 +24,7 @@ Alternatively, if the node is an array or other iterable type, then it may be ou
 separated by newline characters) according to the -s flag.
 
 SYNOPSIS
-node.py { [-x] [-a] | -s } [-v] [SUB_PATH_1 ... SUB_PATH_N]
+node.py [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] [SUB_PATH_1 .. SUB_PATH_N]
 
 EXAMPLES
 csv_reader.py climate.csv | node.py -x val.bar
@@ -71,6 +73,22 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
+        # resources...
+
+        if cmd.filename:
+            try:
+                with open(cmd.filename, 'r') as file:
+                    source = [file.read()]
+
+            except FileNotFoundError:
+                print("node: file not found: %s" % cmd.filename, file=sys.stderr)
+                exit(1)
+
+        else:
+            source = sys.stdin
+
+
+        # ------------------------------------------------------------------------------------------------------------
         # run...
 
         if cmd.array:
@@ -79,8 +97,8 @@ if __name__ == '__main__':
         node = None
         first = True
 
-        for line in sys.stdin:
-            jstr = line.strip()
+        for document in source:
+            jstr = document.strip()
             datum = PathDict.construct_from_jstr(jstr)
 
             if datum is None:
@@ -135,7 +153,7 @@ if __name__ == '__main__':
                         print(", %s" % JSONify.dumps(target), end='')
 
                 else:
-                    print(JSONify.dumps(target))
+                    print(JSONify.dumps(target, indent=cmd.indent))
 
             sys.stdout.flush()
 

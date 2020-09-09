@@ -20,8 +20,8 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ [-x] [-a] | -s }] [-v] [SUB_PATH_1 .. SUB_PATH_N]",
-                                              version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] "
+                                                    "[SUB_PATH_1 .. SUB_PATH_N]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--exclude", "-x", action="store_true", dest="exclude", default=False,
@@ -32,6 +32,12 @@ class CmdNode(object):
 
         self.__parser.add_option("--sequence", "-s", action="store_true", dest="sequence", default=False,
                                  help="output the contents of the input array node(s) as a sequence")
+
+        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="filename",
+                                 help="read from FILE instead of stdin")
+
+        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+                                 help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
@@ -77,6 +83,16 @@ class CmdNode(object):
 
 
     @property
+    def filename(self):
+        return self.__opts.filename
+
+
+    @property
+    def indent(self):
+        return self.__opts.indent
+
+
+    @property
     def verbose(self):
         return self.__opts.verbose
 
@@ -93,5 +109,5 @@ class CmdNode(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdNode:{exclude:%s, array:%s, sequence:%s, verbose:%s, sub_paths:%s}" %  \
-               (self.exclude, self.array, self.sequence, self.verbose, self.sub_paths)
+        return "CmdNode:{exclude:%s, array:%s, sequence:%s, filename:%s, indent:%s, verbose:%s, sub_paths:%s}" %  \
+               (self.exclude, self.array, self.sequence, self.filename, self.indent, self.verbose, self.sub_paths)
