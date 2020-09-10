@@ -43,9 +43,13 @@ class ClimateSampler(Sampler):
 
     def sample(self):
         sht_sample = self.__sht.sample()
-        barometer_sample = None if self.__barometer is None else self.__barometer.sample(self.__altitude)
 
         # TODO: get the altitude from GPS if necessary
+
+        if self.__barometer:
+            barometer_sample = self.__barometer.sample(altitude=self.__altitude, include_temp=False)
+        else:
+            barometer_sample = None
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
