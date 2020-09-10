@@ -43,6 +43,8 @@ fields for:
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
 controlled by an independent scheduling process via a Unix semaphore.
 
+Support for the Alphasense NDIR was withdrawn on 9 Sep 2020.
+
 SYNOPSIS
 gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
 
@@ -53,8 +55,9 @@ FILES
 ~/SCS/conf/afe_baseline.json
 ~/SCS/conf/afe_calib.json
 ~/SCS/conf/interface_conf.json
-~/SCS/conf/ndir_conf.json
+~/SCS/conf/scd30_conf.json
 ~/SCS/conf/pt1000_calib.json
+~/SCS/conf/scd30_conf.json
 ~/SCS/conf/sht_conf.json
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
@@ -72,7 +75,7 @@ scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
 scs_mfr/interface_conf
-scs_mfr/ndir_conf
+scs_mfr/scd30_conf
 scs_mfr/pt1000_calib
 scs_mfr/schedule
 scs_mfr/sht_conf
@@ -98,18 +101,19 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
+from scs_dfe.climate.mpl115a2 import MPL115A2
+from scs_dfe.climate.mpl115a2_conf import MPL115A2Conf
 from scs_dfe.climate.sht_conf import SHTConf
+
+from scs_dfe.gas.scd30.scd30_conf import SCD30Conf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-try:
-    from scs_ndir.gas.ndir.ndir_conf import NDIRConf
-except ImportError:
-    from scs_core.gas.ndir.ndir_conf import NDIRConf
 
+# TODO: consider change to ext_sht()
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -159,12 +163,13 @@ if __name__ == '__main__':
         if cmd.verbose and interface:
             print("gases_sampler: %s" % interface, file=sys.stderr)
 
-        # NDIR...
-        ndir_conf = NDIRConf.load(Host)
-        ndir_monitor = None if ndir_conf is None else ndir_conf.ndir_monitor(interface, Host)
+        # MPL115A2...
+        mpl115a2_conf = MPL115A2Conf.load(Host)
+        mpl115a2 = None if mpl115a2_conf is None else MPL115A2(None)
 
-        if cmd.verbose and ndir_conf:
-            print("gases_sampler: %s" % ndir_conf, file=sys.stderr)
+        # NDIR...
+        scd30_conf = SCD30Conf.load(Host)
+        scd30 = None if scd30_conf is None else scd30_conf.scd30()
 
         # SHT...
         sht_conf = SHTConf.load(Host)
@@ -183,7 +188,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = GasesSampler(runner, tag, ndir_monitor, sht, gas_sensors)
+        sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, gas_sensors)
 
         if cmd.verbose:
             print("gases_sampler: %s" % sampler, file=sys.stderr)
@@ -207,18 +212,10 @@ if __name__ == '__main__':
 
         interface.power_gases(True)
 
-        if ndir_monitor:
-            interface.power_ndir(True)
-            time.sleep(ndir_monitor.boot_time())
-
-        if cmd.verbose and ndir_conf:
-            print("gases_sampler: %s" % ndir_monitor.firmware(), file=sys.stderr)
-            sys.stderr.flush()
+        sampler.init(scd30_conf)
 
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
-
-        sampler.start()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -245,8 +242,5 @@ if __name__ == '__main__':
 
         if interface:
             interface.power_gases(False)
-
-        if sampler:
-            sampler.stop()          # this powers down the NDIR
 
         I2C.close()
