@@ -36,14 +36,14 @@ try:
     interface_conf = InterfaceConf.load(Host)
 
     # OPCConf...
-    conf = OPCConf('N2', 5, False, None, None, None, [])
+    conf = OPCConf('N2', 5, True, False, None, None, None, [])
 
     # OPCMonitor...
     monitor = conf.opc_monitor(interface_conf.interface(), Host)
 
     runner = TimedRunner(10)
 
-    sampler = ParticulatesSampler(runner, tag, monitor)
+    sampler = ParticulatesSampler(runner, tag, conf.restart_on_zeroes, monitor)
     print(sampler)
     print("-")
 

@@ -218,7 +218,7 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore)
 
         # sampler...
-        sampler = ParticulatesSampler(runner, tag, opc_monitor)
+        sampler = ParticulatesSampler(runner, tag, opc_conf.restart_on_zeroes, opc_monitor)
 
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
