@@ -22,13 +22,14 @@ class ParticulatesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, opc_monitor):
+    def __init__(self, runner, tag, discard_zeroes, opc_monitor):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
         self.__tag = tag                                    # string
+        self.__discard_zeroes = discard_zeroes              # bool
         self.__opc_monitor = opc_monitor                    # OPCMonitor
 
 
@@ -56,16 +57,14 @@ class ParticulatesSampler(Sampler):
     def sample(self):
         datum = self.__opc_monitor.sample()
 
-        if datum is None or datum.is_zero():
+        if datum is None or (self.__discard_zeroes and datum.is_zero()):
             return None
 
         return datum.as_sample(self.__tag)
 
 
-
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "ParticulatesSampler:{runner:%s, tag:%s, opc_monitor:%s}" % \
-               (self.runner, self.__tag, self.__opc_monitor)
+        return "ParticulatesSampler:{runner:%s, tag:%s, discard_zeroes:%s, opc_monitor:%s}" % \
+               (self.runner, self.__tag, self.__discard_zeroes, self.__opc_monitor)
