@@ -179,16 +179,16 @@ if __name__ == '__main__':
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
 
         # gas_sensors...
-        gas_sensors = interface.gas_sensors(Host)
+        a4_sensors = interface.gas_sensors(Host)
 
-        if cmd.verbose and gas_sensors:
-            print("gases_sampler: %s" % gas_sensors, file=sys.stderr)
+        if cmd.verbose and a4_sensors:
+            print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, gas_sensors)
+        sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, a4_sensors)
 
         if cmd.verbose:
             print("gases_sampler: %s" % sampler, file=sys.stderr)
