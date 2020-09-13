@@ -13,13 +13,13 @@ from their container by a period ('.') character, and array members are separate
 
 All the leaf nodes of the first JSON document are included in the CSV. If subsequent JSON documents in the input stream
 contain fields that were not in this first document, these extra fields are ignored. If subsequent JSON documents
-do not contain a field in the header, then this field is given the null value.
+do not contain a field that is in the header, then this field is given the null value.
 
 SYNOPSIS
-csv_writer.py [-c] [-a] [-e] [-v] [FILENAME]
+csv_writer.py [{ -a | -x }] [-e] [-v] [FILENAME]
 
 EXAMPLES
-./socket_receiver.py | ./csv_writer.py temp.csv -e
+socket_receiver.py | csv_writer.py temp.csv -e
 
 DOCUMENT EXAMPLE - INPUT
 {"tag": "scs-ap1-6", "rec": "2018-04-04T14:50:27.641+00:00", "val": {"hmd": 59.6, "tmp": 23.8}}
@@ -29,15 +29,13 @@ tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
 
 SEE ALSO
-scs_dev/csv_logger
-scs_dev/csv_reader
+scs_analysis/csv_logger
+scs_analysis/csv_reader
 """
 
 import sys
 
 from scs_core.csv.csv_writer import CSVWriter
-
-from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_csv_writer import CmdCSVWriter
 
@@ -48,57 +46,61 @@ if __name__ == '__main__':
 
     writer = None
 
+    document_count = 0
+    processed_count = 0
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
     cmd = CmdCSVWriter()
 
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
     if cmd.verbose:
         print("csv_writer: %s" % cmd, file=sys.stderr)
+        sys.stderr.flush()
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        writer = CSVWriter(cmd.filename, cmd.append)
+        writer = CSVWriter(filename=cmd.filename, append=cmd.append, exclude_header=cmd.exclude_header)
 
         if cmd.verbose:
             print("csv_writer: %s" % writer, file=sys.stderr)
-            sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
-        # signal handler...
-        SignalledExit.construct("csv_writer", cmd.verbose)
-
         for line in sys.stdin:
             jstr = line.strip()
 
-            if jstr is None:
-                break
+            document_count += 1
 
-            writer.write(jstr)
+            if not writer.write(jstr):
+                continue
 
             # echo...
             if cmd.echo:
                 print(jstr)
                 sys.stdout.flush()
 
+            processed_count += 1
+
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except ConnectionError as ex:
-        print("csv_writer: %s" % ex, file=sys.stderr)
-
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    except KeyboardInterrupt:
+        if cmd.verbose:
+            print("csv_writer: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if cmd and cmd.verbose:
-            print("csv_writer: finishing", file=sys.stderr)
-
-        if writer:
+        if writer is not None:
             writer.close()
+
+        if cmd.verbose:
+            print("csv_writer: documents: %d processed: %d" % (document_count, processed_count), file=sys.stderr)

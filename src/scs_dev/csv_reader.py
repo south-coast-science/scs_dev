@@ -20,14 +20,15 @@ selected, output is in the form of a JSON array - the output opens with a '[' ch
 the ',' character, and the output is terminated by a ']' character.
 
 SYNOPSIS
-csv_reader.py [-a] [-v] [FILENAME]
+csv_reader.py [-s] [-n] [-l LIMIT] [-a] [-v] [FILENAME_1 .. FILENAME_N]
 
 EXAMPLES
-csv_reader.py temp.csv
+csv_reader.py -v scs-ph1-10-status-2019-07-*.csv
 
 DOCUMENT EXAMPLE - INPUT
 tag,rec,val.hmd,val.tmp
 scs-ap1-6,2018-04-04T14:50:38.394+00:00,59.7,23.8
+scs-ap1-6,2018-04-04T14:55:38.394+00:00,59.8,23.9
 
 DOCUMENT EXAMPLE - OUTPUT
 Sequence mode:
@@ -39,14 +40,13 @@ Array mode:
 {"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:38.394+00:00", "val": {"hmd": 59.8, "tmp": 23.9}}]
 
 SEE ALSO
-scs_dev/csv_writer
+scs_analysis/csv_writer
 """
 
 import sys
 
-from scs_core.csv.csv_reader import CSVReader
-
-from scs_core.sys.signalled_exit import SignalledExit
+from scs_core.csv.csv_reader import CSVReader, CSVReaderException
+from scs_core.csv.csv_dict import CSVHeaderError
 
 from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 
@@ -54,6 +54,9 @@ from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    file_count = 0
+    total_rows = 0
 
     reader = None
 
@@ -65,67 +68,85 @@ if __name__ == '__main__':
     if cmd.verbose:
         print("csv_reader: %s" % cmd, file=sys.stderr)
 
+    if cmd.array:
+        print('[', end='')
+
     try:
-        # ------------------------------------------------------------------------------------------------------------
-        # resources...
+        for filename in cmd.filenames:
 
-        try:
-            reader = CSVReader.construct_for_file(cmd.filename)
+            file_count += 1
+            rows = 0
 
-        except FileNotFoundError:
-            print("csv_reader: file not found: %s" % cmd.filename, file=sys.stderr)
-            exit(1)
+            # --------------------------------------------------------------------------------------------------------
+            # resources...
 
-        except KeyError as ex:
-            print("csv_reader: empty header cell in: %s." % ex, file=sys.stderr)
-            exit(1)
+            try:
+                reader = CSVReader.construct_for_file(filename, numeric_cast=cmd.cast, empty_string_as_null=cmd.nullify)
 
-        if cmd.verbose:
-            print("csv_reader: %s" % reader, file=sys.stderr)
-            sys.stderr.flush()
+            except FileNotFoundError:
+                print("csv_reader: file not found: %s" % filename, file=sys.stderr)
+                exit(1)
+
+            except KeyError as ex:
+                print("csv_reader: empty header cell in: %s." % ex, file=sys.stderr)
+                exit(1)
+
+            if cmd.verbose:
+                print("csv_reader: %s" % reader, file=sys.stderr)
+                sys.stderr.flush()
 
 
-        # ------------------------------------------------------------------------------------------------------------
-        # run...
+            # --------------------------------------------------------------------------------------------------------
+            # run...
 
-        # signal handler...
-        SignalledExit.construct("csv_reader", cmd.verbose)
+            try:
+                for datum in reader.rows():
+                    if cmd.limit is not None and rows >= cmd.limit:
+                        break
 
-        if cmd.array:
-            print('[', end='')
+                    if cmd.array:
+                        if rows == 0:
+                            print(datum, end='')
 
-        first = True
+                        else:
+                            print(", %s" % datum, end='')
 
-        for datum in reader.rows():
-            if cmd.array:
-                if first:
-                    print(datum, end='')
-                    first = False
+                    else:
+                        print(datum)
 
-                else:
-                    print(",%s" % datum, end='')
+                    sys.stdout.flush()
 
-            else:
-                print(datum)
+                    rows += 1
 
-            sys.stdout.flush()
+            except CSVHeaderError as ex:
+                print("csv_reader: clashing column names: '%s' and '%s'" % (ex.left, ex.right), file=sys.stderr)
+                exit(1)
+
+            except CSVReaderException as ex:
+                if cmd.verbose:
+                    print("csv_reader: ending file on row %d: %s" % (rows, ex), file=sys.stderr)
+                    continue
+
+            finally:
+                if reader is not None:
+                    reader.close()
+
+            if cmd.verbose:
+                print("csv_reader: rows: %d" % rows, file=sys.stderr)
+
+            total_rows += rows
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except ConnectionError as ex:
-        print("csv_reader: %s" % ex, file=sys.stderr)
-
-    except (KeyboardInterrupt, SystemExit):
-        pass
+    except KeyboardInterrupt:
+        if cmd and cmd.verbose:
+            print("csv_reader: KeyboardInterrupt", file=sys.stderr)
 
     finally:
-        if cmd and cmd.verbose:
-            print("csv_reader: finishing", file=sys.stderr)
+        if cmd.array:
+            print(']')
 
-        if reader:
-            if cmd and cmd.array:
-                print(']')
-
-            reader.close()
+        if cmd and cmd.verbose and file_count > 1:
+            print("csv_reader: files: %d total rows: %d" % (file_count, total_rows), file=sys.stderr)
