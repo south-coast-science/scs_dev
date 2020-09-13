@@ -40,13 +40,13 @@ Array mode:
 {"tag": "scs-ap1-6", "rec": "2018-04-04T14:55:38.394+00:00", "val": {"hmd": 59.8, "tmp": 23.9}}]
 
 SEE ALSO
-scs_analysis/csv_writer
+scs_dev/csv_writer
 """
 
 import sys
 
-from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 from scs_core.csv.csv_dict import CSVHeaderError
+from scs_core.csv.csv_reader import CSVReader, CSVReaderException
 
 from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 

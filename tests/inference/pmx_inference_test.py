@@ -31,8 +31,6 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
-from scs_core.particulate.opc_datum import OPCDatum
-
 from scs_core.sample.sample import Sample
 
 from scs_host.sys.host import Host
