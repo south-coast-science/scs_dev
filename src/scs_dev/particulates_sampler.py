@@ -279,13 +279,14 @@ if __name__ == '__main__':
                 client.request(JSONify.dumps(combined))
                 response = client.wait_for_response()
 
-                if response is None:
-                    print("particulates_sampler: inference rejected for: %s" % combined, file=sys.stderr)
+                jdict = json.loads(response, object_hook=OrderedDict)
+
+                if jdict is None:
+                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(combined), file=sys.stderr)
                     sys.stdout.flush()
                     continue
 
                 else:
-                    jdict = json.loads(response, object_hook=OrderedDict)
                     opc_sample = Sample.construct_from_jdict(jdict)
 
             # report...
