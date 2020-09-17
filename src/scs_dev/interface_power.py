@@ -129,19 +129,19 @@ if __name__ == '__main__':
         if cmd.verbose and gps:
             print("interface_power: %s" % gps, file=sys.stderr)
 
-        # OPC...
-        opc_conf = OPCConf.load(Host)
-        opc = None if opc_conf is None else opc_conf.opc(interface, Host)
-
-        if cmd.verbose and opc:
-            print("interface_power: %s" % opc, file=sys.stderr)
-
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir = None if ndir_conf is None else ndir_conf.ndir(interface, Host)
 
         if cmd.verbose and ndir:
             print("interface_power: %s" % ndir, file=sys.stderr)
+
+        # OPC...
+        opc_conf = OPCConf.load(Host)
+        opc = None if opc_conf is None else opc_conf.opc(interface, Host)
+
+        if cmd.verbose and opc:
+            print("interface_power: %s" % opc, file=sys.stderr)
 
         # LED...
         led = interface.led()
@@ -158,6 +158,7 @@ if __name__ == '__main__':
 
         if cmd.all is not None:
             interface.power_gases(cmd.all)
+            interface.power_modem(cmd.all)
             power_gps(cmd.all)
             power_ndir(cmd.all)
             power_opc(cmd.all)
@@ -169,7 +170,7 @@ if __name__ == '__main__':
             power_gps(cmd.gps)
 
         if cmd.modem is not None:
-            pass                            # 2G modem only - we don't care
+            interface.power_modem(cmd.modem)
 
         if cmd.ndir is not None:
             power_ndir(cmd.ndir)
