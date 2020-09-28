@@ -69,8 +69,6 @@ from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
@@ -167,7 +165,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # CSVLogQueueBuilder...
-            manager = BylineManager(HTTPClient(True), api_auth)
+            manager = BylineManager(api_auth)
             queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
