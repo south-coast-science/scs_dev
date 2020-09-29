@@ -51,8 +51,6 @@ import random
 import sys
 import time
 
-from scs_core.client.http_client import HTTPClient
-
 from scs_core.comms.mqtt_conf import MQTTConf
 
 from scs_core.data.json import JSONify
@@ -183,7 +181,7 @@ if __name__ == '__main__':
         pub_comms = DomainSocket(cmd.uds_pub) if cmd.uds_pub else StdIO()
 
         # manager...
-        manager = TopicManager(HTTPClient(True), api_auth.api_key)
+        manager = TopicManager(api_auth.api_key)
 
         # check topics...
         unavailable = False
