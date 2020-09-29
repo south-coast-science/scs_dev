@@ -92,7 +92,7 @@ try:
         # response...
         if jdict is None:
             print("pmx_inference_test: inference rejected: %s" % JSONify.dumps(combined), file=sys.stderr)
-            sys.stdout.flush()
+            sys.stderr.flush()
             break
 
         opc_sample = Sample.construct_from_jdict(jdict)
