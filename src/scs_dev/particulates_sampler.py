@@ -232,7 +232,7 @@ if __name__ == '__main__':
             opc_monitor.operations_off()            # display may need the SPI power to remain on
 
             if cmd.verbose:
-                print("particulates_sampler: no schedule - stalled", file=sys.stderr)
+                print("particulates_sampler: no schedule - halted.", file=sys.stderr)
                 sys.stderr.flush()
 
             while True:

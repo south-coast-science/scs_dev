@@ -85,7 +85,7 @@ from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 
 from scs_host.sys.host import Host
 
-# mount -o remount,ro /srv/SCS_logging
+# echo 1 > /sys/block/mmcblk0/force_ro
 
 # TODO: Jun 19 08:36:59 arm sh[13353]: csv_logger (climate): [Errno 30] Read-only file system:
 #  '/srv/removable_data_storage/2020-06/scs-bgx-431-climate-2020-06-19-08-36-59.csv'
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             try:
                 file_path = writer.write(jstr)
 
-            except OSError as ex:
+            except Exception as ex:
                 print("csv_logger (%s): %s: %s" % (cmd.topic, ex.__class__.__name__, ex), file=sys.stderr)
                 sys.stderr.flush()
 
