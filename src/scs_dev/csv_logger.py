@@ -69,7 +69,8 @@ from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.client.http_client import HTTPClient
+from scs_core.client.network import Network
+from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
 
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger import CSVLogger
@@ -79,6 +80,7 @@ from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
+
 from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 
 from scs_host.sys.host import Host
@@ -109,6 +111,17 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("csv_logger (%s): %s" % (cmd.topic, cmd), file=sys.stderr)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # check...
+
+        if not Network.is_available():
+            if cmd.verbose:
+                print("csv_logger: (%s): waiting for network." % cmd.topic, file=sys.stderr)
+                sys.stderr.flush()
+
+            Network.wait()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -167,7 +180,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # CSVLogQueueBuilder...
-            manager = BylineManager(HTTPClient(True), api_auth)
+            manager = BylineManager(api_auth)
             queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
@@ -230,6 +243,9 @@ if __name__ == '__main__':
 
     except (ConnectionError, RuntimeError) as ex:
         print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
+
+    except ResourceUnavailableException as ex:
+        print("csv_logger (%s): %s" % (cmd.topic, repr(ex)), file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):
         pass
