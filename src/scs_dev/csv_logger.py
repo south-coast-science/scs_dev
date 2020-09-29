@@ -114,15 +114,18 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
+        # check...
 
-        # network...
         if not Network.is_available():
             if cmd.verbose:
-                print("csv_logger: (%s): waiting for network", file=sys.stderr)
+                print("csv_logger: (%s): waiting for network." % cmd.topic, file=sys.stderr)
                 sys.stderr.flush()
 
             Network.wait()
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
