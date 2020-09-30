@@ -53,10 +53,12 @@ except ImportError:
     from scs_core.gas.ndir.ndir_conf import NDIRConf
 
 
+# TODO: remove references to NDIRConf?
 # --------------------------------------------------------------------------------------------------------------------
 
 def power_gps(enable):
     if gps is None:
+        interface.power_gps(enable)             # use interface if no GPS
         return
 
     if enable:
@@ -67,6 +69,7 @@ def power_gps(enable):
 
 def power_ndir(enable):
     if ndir is None:
+        interface.power_ndir(enable)             # use interface if no NDIR
         return
 
     if enable:
@@ -77,6 +80,7 @@ def power_ndir(enable):
 
 def power_opc(enable):
     if opc is None:
+        interface.power_opc(enable)             # use interface if no OPC
         return
 
     if enable:

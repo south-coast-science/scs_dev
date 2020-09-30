@@ -200,7 +200,7 @@ if __name__ == '__main__':
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
             if cmd.verbose:
-                print("gases_sampler: no schedule - stalled", file=sys.stderr)
+                print("gases_sampler: no schedule - halted.", file=sys.stderr)
                 sys.stderr.flush()
 
             while True:
