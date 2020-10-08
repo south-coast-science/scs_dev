@@ -6,7 +6,7 @@ Created on 23 Mar 2017
 
 import optparse
 
-from scs_core.data.format import Format
+from scs_core.data.str import Str
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ class CmdMQTTClient(object):
     def __str__(self, *args, **kwargs):
         return "CmdMQTTClient:{subscriptions:%s, channel:%s, channel_uds:%s, uds_pub:%s, echo:%s, " \
                "led:%s, verbose:%s}" % \
-               (Format.collection(self.subscriptions), self.channel, self.channel_uds, self.uds_pub, self.echo,
+               (Str.collection(self.subscriptions), self.channel, self.channel_uds, self.uds_pub, self.echo,
                 self.led_uds, self.verbose)
 
 
