@@ -31,7 +31,7 @@ xx
 #### SEE ALSO
 [scs_dev/xx](xx)  
 
-[scs_dev/xx](../../scs_dev/wiki/xx)  
+[scs_mfr/xx](../../scs_mfr/wiki/xx)  
 
 #### RESOURCES
 [Data formats](https://github.com/south-coast-science/scs_dev/wiki/3:-Data-formats)  
