@@ -83,8 +83,6 @@ from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 from scs_host.sys.host import Host
 
 
-# TODO: deal with the case where device starts without network (CSV writes possible, but not reads)
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
