@@ -69,9 +69,6 @@ from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
-from scs_core.client.network import Network
-from scs_core.client.resource_unavailable_exception import ResourceUnavailableException
-
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
@@ -85,10 +82,8 @@ from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 
 from scs_host.sys.host import Host
 
-# echo 1 > /sys/block/mmcblk0/force_ro
 
-# TODO: Jun 19 08:36:59 arm sh[13353]: csv_logger (climate): [Errno 30] Read-only file system:
-#  '/srv/removable_data_storage/2020-06/scs-bgx-431-climate-2020-06-19-08-36-59.csv'
+# TODO: deal with the case where device starts without network (CSV writes possible, but not reads)
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -114,17 +109,6 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # check...
-
-        if not Network.is_available():
-            if cmd.verbose:
-                print("csv_logger: (%s): waiting for network." % cmd.topic, file=sys.stderr)
-                sys.stderr.flush()
-
-            Network.wait()
-
-
-        # ------------------------------------------------------------------------------------------------------------
         # resources...
 
         # SystemID...
@@ -143,7 +127,7 @@ if __name__ == '__main__':
 
         # writer...
         write_log = conf.csv_log(cmd.topic, tag=system_id.message_tag())
-        writer = CSVLogger(Host, write_log, conf.delete_oldest, conf.write_interval)
+        writer = CSVLogger.construct(Host, write_log, conf.delete_oldest, conf.write_interval)
 
         if cmd.verbose:
             print("csv_logger (%s): %s" % (cmd.topic, writer), file=sys.stderr)
@@ -242,9 +226,6 @@ if __name__ == '__main__':
 
     except (ConnectionError, RuntimeError) as ex:
         print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
-
-    except ResourceUnavailableException as ex:
-        print("csv_logger (%s): %s" % (cmd.topic, repr(ex)), file=sys.stderr)
 
     except (KeyboardInterrupt, SystemExit):
         pass
