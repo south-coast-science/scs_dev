@@ -23,7 +23,7 @@ class CmdCSVLogger(object):
                                  help="absolute topic path (default is find from AWS project)")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
-                                 help="echo stdin to stdout")
+                                 help="echo stdin to stdout (mediated by storage and byline)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
