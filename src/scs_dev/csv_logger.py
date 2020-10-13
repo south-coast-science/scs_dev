@@ -181,7 +181,8 @@ if __name__ == '__main__':
         SignalledExit.construct("csv_logger (%s)" % cmd.topic, cmd.verbose)
 
         # start reader...
-        reader.start()
+        if cmd.echo:
+            reader.start()
 
         for line in sys.stdin:
             # write...
