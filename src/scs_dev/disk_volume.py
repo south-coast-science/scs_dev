@@ -7,7 +7,11 @@ Created on 15 Oct 2020
 
 DESCRIPTION
 The disk_volume utility is used to determine whether a volume is mounted and, if so, the free and used space on
-the volume. The volume is identified by its mount point.
+the volume. Space is given in blocks. The volume is identified by its mount point.
+
+If the "is-available" field in the report is false, this indicates that an OS error occurred when
+an attempt was made to access this part of the filesystem. This error can occur if a removable medium failed or
+was disconnected without being unmounted.
 
 The disk_volume utility is normally included in the commands accepted by the control_receiver utility.
 
@@ -18,8 +22,8 @@ EXAMPLES
 ./disk_volume.py /srv/SCS_logging
 
 DOCUMENT EXAMPLE
-{"filesystem": "/dev/mmcblk0p1", "size": 15384184, "used": 319296, "available": 14892092, "use-percent": 3.0,
-"mounted-on": "/srv/SCS_logging"}
+{"filesystem": "/dev/mmcblk0p1", "size": 15384184, "used": 319296, "available": 14892092,
+"mounted-on": "/srv/SCS_logging", "is-available": false}
 
 SEE ALSO
 scs_dev/disk_usage

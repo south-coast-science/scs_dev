@@ -6,8 +6,8 @@ Created on 20 May 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The disk_usage utility is used to determine free and used space on the specified volume. The volume is identified by
-any filesystem path within the volume.
+The disk_usage utility is used to determine free and used space on the specified volume. Space is given in bytes.
+The volume is identified by any filesystem path within the volume.
 
 The disk_usage utility is normally included in the commands accepted by the control_receiver utility.
 
