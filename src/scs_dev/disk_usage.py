@@ -19,6 +19,9 @@ EXAMPLES
 
 DOCUMENT EXAMPLE
 {"volume": "/srv/removable_data_storage", "free": 2375217152, "used": 4958257152, "total": 7710990336}
+
+SEE ALSO
+scs_dev/disk_volume
 """
 
 import sys

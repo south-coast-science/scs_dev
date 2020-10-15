@@ -20,6 +20,9 @@ EXAMPLES
 DOCUMENT EXAMPLE
 {"filesystem": "/dev/mmcblk0p1", "size": 15384184, "used": 319296, "available": 14892092, "use-percent": 3.0,
 "mounted-on": "/srv/SCS_logging"}
+
+SEE ALSO
+scs_dev/disk_usage
 """
 
 import sys
