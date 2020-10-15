@@ -53,7 +53,6 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print("disk_volume: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -67,4 +66,4 @@ if __name__ == '__main__':
     # end...
 
     if cmd.verbose and volume:
-        print("percent used: %s" % volume.percent_used(), file=sys.stderr)
+        print("disk_volume: percent used: %s" % volume.percent_used(), file=sys.stderr)
