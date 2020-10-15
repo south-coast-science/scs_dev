@@ -19,7 +19,7 @@ SYNOPSIS
 disk_volume.py [-v] MOUNTED_ON
 
 EXAMPLES
-./disk_volume.py /srv/SCS_logging
+./disk_volume.py -v /srv/SCS_logging
 
 DOCUMENT EXAMPLE
 {"filesystem": "/dev/mmcblk0p1", "size": 15384184, "used": 319296, "free": 14892092,
@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
-        exit(1)
+        exit(2)
 
     if cmd.verbose:
         print("disk_volume: %s" % cmd, file=sys.stderr)
@@ -60,5 +60,11 @@ if __name__ == '__main__':
     # run...
 
     volume = Host.disk_volume(cmd.mounted_on)
-
     print(JSONify.dumps(volume))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    if cmd.verbose and volume:
+        print("percent used: %s" % volume.percent_used(), file=sys.stderr)

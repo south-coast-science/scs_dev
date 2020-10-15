@@ -15,7 +15,7 @@ SYNOPSIS
 disk_usage.py [-v] PATH
 
 EXAMPLES
-./disk_usage.py /srv/removable_data_storage
+./disk_usage.py -v /srv/removable_data_storage
 
 DOCUMENT EXAMPLE
 {"volume": "/srv/removable_data_storage", "free": 2375217152, "used": 4958257152, "total": 7710990336}
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
     if not cmd.is_valid():
         cmd.print_help(sys.stderr)
-        exit(1)
+        exit(2)
 
     if cmd.verbose:
         print("disk_usage: %s" % cmd, file=sys.stderr)
@@ -55,5 +55,11 @@ if __name__ == '__main__':
     # run...
 
     usage = Host.disk_usage(cmd.path)
-
     print(JSONify.dumps(usage))
+
+
+    # ----------------------------------------------------------------------------------------------------------------
+    # end...
+
+    if cmd.verbose and usage:
+        print("percent used: %s" % usage.percent_used(), file=sys.stderr)
