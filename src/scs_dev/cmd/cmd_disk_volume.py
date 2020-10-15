@@ -9,14 +9,14 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdDiskUsage(object):
+class CmdDiskVolume(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] PATH", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] MOUNTED_ON", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
@@ -28,7 +28,7 @@ class CmdDiskUsage(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.path is None:
+        if self.mounted_on is None:
             return False
 
         return True
@@ -37,7 +37,7 @@ class CmdDiskUsage(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def path(self):
+    def mounted_on(self):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
@@ -53,4 +53,4 @@ class CmdDiskUsage(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDiskUsage:{path:%s, verbose:%s}" % (self.path, self.verbose)
+        return "CmdDiskVolume:{mounted_on:%s, verbose:%s}" % (self.mounted_on, self.verbose)
