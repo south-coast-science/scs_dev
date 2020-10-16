@@ -16,9 +16,12 @@ class CmdDiskUsage(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] PATH", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] { -c | PATH }", version="%prog 1.0")
 
         # optional...
+        self.__parser.add_option("--csv", "-c", action="store_true", dest="csv", default=False,
+                                 help="use PATH specified by csv_logger_conf")
+
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -28,13 +31,18 @@ class CmdDiskUsage(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.path is None:
+        if bool(self.csv) == bool(self.path):
             return False
 
         return True
 
 
     # ----------------------------------------------------------------------------------------------------------------
+
+    @property
+    def csv(self):
+        return self.__opts.csv
+
 
     @property
     def path(self):
@@ -53,4 +61,4 @@ class CmdDiskUsage(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDiskUsage:{path:%s, verbose:%s}" % (self.path, self.verbose)
+        return "CmdDiskUsage:{csv:%s, path:%s, verbose:%s}" % (self.csv, self.path, self.verbose)
