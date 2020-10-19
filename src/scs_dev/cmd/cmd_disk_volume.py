@@ -1,5 +1,5 @@
 """
-Created on 20 May 2018
+Created on 15 Oct 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
@@ -9,19 +9,16 @@ import optparse
 
 # --------------------------------------------------------------------------------------------------------------------
 
-class CmdDiskUsage(object):
+class CmdDiskVolume(object):
     """unix command line handler"""
 
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] { -c | PATH }", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] MOUNTED_ON", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--csv", "-c", action="store_true", dest="csv", default=False,
-                                 help="use PATH specified by csv_logger_conf")
-
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
@@ -31,7 +28,7 @@ class CmdDiskUsage(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if bool(self.csv) == bool(self.path):
+        if self.mounted_on is None:
             return False
 
         return True
@@ -40,12 +37,7 @@ class CmdDiskUsage(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def csv(self):
-        return self.__opts.csv
-
-
-    @property
-    def path(self):
+    def mounted_on(self):
         return self.__args[0] if len(self.__args) > 0 else None
 
 
@@ -61,4 +53,4 @@ class CmdDiskUsage(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdDiskUsage:{csv:%s, path:%s, verbose:%s}" % (self.csv, self.path, self.verbose)
+        return "CmdDiskVolume:{mounted_on:%s, verbose:%s}" % (self.mounted_on, self.verbose)
