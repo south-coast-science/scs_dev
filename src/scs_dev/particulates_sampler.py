@@ -156,7 +156,7 @@ if __name__ == '__main__':
             print("particulates_sampler: %s" % system_id, file=sys.stderr)
 
         # OPCConf...
-        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
+        opc_conf = OPCConf.load(Host, name=cmd.name)
 
         if opc_conf is None:
             print("particulates_sampler: OPCConf not available.", file=sys.stderr)

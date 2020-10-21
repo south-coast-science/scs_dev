@@ -9,7 +9,7 @@ DESCRIPTION
 The opc_power utility is used to ...
 
 SYNOPSIS
-opc_cleaner.py [-f FILE]
+opc_cleaner.py [-n NAME]
 
 EXAMPLES
 ./opc_cleaner.py
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         # resources...
 
         # OPCConf...
-        opc_conf = OPCConf.load_from_file(cmd.file) if cmd.file else OPCConf.load(Host)
+        opc_conf = OPCConf.load(Host, name=cmd.name)
 
         if opc_conf is None:
             print("opc_cleaner: OPCConf not available.", file=sys.stderr)
