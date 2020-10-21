@@ -16,11 +16,11 @@ class CmdOPCCleaner(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-f FILE] [-p] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-p] [-v]", version="%prog 1.0")
 
         # optional...
-        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="file",
-                                 help="override default conf file location")
+        self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
+                                 help="the name of the OPC configuration")
 
         self.__parser.add_option("--power", "-p", action="store_true", dest="power", default=False,
                                  help="force OPC power on and off")
@@ -34,8 +34,8 @@ class CmdOPCCleaner(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     @property
-    def file(self):
-        return self.__opts.file
+    def name(self):
+        return self.__opts.name
 
 
     @property
@@ -51,4 +51,4 @@ class CmdOPCCleaner(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "CmdOPCCleaner:{file:%s, power:%s, verbose:%s}" % (self.file, self.power, self.verbose)
+        return "CmdOPCCleaner:{name:%s, power:%s, verbose:%s}" % (self.name, self.power, self.verbose)

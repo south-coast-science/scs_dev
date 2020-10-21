@@ -68,7 +68,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    default_uds_path = os.path.join(Host.home_dir(), 'SCS/pipes/lambda-model-pmx-s1.uds')
+    default_uds_path = os.path.join(Host.scs_path(), 'pipes/lambda-model-pmx-s1.uds')
 
     label = None
     client = None

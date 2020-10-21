@@ -47,7 +47,7 @@ opc = OPCDatum('N3', None, 0.0, 0.0, 0.0, 4.9,
                [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                0.0, 0.0, 0.0, 0.0, sfr=4.9, sht=int_sht)
 
-uds_path = 'SCS/pipes/lambda-model-pmx-s1.uds'
+uds_path = 'pipes/lambda-model-pmx-s1.uds'
 
 document_count = 0
 processed_count = 0
@@ -62,7 +62,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 # inference client...
-client = UDSClient(os.path.join(Host.home_dir(), uds_path), logger)
+client = UDSClient(os.path.join(Host.scs_path(), uds_path), logger)
 print("pmx_inference_test: %s" % client, file=sys.stderr)
 
 
