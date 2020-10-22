@@ -9,7 +9,7 @@ DESCRIPTION
 The opc_power utility is used to ...
 
 SYNOPSIS
-opc_cleaner.py [-n NAME]
+opc_cleaner.py [-n NAME] [-p] [-v]
 
 EXAMPLES
 ./opc_cleaner.py

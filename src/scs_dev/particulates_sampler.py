@@ -38,7 +38,7 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-particulates_sampler.py [-f FILE] [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+particulates_sampler.py [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [-v]
 
 EXAMPLES
 ./particulates_sampler.py -v -f /home/pi/SCS/conf/opc_conf_cs1.json
@@ -79,6 +79,7 @@ https://en.wikipedia.org/wiki/ISO_8601
 
 import json
 import logging
+import os
 import sys
 import time
 
@@ -182,6 +183,10 @@ if __name__ == '__main__':
 
         # inference client...
         if opc_conf.inference:
+            if not os.path.exists(opc_conf.inference):
+                print("particulates_sampler: warning: %s required, but not present" % opc_conf.inference,
+                      file=sys.stderr)
+
             client = UDSClient(opc_conf.inference, logger)
 
             if cmd.verbose:
