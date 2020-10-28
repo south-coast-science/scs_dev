@@ -16,8 +16,8 @@ class CmdParticulatesInference(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog -p PARTICULATES_PATH -c CLIMATE_PATH [-l LABEL_PATH] "
-                                                    "[-u UDS] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog -p PARTICULATES_PATH -c CLIMATE_PATH [-u UDS] [-v]",
+                                              version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--particulates", "-p", type="string", nargs=1, action="store", dest="particulates",
@@ -27,9 +27,6 @@ class CmdParticulatesInference(object):
                                  help="path to climate node")
 
         # optional...
-        self.__parser.add_option("--label", "-l", type="string", nargs=1, action="store", dest="label",
-                                 help="path to reference node")
-
         self.__parser.add_option("--uds", "-u", type="string", nargs=1, action="store", dest="uds",
                                  help="UDS for inference server (default is ~/SCS/pipes/lambda-model-pmx-s1.uds)")
 
@@ -61,11 +58,6 @@ class CmdParticulatesInference(object):
 
 
     @property
-    def label(self):
-        return self.__opts.label
-
-
-    @property
     def uds(self):
         return self.__opts.uds
 
@@ -82,5 +74,5 @@ class CmdParticulatesInference(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdParticulatesInference:{particulates:%s, climate:%s, label:%s, uds:%s, verbose:%s}" % \
-                    (self.particulates, self.climate, self.label, self.uds, self.verbose)
+        return "CmdParticulatesInference:{particulates:%s, climate:%s, uds:%s, verbose:%s}" % \
+                    (self.particulates, self.climate, self.uds, self.verbose)
