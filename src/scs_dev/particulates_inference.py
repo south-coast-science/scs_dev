@@ -100,8 +100,15 @@ if __name__ == '__main__':
         # inference client...
         uds_path = default_uds_path if cmd.uds is None else cmd.uds
 
+        if not os.path.exists(uds_path):
+            print("particulates_inference: WARNING: %s required, but not present" % uds_path, file=sys.stderr)
+
         client = UDSClient(uds_path, logger)
-        print("pmx_inference_test: %s" % client, file=sys.stderr)
+
+        if cmd.verbose:
+            print("particulates_inference: %s" % client, file=sys.stderr)
+
+        sys.stderr.flush()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -155,12 +162,12 @@ if __name__ == '__main__':
 
             opc_sample = Sample.construct_from_jdict(jdict)
 
-            jdict = opc_sample.as_json()
+            target = opc_sample.as_json()
 
             if cmd.label:
-                jdict[cmd.label] = label
+                target[cmd.label] = label
 
-            print(JSONify.dumps(jdict))
+            print(JSONify.dumps(target))
             sys.stdout.flush()
 
             processed_count += 1
