@@ -45,8 +45,8 @@ scs_dev/csv_writer
 
 import sys
 
-from scs_core.csv.csv_dict import CSVHeaderError
 from scs_core.csv.csv_reader import CSVReader, CSVReaderException
+from scs_core.csv.csv_dict import CSVHeaderError
 
 from scs_dev.cmd.cmd_csv_reader import CmdCSVReader
 
@@ -89,6 +89,10 @@ if __name__ == '__main__':
 
             except KeyError as ex:
                 print("csv_reader: empty header cell in: %s." % ex, file=sys.stderr)
+                exit(1)
+
+            except ValueError as ex:
+                print("csv_reader: duplicate column names in: %s." % ex, file=sys.stderr)
                 exit(1)
 
             if cmd.verbose:
