@@ -184,7 +184,7 @@ if __name__ == '__main__':
         # inference client...
         if opc_conf.inference:
             if not os.path.exists(opc_conf.inference):
-                print("particulates_sampler: warning: %s required, but not present" % opc_conf.inference,
+                print("particulates_sampler: WARNING: %s required, but not present" % opc_conf.inference,
                       file=sys.stderr)
 
             client = UDSClient(opc_conf.inference, logger)
@@ -227,7 +227,9 @@ if __name__ == '__main__':
 
         if cmd.verbose:
             print("particulates_sampler: %s" % sampler, file=sys.stderr)
-            sys.stderr.flush()
+
+        sys.stderr.flush()
+
 
         # ------------------------------------------------------------------------------------------------------------
         # check...
