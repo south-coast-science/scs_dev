@@ -2,8 +2,6 @@
 Created on 2 Aug 2016
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
-
-source repo: scs_analysis
 """
 
 import optparse
@@ -26,7 +24,7 @@ class CmdCSVReader(object):
                                  help="interpret all values as strings")
 
         self.__parser.add_option("--nullify", "-n", action="store_true", dest="nullify", default=False,
-                                 help="convert empty strings to nulls")
+                                 help="convert empty or \"NULL\" strings to nulls")
 
         self.__parser.add_option("--limit", "-l", type="int", nargs=1, action="store", dest="limit",
                                  help="output a maximum of LIMIT rows")
