@@ -97,6 +97,8 @@ except ImportError:
 
 from scs_core.exegesis.particulate.text import Text
 
+from scs_core.model.particulates.s1.pmx_request import PMxRequest
+
 from scs_core.sample.sample import Sample
 
 from scs_core.sync.schedule import Schedule
@@ -281,9 +283,9 @@ if __name__ == '__main__':
 
             # inference...
             if opc_conf.inference:
-                combined = {"particulates": opc_sample.as_json(), "climate": external_sht_sample.as_json()}
+                combined = PMxRequest(opc_sample, external_sht_sample)
 
-                client.request(JSONify.dumps(combined))
+                client.request(JSONify.dumps(combined.as_json()))
                 response = client.wait_for_response()
 
                 jdict = json.loads(response, object_hook=OrderedDict)

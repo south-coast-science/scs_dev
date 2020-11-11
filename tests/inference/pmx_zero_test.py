@@ -29,6 +29,7 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.data.json import JSONify
 
 from scs_core.climate.sht_datum import SHTDatum
+from scs_core.model.particulates.s1.pmx_request import PMxRequest
 from scs_core.particulate.opc_datum import OPCDatum
 
 from scs_core.sample.sample import Sample
@@ -72,14 +73,14 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 try:
     client.connect()
 
-    particulates = opc.as_sample('tag')
+    sample = opc.as_sample('tag')
     climate = ClimateSample('tag', None, ext_sht, None)
     label = 1.0
 
-    combined = {"particulates": particulates.as_json(), "climate": climate.as_json()}
+    combined = PMxRequest(sample, climate)
 
     # inference...
-    client.request(JSONify.dumps(combined))
+    client.request(JSONify.dumps(combined.as_json()))
     response = client.wait_for_response()
 
     jdict = json.loads(response, object_hook=OrderedDict)
