@@ -69,7 +69,7 @@ try:
     print(JSONify.dumps(sample))
     print("-")
 
-    request = GasRequest(sample, t_slope, rh_slope, sensor_calibs, calib_age)
+    request = GasRequest(sample, t_slope, rh_slope, calib_age)
     print(request)
     print("-")
 
