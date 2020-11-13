@@ -5,6 +5,10 @@ Created on 12 Sep 2020
 
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
+example:
+csv_reader.py -l 10 pm2p5-h1-validation.csv | ./pmx_inference_test.py
+
+
 example CSV:
 label,
 praxis.meteo.val.hmd, praxis.meteo.val.tmp, praxis.pmx.val.per, praxis.pmx.val.bin:0, praxis.pmx.val.bin:1,
@@ -30,6 +34,8 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
+
+from scs_core.model.particulates.s1.pmx_request import PMxRequest
 
 from scs_core.sample.sample import Sample
 
@@ -77,21 +83,21 @@ try:
 
         datum.append('praxis.pmx.src', 'N3')
 
-        particulates = Sample.construct_from_jdict(datum.node('praxis.pmx'))
+        sample = Sample.construct_from_jdict(datum.node('praxis.pmx'))
         climate = Sample.construct_from_jdict(datum.node('praxis.meteo'))
         label = Datum.float(datum.node('label'), 1)
 
-        combined = {"particulates": particulates.as_json(), "climate": climate.as_json()}
+        combined = PMxRequest(sample, climate)
 
         # inference...
-        client.request(JSONify.dumps(combined))
+        client.request(JSONify.dumps(combined.as_json()))
         response = client.wait_for_response()
 
         jdict = json.loads(response, object_hook=OrderedDict)
 
         # response...
         if jdict is None:
-            print("pmx_inference_test: inference rejected: %s" % JSONify.dumps(combined), file=sys.stderr)
+            print("pmx_inference_test: inference rejected: %s" % JSONify.dumps(combined.as_json()), file=sys.stderr)
             sys.stderr.flush()
             break
 
