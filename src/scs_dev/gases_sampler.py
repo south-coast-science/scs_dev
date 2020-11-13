@@ -86,10 +86,13 @@ Alphasense Application Note AAN 803-02
 https://en.wikipedia.org/wiki/ISO_8601
 """
 
+import json
 import logging
 import os
 import sys
 import time
+
+from collections import OrderedDict
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
@@ -100,6 +103,8 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.gas.afe_calib import AFECalib
 
 from scs_core.model.gas.s1.gas_request import GasRequest
+
+from scs_core.sample.sample import Sample
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
@@ -127,6 +132,7 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     interface = None
+    client = None
     sampler = None
 
     afe_calib = None
@@ -260,8 +266,8 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
-        # if client:
-        #     client.connect()
+        if client:
+            client.connect()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -285,13 +291,19 @@ if __name__ == '__main__':
                 calib_age = afe_calib.age()
 
                 gas_request = GasRequest(sample, t_slope, rh_slope, calib_age)
-                print("gases_sampler: gas_request: %s" % JSONify.dumps(gas_request.as_json()))
-                print("-")
+                client.request(JSONify.dumps(gas_request.as_json()))
+                response = client.wait_for_response()
 
-                # TODO: do the inference request
+                jdict = json.loads(response, object_hook=OrderedDict)
+
+                if jdict:
+                    sample = Sample.construct_from_jdict(jdict)
+                else:
+                    print("gases_sampler: inference rejected: %s" % JSONify.dumps(gas_request), file=sys.stderr)
+                    sys.stdout.flush()
+                    continue
 
             print(JSONify.dumps(sample))
-            print("=")
             sys.stdout.flush()
 
 
@@ -307,6 +319,9 @@ if __name__ == '__main__':
     finally:
         if cmd and cmd.verbose:
             print("gases_sampler: finishing", file=sys.stderr)
+
+        if client:
+            client.disconnect()
 
         if interface:
             interface.power_gases(False)

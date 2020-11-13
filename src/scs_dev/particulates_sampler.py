@@ -284,7 +284,6 @@ if __name__ == '__main__':
             # inference...
             if opc_conf.inference:
                 pmx_request = PMxRequest(opc_sample, external_sht_sample)
-
                 client.request(JSONify.dumps(pmx_request.as_json()))
                 response = client.wait_for_response()
 
