@@ -260,6 +260,9 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
+        # if client:
+        #     client.connect()
+
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now().utc()
