@@ -116,7 +116,7 @@ try:
 # end...
 
 except KeyboardInterrupt:
-    print()
+    print(file=sys.stderr)
 
 finally:
     client.disconnect()

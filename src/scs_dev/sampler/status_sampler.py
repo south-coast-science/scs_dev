@@ -102,7 +102,7 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
-        return StatusSample(self.__tag, self.__airnow, recorded, timezone, position, temperature,
+        return StatusSample(self.__tag, recorded, self.__airnow, timezone, position, temperature,
                             schedule, uptime, psu_report)
 
 

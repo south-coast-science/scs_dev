@@ -6,6 +6,8 @@ Created on 20 Oct 2016
 
 import time
 
+from scs_core.sample.particulates_sample import ParticulatesSample
+
 from scs_core.sampler.sampler import Sampler
 
 
@@ -60,7 +62,7 @@ class ParticulatesSampler(Sampler):
         if datum is None or (self.__discard_zeroes and datum.is_zero()):
             return None
 
-        return datum.as_sample(self.__tag)
+        return ParticulatesSample(self.__tag, datum)
 
 
     # ----------------------------------------------------------------------------------------------------------------
