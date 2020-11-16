@@ -32,6 +32,7 @@ from scs_core.climate.sht_datum import SHTDatum
 from scs_core.model.particulates.s1.pmx_request import PMxRequest
 from scs_core.particulate.opc_datum import OPCDatum
 
+from scs_core.sample.particulates_sample import ParticulatesSample
 from scs_core.sample.sample import Sample
 from scs_core.sample.climate_sample import ClimateSample
 
@@ -44,9 +45,9 @@ from scs_host.sys.host import Host
 int_sht = SHTDatum(25.0, 29.0)
 ext_sht = SHTDatum(35.0, 21.0)
 
-opc = OPCDatum('N3', None, 0.0, 0.0, 0.0, 4.9,
-               [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-               0.0, 0.0, 0.0, 0.0, sfr=4.9, sht=int_sht)
+opc_datum = OPCDatum('N3', None, 0.0, 0.0, 0.0, 4.9,
+                     [9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                     0.0, 0.0, 0.0, 0.0, sfr=4.9, sht=int_sht)
 
 uds_path = 'pipes/lambda-model-pmx-s1.uds'
 
@@ -73,7 +74,7 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 try:
     client.connect()
 
-    sample = opc.as_sample('tag')
+    sample = ParticulatesSample('tag', opc_datum)
     climate = ClimateSample('tag', None, ext_sht, None)
     label = 1.0
 
@@ -104,7 +105,7 @@ try:
 # end...
 
 except KeyboardInterrupt:
-    print()
+    print(file=sys.stderr)
 
 finally:
     client.disconnect()

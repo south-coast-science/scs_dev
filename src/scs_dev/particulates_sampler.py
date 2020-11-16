@@ -283,20 +283,18 @@ if __name__ == '__main__':
 
             # inference...
             if opc_conf.inference:
-                combined = PMxRequest(opc_sample, external_sht_sample)
-
-                client.request(JSONify.dumps(combined.as_json()))
+                pmx_request = PMxRequest(opc_sample, external_sht_sample)
+                client.request(JSONify.dumps(pmx_request.as_json()))
                 response = client.wait_for_response()
 
                 jdict = json.loads(response, object_hook=OrderedDict)
 
-                if jdict is None:
-                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(combined), file=sys.stderr)
+                if jdict:
+                    opc_sample = Sample.construct_from_jdict(jdict)
+                else:
+                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(pmx_request), file=sys.stderr)
                     sys.stdout.flush()
                     continue
-
-                else:
-                    opc_sample = Sample.construct_from_jdict(jdict)
 
             # report...
             if cmd.verbose:
