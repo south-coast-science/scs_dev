@@ -25,12 +25,10 @@ SEE ALSO
 scs_dev/ps
 """
 
-import subprocess
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
-from scs_core.sys.uptime_datum import UptimeDatum
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -40,11 +38,6 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # run...
 
-    now = LocalizedDatetime.now()
-
-    raw = subprocess.check_output('uptime')
-    report = raw.decode()
-
-    datum = UptimeDatum.construct_from_report(now, report)
+    datum = Host.uptime(now=LocalizedDatetime.now())
 
     print(JSONify.dumps(datum))

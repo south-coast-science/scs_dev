@@ -83,8 +83,6 @@ import os
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_core.comms.uds_client import UDSClient
 
 from scs_core.data.datetime import LocalizedDatetime
@@ -99,7 +97,7 @@ from scs_core.exegesis.particulate.text import Text
 
 from scs_core.model.particulates.s1.pmx_request import PMxRequest
 
-from scs_core.sample.sample import Sample
+from scs_core.sample.particulates_sample import ParticulatesSample
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
@@ -287,10 +285,10 @@ if __name__ == '__main__':
                 client.request(JSONify.dumps(pmx_request.as_json()))
                 response = client.wait_for_response()
 
-                jdict = json.loads(response, object_hook=OrderedDict)
+                jdict = json.loads(response)
 
                 if jdict:
-                    opc_sample = Sample.construct_from_jdict(jdict)
+                    opc_sample = ParticulatesSample.construct_from_jdict(jdict)
                 else:
                     print("particulates_sampler: inference rejected: %s" % JSONify.dumps(pmx_request), file=sys.stderr)
                     sys.stdout.flush()

@@ -92,8 +92,6 @@ import os
 import sys
 import time
 
-from collections import OrderedDict
-
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 from scs_core.data.linear_regression import LinearRegression
@@ -104,7 +102,7 @@ from scs_core.gas.afe_calib import AFECalib
 
 from scs_core.model.gas.s1.gas_request import GasRequest
 
-from scs_core.sample.sample import Sample
+from scs_core.sample.gases_sample import GasesSample
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
@@ -278,8 +276,8 @@ if __name__ == '__main__':
             # inference...
             if interface_conf.inference:
                 # slope...
-                t_regression.append(sample.rec, sample.values['sht'].temp)
-                rh_regression.append(sample.rec, sample.values['sht'].humid)
+                t_regression.append(sample.rec, sample.sht_datum.temp)
+                rh_regression.append(sample.rec, sample.sht_datum.humid)
 
                 m, _ = t_regression.line()
                 t_slope = 0.0 if m is None else m
@@ -294,10 +292,10 @@ if __name__ == '__main__':
                 client.request(JSONify.dumps(gas_request.as_json()))
                 response = client.wait_for_response()
 
-                jdict = json.loads(response, object_hook=OrderedDict)
+                jdict = json.loads(response)
 
                 if jdict:
-                    sample = Sample.construct_from_jdict(jdict)
+                    sample = GasesSample.construct_from_jdict(jdict)
                 else:
                     print("gases_sampler: inference rejected: %s" % JSONify.dumps(gas_request), file=sys.stderr)
                     sys.stdout.flush()
