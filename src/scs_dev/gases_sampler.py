@@ -86,11 +86,23 @@ Alphasense Application Note AAN 803-02
 https://en.wikipedia.org/wiki/ISO_8601
 """
 
+import json
+import logging
+import os
 import sys
 import time
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
+from scs_core.data.linear_regression import LinearRegression
+
+from scs_core.comms.uds_client import UDSClient
+
+from scs_core.gas.afe_calib import AFECalib
+
+from scs_core.model.gas.s1.gas_request import GasRequest
+
+from scs_core.sample.gases_sample import GasesSample
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
@@ -113,14 +125,17 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: consider change to ext_sht()
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
     interface = None
+    client = None
     sampler = None
+
+    afe_calib = None
+    t_regression = None
+    rh_regression = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -173,7 +188,7 @@ if __name__ == '__main__':
 
         # SHT...
         sht_conf = SHTConf.load(Host)
-        sht = None if sht_conf is None else sht_conf.int_sht()          # TODO: consider change to ext_sht()
+        sht = None if sht_conf is None else sht_conf.ext_sht()
 
         if cmd.verbose and sht_conf:
             print("gases_sampler: %s" % sht_conf, file=sys.stderr)
@@ -183,6 +198,38 @@ if __name__ == '__main__':
 
         if cmd.verbose and a4_sensors:
             print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
+
+        if interface_conf.inference:
+            # logger...
+            logger = logging.getLogger(__name__)
+            logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+
+            # AFECalib...                           # TODO: will need to support DSICalib
+            afe_calib = AFECalib.load(Host)
+
+            if afe_calib is None:
+                print("gases_sampler: AFECalib not available.", file=sys.stderr)
+                exit(1)
+
+            # slope regression...
+            if schedule is None or schedule.item('scs-gases') is None:
+                print("gases_sampler: Schedule not available.", file=sys.stderr)
+                exit(1)
+
+            slope_tally = GasRequest.slope_tally(schedule.item('scs-gases').duration())
+
+            t_regression = LinearRegression(slope_tally, time_relative=True)
+            rh_regression = LinearRegression(slope_tally, time_relative=True)
+
+            # inference client...
+            if not os.path.exists(interface_conf.inference):
+                print("gases_sampler: WARNING: %s required, but not present" % interface_conf.inference,
+                      file=sys.stderr)
+
+            client = UDSClient(interface_conf.inference, logger)
+
+            if cmd.verbose:
+                print("gases_sampler: %s" % client, file=sys.stderr)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -217,11 +264,42 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
+        if client:
+            client.connect()
+
         for sample in sampler.samples():
             if cmd.verbose:
                 now = LocalizedDatetime.now().utc()
                 print("%s:        gases: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
+
+            # inference...
+            if interface_conf.inference:
+                # slope...
+                t_regression.append(sample.rec, sample.sht_datum.temp)
+                rh_regression.append(sample.rec, sample.sht_datum.humid)
+
+                m, _ = t_regression.line()
+                t_slope = 0.0 if m is None else m
+
+                m, _ = rh_regression.line()
+                rh_slope = 0.0 if m is None else m
+
+                # calib...
+                calib_age = afe_calib.age()
+
+                gas_request = GasRequest(sample, t_slope, rh_slope, calib_age)
+                client.request(JSONify.dumps(gas_request.as_json()))
+                response = client.wait_for_response()
+
+                jdict = json.loads(response)
+
+                if jdict:
+                    sample = GasesSample.construct_from_jdict(jdict)
+                else:
+                    print("gases_sampler: inference rejected: %s" % JSONify.dumps(gas_request), file=sys.stderr)
+                    sys.stdout.flush()
+                    continue
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
@@ -239,6 +317,9 @@ if __name__ == '__main__':
     finally:
         if cmd and cmd.verbose:
             print("gases_sampler: finishing", file=sys.stderr)
+
+        if client:
+            client.disconnect()
 
         if interface:
             interface.power_gases(False)

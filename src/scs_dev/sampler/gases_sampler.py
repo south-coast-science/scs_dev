@@ -23,7 +23,7 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, mpl115a2, scd30, sht, a4_sensors):
+    def __init__(self, runner, tag, mpl115a2, scd30, sht, sensor_interface):
         """
         Constructor
         """
@@ -34,7 +34,7 @@ class GasesSampler(Sampler):
         self.__mpl115a2 = mpl115a2                              # MPL115A2
         self.__scd30 = scd30                                    # SCD30
         self.__sht = sht                                        # SHT31
-        self.__a4_sensors = a4_sensors                          # Interface
+        self.__sensor_interface = sensor_interface              # SensorInterface
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -98,7 +98,7 @@ class GasesSampler(Sampler):
             sht_datum = self.__sht.null_datum()
 
         try:
-            electrochem_datum = None if self.__a4_sensors is None else self.__a4_sensors.sample(sht_datum)
+            electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
         except OSError:
             # noinspection PyUnresolvedReferences
             electrochem_datum = self.__a4_sensors.null_datum()
