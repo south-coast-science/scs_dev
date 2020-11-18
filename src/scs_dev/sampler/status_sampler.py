@@ -4,20 +4,12 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import subprocess
-
 from scs_core.data.datetime import LocalizedDatetime
-
 from scs_core.location.timezone_conf import TimezoneConf
-
 from scs_core.sample.status_sample import StatusSample
-
 from scs_core.sampler.sampler import Sampler
-
 from scs_core.sync.schedule import Schedule
-
 from scs_core.sys.system_temp import SystemTemp
-from scs_core.sys.uptime_datum import UptimeDatum
 
 from scs_host.sys.host import Host
 
@@ -90,10 +82,7 @@ class StatusSampler(Sampler):
         schedule = Schedule.load(Host)
 
         # uptime...
-        raw = subprocess.check_output('uptime')
-        report = raw.decode()
-
-        uptime = UptimeDatum.construct_from_report(None, report)
+        uptime = Host.uptime()
 
         # PSUReport...
         psu_report_class = self.__psu_conf.psu_report_class()
@@ -102,7 +91,7 @@ class StatusSampler(Sampler):
         # datum...
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
-        return StatusSample(self.__tag, self.__airnow, recorded, timezone, position, temperature,
+        return StatusSample(self.__tag, recorded, self.__airnow, timezone, position, temperature,
                             schedule, uptime, psu_report)
 
 
