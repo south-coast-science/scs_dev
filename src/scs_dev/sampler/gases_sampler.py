@@ -101,7 +101,7 @@ class GasesSampler(Sampler):
             electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
         except OSError:
             # noinspection PyUnresolvedReferences
-            electrochem_datum = self.__a4_sensors.null_datum()
+            electrochem_datum = self.__sensor_interface.null_datum()
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
