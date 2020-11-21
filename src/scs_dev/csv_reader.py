@@ -81,7 +81,7 @@ if __name__ == '__main__':
             # resources...
 
             try:
-                reader = CSVReader.construct_for_file(filename, numeric_cast=cmd.cast, empty_string_as_null=cmd.nullify)
+                reader = CSVReader.construct_for_file(filename, cast=cmd.cast, empty_string_as_null=cmd.nullify)
 
             except FileNotFoundError:
                 print("csv_reader: file not found: %s" % filename, file=sys.stderr)
