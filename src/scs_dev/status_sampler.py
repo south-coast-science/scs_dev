@@ -188,7 +188,7 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
             print("*** status_sampler.py - sample: %s" % sample, file=sys.stderr)
-            print("*** status_sampler.py - sample: %s" % sample.as_json, file=sys.stderr)
+            print("*** status_sampler.py - sample: %s" % sample.as_json(), file=sys.stderr)
             sys.stderr.flush()
 
             print(JSONify.dumps(sample))
