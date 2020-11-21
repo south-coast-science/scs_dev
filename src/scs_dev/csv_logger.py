@@ -188,9 +188,6 @@ if __name__ == '__main__':
             # write...
             jstr = line.strip()
 
-            print("*** csv_logger.py - jstr: %s" % jstr, file=sys.stderr)
-            sys.stderr.flush()
-
             if jstr is None:
                 break
 

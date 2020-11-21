@@ -130,9 +130,6 @@ if __name__ == '__main__':
         SignalledExit.construct("aws_topic_publisher (%s)" % topic, cmd.verbose)
 
         for line in sys.stdin:
-            print("*** aws_topic_publisher.py - line: %s" % line.strip(), file=sys.stderr)
-            sys.stderr.flush()
-
             try:
                 jdict = json.loads(line, object_hook=OrderedDict)
             except ValueError:
