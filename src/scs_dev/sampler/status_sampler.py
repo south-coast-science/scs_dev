@@ -91,7 +91,7 @@ class StatusSampler(Sampler):
         psu_report = None if psu_report_class is None else psu_report_class.load(self.__psu_conf.report_file)
 
         print("*** StatusSampler.sample - psu_report: %s" % psu_report, file=sys.stderr)
-        print("*** StatusSampler.sample - psu_report: %s" % psu_report.as_json, file=sys.stderr)
+        print("*** StatusSampler.sample - psu_report: %s" % psu_report.as_json(), file=sys.stderr)
 
         # datum...
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
