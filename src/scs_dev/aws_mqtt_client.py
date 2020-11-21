@@ -194,6 +194,8 @@ if __name__ == '__main__':
 
         # process input...
         for message in source.messages():
+            print("*** aws_mqtt_client.py - message: %s" % message, file=sys.stderr)
+
             # receive...
             try:
                 jdict = json.loads(message)
