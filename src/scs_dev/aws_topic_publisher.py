@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
             payload = jdict
 
-            publication = Publication(topic, payload)
+            publication = Publication(topic, payload)       # TODO: problem here?
 
             try:
                 writer.connect(wait_for_availability=True)
