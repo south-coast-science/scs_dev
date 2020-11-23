@@ -167,7 +167,7 @@ if __name__ == '__main__':
 
             # CSVLogReader...
             reporter = CSVLoggerReporter("csv_logger", cmd.topic, cmd.verbose)
-            reader = CSVLogReader(queue_builder, empty_string_as_null=True, reporter=reporter)
+            reader = CSVLogReader(queue_builder, nullify=True, reporter=reporter)
 
             if cmd.verbose:
                 print("csv_logger (%s) %s" % (cmd.topic, reader), file=sys.stderr)
