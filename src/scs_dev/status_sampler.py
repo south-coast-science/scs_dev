@@ -187,7 +187,7 @@ if __name__ == '__main__':
                 print("%s:       status: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
                 sys.stderr.flush()
 
-            print(JSONify.dumps(sample))
+            print(JSONify.dumps(sample.as_json()))
             sys.stdout.flush()
 
 
