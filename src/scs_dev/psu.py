@@ -119,7 +119,11 @@ if __name__ == '__main__':
     except ConnectionError as ex:
         print("psu: %s" % ex, file=sys.stderr)
 
-    except (KeyboardInterrupt, SystemExit):
+    except KeyboardInterrupt:
+        if cmd.interactive:
+            print()
+
+    except SystemExit:
         pass
 
     finally:
