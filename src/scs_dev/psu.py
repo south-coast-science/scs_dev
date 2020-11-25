@@ -41,6 +41,7 @@ from scs_dev.cmd.cmd_psu import CmdPSU
 from scs_dfe.interface.interface_conf import InterfaceConf
 
 from scs_host.comms.stdio import StdIO
+from scs_host.lock.lock_timeout import LockTimeout
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -116,15 +117,12 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
-    except ConnectionError as ex:
+    except (ConnectionError, LockTimeout) as ex:
         print("psu: %s" % ex, file=sys.stderr)
 
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, SystemExit):
         if cmd.interactive:
             print()
-
-    except SystemExit:
-        pass
 
     finally:
         if cmd and cmd.verbose:
