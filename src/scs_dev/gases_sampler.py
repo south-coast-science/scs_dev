@@ -211,6 +211,10 @@ if __name__ == '__main__':
                 print("gases_sampler: AFECalib not available.", file=sys.stderr)
                 exit(1)
 
+            if afe_calib.calibrated_on is None:
+                print("gases_sampler: AFECalib has no calibration date.", file=sys.stderr)
+                exit(1)
+
             # slope regression...
             if schedule is None or schedule.item('scs-gases') is None:
                 print("gases_sampler: Schedule not available.", file=sys.stderr)
