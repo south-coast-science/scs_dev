@@ -86,21 +86,13 @@ Alphasense Application Note AAN 803-02
 https://en.wikipedia.org/wiki/ISO_8601
 """
 
-import json
-import logging
-import os
 import sys
 import time
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
-from scs_core.data.linear_regression import LinearRegression
-
-from scs_core.comms.uds_client import UDSClient
 
 from scs_core.gas.afe_calib import AFECalib
-
-from scs_core.model.gas.s1.gas_request import GasRequest
 
 from scs_core.sample.gases_sample import GasesSample
 
@@ -109,6 +101,9 @@ from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
+
+# from scs_dev.client.gas.s1.gas_inference_client import GasInferenceClient
+from scs_dev.client.gas.s2.gas_inference_client import GasInferenceClient
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
@@ -200,10 +195,6 @@ if __name__ == '__main__':
             print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
 
         if interface_conf.inference:
-            # logger...
-            logger = logging.getLogger(__name__)
-            logging.basicConfig(stream=sys.stderr, level=logging.INFO)
-
             # AFECalib...                           # TODO: will need to support DSICalib
             afe_calib = AFECalib.load(Host)
 
@@ -220,17 +211,9 @@ if __name__ == '__main__':
                 print("gases_sampler: Schedule not available.", file=sys.stderr)
                 exit(1)
 
-            slope_tally = GasRequest.slope_tally(schedule.item('scs-gases').duration())
-
-            t_regression = LinearRegression(slope_tally, time_relative=True)
-            rh_regression = LinearRegression(slope_tally, time_relative=True)
-
             # inference client...
-            if not os.path.exists(interface_conf.inference):
-                print("gases_sampler: WARNING: %s required, but not present" % interface_conf.inference,
-                      file=sys.stderr)
-
-            client = UDSClient(interface_conf.inference, logger)
+            # client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'), afe_calib)
+            client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'))
 
             if cmd.verbose:
                 print("gases_sampler: %s" % client, file=sys.stderr)
@@ -279,29 +262,13 @@ if __name__ == '__main__':
 
             # inference...
             if interface_conf.inference:
-                # slope...
-                t_regression.append(sample.rec, sample.sht_datum.temp)
-                rh_regression.append(sample.rec, sample.sht_datum.humid)
-
-                m, _ = t_regression.line()
-                t_slope = 0.0 if m is None else m
-
-                m, _ = rh_regression.line()
-                rh_slope = 0.0 if m is None else m
-
-                # calib...
-                calib_age = afe_calib.age()
-
-                gas_request = GasRequest(sample, t_slope, rh_slope, calib_age)
-                client.request(JSONify.dumps(gas_request.as_json()))
-                response = client.wait_for_response()
-
-                jdict = json.loads(response)
+                # jdict = client.infer(sample)
+                jdict = client.infer(sample, interface.temp().temp)
 
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)
                 else:
-                    print("gases_sampler: inference rejected: %s" % JSONify.dumps(gas_request), file=sys.stderr)
+                    print("gases_sampler: inference rejected: %s" % JSONify.dumps(sample), file=sys.stderr)
                     sys.stdout.flush()
                     continue
 

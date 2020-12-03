@@ -77,13 +77,8 @@ RESOURCES
 https://en.wikipedia.org/wiki/ISO_8601
 """
 
-import json
-import logging
-import os
 import sys
 import time
-
-from scs_core.comms.uds_client import UDSClient
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
@@ -95,8 +90,6 @@ except ImportError:
 
 from scs_core.exegesis.particulate.text import Text
 
-from scs_core.model.particulates.s1.pmx_request import PMxRequest
-
 from scs_core.sample.particulates_sample import ParticulatesSample
 
 from scs_core.sync.schedule import Schedule
@@ -105,6 +98,7 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
+from scs_dev.client.particulates.s1.pmx_inference_client import PMxInferenceClient
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
@@ -126,8 +120,8 @@ if __name__ == '__main__':
     client = None
     sampler = None
 
-    internal_sht_sample = None
-    external_sht_sample = None
+    int_sht_sample = None
+    ext_sht_sample = None
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -140,10 +134,6 @@ if __name__ == '__main__':
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
-
-        # logger...
-        logger = logging.getLogger(__name__)
-        logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
         # Schedule...
         schedule = Schedule.load(Host)
@@ -183,11 +173,7 @@ if __name__ == '__main__':
 
         # inference client...
         if opc_conf.inference:
-            if not os.path.exists(opc_conf.inference):
-                print("particulates_sampler: WARNING: %s required, but not present" % opc_conf.inference,
-                      file=sys.stderr)
-
-            client = UDSClient(opc_conf.inference, logger)
+            client = PMxInferenceClient.construct(opc_conf.inference)
 
             if cmd.verbose:
                 print("particulates_sampler: %s" % client, file=sys.stderr)
@@ -263,13 +249,13 @@ if __name__ == '__main__':
 
             # climate...
             if exegete_collection.has_members() or opc_conf.inference:
-                internal_sht_sample = opc_sample.values.get('sht')
+                int_sht_sample = opc_sample.values.get('sht')
 
                 try:
-                    external_sht_sample = None if sht is None else sht.sample()
+                    ext_sht_sample = None if sht is None else sht.sample()
 
                 except OSError as ex:
-                    external_sht_sample = None
+                    ext_sht_sample = None
                     print("particulates_sampler: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
                     exit(1)
@@ -277,20 +263,16 @@ if __name__ == '__main__':
             # exegesis...
             if exegete_collection.has_members():
                 text = Text.construct_from_jdict(opc_sample.values)
-                opc_sample.exegeses = exegete_collection.interpretation(text, internal_sht_sample, external_sht_sample)
+                opc_sample.exegeses = exegete_collection.interpretation(text, int_sht_sample, ext_sht_sample)
 
             # inference...
             if opc_conf.inference:
-                pmx_request = PMxRequest(opc_sample, external_sht_sample)
-                client.request(JSONify.dumps(pmx_request.as_json()))
-                response = client.wait_for_response()
-
-                jdict = json.loads(response)
+                jdict = client.infer(opc_sample, ext_sht_sample)
 
                 if jdict:
                     opc_sample = ParticulatesSample.construct_from_jdict(jdict)
                 else:
-                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(pmx_request), file=sys.stderr)
+                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(opc_sample), file=sys.stderr)
                     sys.stdout.flush()
                     continue
 
