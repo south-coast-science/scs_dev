@@ -74,9 +74,9 @@ class StatusSampler(Sampler):
             # noinspection PyUnresolvedReferences
             interface_status = self.__interface.null_datum()
 
-        mcu_temp = Host.mcu_temp()
+        host_status = Host.status()
 
-        temperature = SystemTemp.construct(interface_status, mcu_temp)
+        temperature = SystemTemp.construct(interface_status, host_status)
 
         # schedule...
         schedule = Schedule.load(Host)
