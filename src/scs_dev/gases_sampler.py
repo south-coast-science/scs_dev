@@ -263,7 +263,7 @@ if __name__ == '__main__':
             # inference...
             if interface_conf.inference:
                 # jdict = client.infer(sample)
-                jdict = client.infer(sample, interface.temp().temp)
+                jdict = client.infer(sample, interface.status().temp)
 
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)
