@@ -69,14 +69,14 @@ class StatusSampler(Sampler):
 
         # temperature...
         try:
-            interface_temp = None if self.__interface is None else self.__interface.temp()
+            interface_status = None if self.__interface is None else self.__interface.status()
         except OSError:
             # noinspection PyUnresolvedReferences
-            interface_temp = self.__interface.null_datum()
+            interface_status = self.__interface.null_datum()
 
-        mcu_temp = Host.mcu_temp()
+        host_status = Host.status()
 
-        temperature = SystemTemp.construct(interface_temp, mcu_temp)
+        temperature = SystemTemp.construct(interface_status, host_status)
 
         # schedule...
         schedule = Schedule.load(Host)
