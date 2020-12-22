@@ -102,8 +102,8 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-# from scs_dev.client.gas.s1.gas_inference_client import GasInferenceClient
-from scs_dev.client.gas.s2.gas_inference_client import GasInferenceClient
+from scs_dev.client.gas.s1.gas_inference_client import GasInferenceClient
+# from scs_dev.client.gas.s2.gas_inference_client import GasInferenceClient
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
@@ -119,6 +119,8 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
+
+# TODO: selector required for model interface
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -212,8 +214,8 @@ if __name__ == '__main__':
                 exit(1)
 
             # inference client...
-            # client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'), afe_calib)
-            client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'))
+            client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'), afe_calib)
+            # client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'))
 
             if cmd.verbose:
                 print("gases_sampler: %s" % client, file=sys.stderr)
@@ -262,8 +264,8 @@ if __name__ == '__main__':
 
             # inference...
             if interface_conf.inference:
-                # jdict = client.infer(sample)
-                jdict = client.infer(sample, interface.temp().temp)
+                jdict = client.infer(sample)
+                # jdict = client.infer(sample, interface.status().temp)
 
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)
