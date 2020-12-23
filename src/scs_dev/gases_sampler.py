@@ -102,8 +102,7 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.client.gas.s1.gas_inference_client import GasInferenceClient
-# from scs_dev.client.gas.s2.gas_inference_client import GasInferenceClient
+from scs_core.model.gas.gas_model_conf import GasModelConf
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
@@ -196,7 +195,13 @@ if __name__ == '__main__':
         if cmd.verbose and a4_sensors:
             print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
 
-        if interface_conf.inference:
+        # GasModelConf...
+        inference_conf = GasModelConf.load(Host)
+
+        if cmd.verbose and inference_conf:
+            print("gases_sampler: %s" % inference_conf, file=sys.stderr)
+
+        if inference_conf:
             # AFECalib...                           # TODO: will need to support DSICalib
             afe_calib = AFECalib.load(Host)
 
@@ -214,11 +219,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # inference client...
-            client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'), afe_calib)
-            # client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'))
-
-            if cmd.verbose:
-                print("gases_sampler: %s" % client, file=sys.stderr)
+            client = inference_conf.client(Host, schedule.item('scs-gases'), afe_calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -263,9 +264,8 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
             # inference...
-            if interface_conf.inference:
-                jdict = client.infer(sample)
-                # jdict = client.infer(sample, interface.status().temp)
+            if inference_conf:
+                jdict = client.infer(sample, interface.status().temp)
 
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)

@@ -90,6 +90,8 @@ except ImportError:
 
 from scs_core.exegesis.particulate.text import Text
 
+from scs_core.model.particulates.s1.pmx_inference_client import PMxInferenceClient
+
 from scs_core.sample.particulates_sample import ParticulatesSample
 
 from scs_core.sync.schedule import Schedule
@@ -98,7 +100,6 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.client.particulates.s1.pmx_inference_client import PMxInferenceClient
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
