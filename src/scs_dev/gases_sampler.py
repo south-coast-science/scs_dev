@@ -74,6 +74,7 @@ SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
+scs_mfr/gas_inference_conf
 scs_mfr/interface_conf
 scs_mfr/scd30_conf
 scs_mfr/pt1000_calib
@@ -118,8 +119,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
-# TODO: selector required for model interface
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -198,10 +197,10 @@ if __name__ == '__main__':
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
 
-        if cmd.verbose and inference_conf:
-            print("gases_sampler: %s" % inference_conf, file=sys.stderr)
-
         if inference_conf:
+            if cmd.verbose:
+                print("gases_sampler: %s" % inference_conf, file=sys.stderr)
+
             # AFECalib...                           # TODO: will need to support DSICalib
             afe_calib = AFECalib.load(Host)
 
