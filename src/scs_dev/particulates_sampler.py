@@ -166,7 +166,6 @@ if __name__ == '__main__':
 
         interface = interface_conf.interface()
 
-
         # PMxModelConf...
         inference_conf = PMxModelConf.load(Host)
 
@@ -243,7 +242,7 @@ if __name__ == '__main__':
 
                 except OSError as ex:
                     ext_sht_sample = None
-                    print("particulates_sampler: %s" % ex, file=sys.stderr)
+                    print("particulates_sampler: SHT: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
                     exit(1)
 
