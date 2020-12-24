@@ -66,7 +66,6 @@ scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
 scs_mfr/opc_firmware_conf
 scs_mfr/opc_version
-scs_mfr/pmx_inference_conf
 scs_mfr/schedule
 scs_mfr/system_id
 
@@ -83,6 +82,11 @@ import time
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
+
+try:
+    from scs_exegesis.particulate.exegete_collection import ExegeteCollection
+except ImportError:
+    from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
 
 from scs_core.model.particulates.pmx_model_conf import PMxModelConf
 
@@ -101,7 +105,7 @@ from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import SensorI2C, UtilityI2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -154,8 +158,10 @@ if __name__ == '__main__':
             exit(1)
 
         # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
-        I2C.open(i2c_bus)
+        if opc_conf.uses_spi():
+            UtilityI2C.open()
+        else:
+            SensorI2C.open_for_bus(opc_conf.bus)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -285,4 +291,5 @@ if __name__ == '__main__':
         if client:
             client.disconnect()
 
-        I2C.close()
+        SensorI2C.close()
+        UtilityI2C.close()

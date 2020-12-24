@@ -91,7 +91,7 @@ from scs_dev.sampler.status_sampler import StatusSampler
 from scs_dfe.gps.gps_conf import GPSConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import UtilityI2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -116,7 +116,7 @@ if __name__ == '__main__':
         print("status_sampler: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        UtilityI2C.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -207,4 +207,4 @@ if __name__ == '__main__':
         if sampler:
             sampler.stop()
 
-        I2C.close()
+        UtilityI2C.close()

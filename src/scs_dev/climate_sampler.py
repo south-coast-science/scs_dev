@@ -75,7 +75,7 @@ from scs_dfe.climate.mpl115a2_conf import MPL115A2Conf
 from scs_dfe.climate.mpl115a2 import MPL115A2
 from scs_dfe.climate.sht_conf import SHTConf
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import SensorI2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         print("climate_sampler: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        SensorI2C.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -200,4 +200,4 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("climate_sampler: finishing", file=sys.stderr)
 
-        I2C.close()
+        SensorI2C.close()

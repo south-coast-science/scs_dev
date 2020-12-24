@@ -29,7 +29,7 @@ from scs_dev.cmd.cmd_opc_cleaner import CmdOPCCleaner
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import SensorI2C, UtilityI2C
 from scs_host.sys.host import Host
 
 
@@ -58,8 +58,10 @@ if __name__ == '__main__':
             exit(1)
 
         # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
-        I2C.open(i2c_bus)
+        if opc_conf.uses_spi():
+            UtilityI2C.open()
+        else:
+            SensorI2C.open_for_bus(opc_conf.bus)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -103,4 +105,5 @@ if __name__ == '__main__':
     # end...
 
     finally:
-        I2C.close()
+        SensorI2C.close()
+        UtilityI2C.close()

@@ -49,7 +49,7 @@ from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.led.led_controller import LEDController
 from scs_dfe.led.led_state import LEDState
 
-from scs_host.bus.i2c import I2C
+from scs_host.bus.i2c import UtilityI2C
 from scs_host.sys.host import Host
 
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        UtilityI2C.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -155,4 +155,4 @@ if __name__ == '__main__':
         if controller:
             controller.stop()
 
-        I2C.close()
+        UtilityI2C.close()
