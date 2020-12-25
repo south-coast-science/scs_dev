@@ -21,7 +21,7 @@ from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.gas.scd30.scd30_conf import SCD30Conf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.bus.i2c import SensorI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
@@ -30,7 +30,7 @@ from scs_host.sys.host import Host
 interface = None
 
 try:
-    SensorI2C.open()
+    I2C.Sensors.open()
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
@@ -86,4 +86,4 @@ finally:
     if interface:
         interface.power_gases(False)
 
-    SensorI2C.close()
+    I2C.Sensors.close()

@@ -46,7 +46,7 @@ from scs_dev.cmd.cmd_psu_monitor import CmdPSUMonitor
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -72,7 +72,7 @@ if __name__ == '__main__':
         print("psu_monitor: %s" % cmd, file=sys.stderr)
 
     try:
-        UtilityI2C.open()
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -152,4 +152,4 @@ if __name__ == '__main__':
         if psu_conf:
             Filesystem.rm(psu_conf.report_file)
 
-        UtilityI2C.close()
+        I2C.Utilities.close()

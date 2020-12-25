@@ -15,7 +15,7 @@ from scs_dev.sampler.status_sampler import StatusSampler
 from scs_dfe.gps.gps_conf import GPSConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.bus.i2c import SensorI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 try:
@@ -27,7 +27,7 @@ except ImportError:
 # --------------------------------------------------------------------------------------------------------------------
 
 try:
-    SensorI2C.open()
+    I2C.Sensors.open()
 
     system_id = SystemID.load(Host)
     tag = None if system_id is None else system_id.message_tag()
@@ -59,4 +59,4 @@ try:
     print(jstr)
 
 finally:
-    SensorI2C.close()
+    I2C.Sensors.close()

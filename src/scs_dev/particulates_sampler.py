@@ -105,7 +105,7 @@ from scs_dfe.climate.sht_conf import SHTConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
-from scs_host.bus.i2c import I2C, SensorI2C, UtilityI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -160,12 +160,12 @@ if __name__ == '__main__':
             exit(1)
 
         # I2C...
-        UtilityI2C.open()
+        I2C.Utilities.open()
 
         if opc_conf.uses_spi():
-            SensorI2C.open()
+            I2C.Sensors.open()
         else:
-            I2C.open_for_bus(opc_conf.bus)
+            I2C.Sensors.open_for_bus(opc_conf.bus)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -295,9 +295,5 @@ if __name__ == '__main__':
         if client:
             client.disconnect()
 
-        UtilityI2C.close()
-
-        if opc_conf and opc_conf.uses_spi():
-            SensorI2C.close()
-        else:
-            I2C.close()
+        I2C.Utilities.close()
+        I2C.Sensors.close()

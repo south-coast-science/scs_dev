@@ -52,7 +52,7 @@ try:
 except ImportError:
     from scs_core.psu.psu_conf import PSUConf
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         print("display: %s" % cmd, file=sys.stderr)
 
     try:
-        UtilityI2C.open()
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -166,4 +166,4 @@ if __name__ == '__main__':
         # if interface:
         #     interface.power_opc(False)
 
-        UtilityI2C.close()
+        I2C.Utilities.close()

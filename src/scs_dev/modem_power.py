@@ -27,7 +27,7 @@ from scs_dev.cmd.cmd_power import CmdPower
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.bus.i2c import UtilityI2C
+from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
 
 
@@ -35,7 +35,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    UtilityI2C.open()
+    I2C.Utilities.open()
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -90,4 +90,4 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("modem_power: finishing", file=sys.stderr)
 
-        UtilityI2C.close()
+        I2C.Utilities.close()
