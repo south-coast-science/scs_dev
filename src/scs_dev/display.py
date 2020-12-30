@@ -73,7 +73,7 @@ if __name__ == '__main__':
         print("display: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -166,4 +166,4 @@ if __name__ == '__main__':
         # if interface:
         #     interface.power_opc(False)
 
-        I2C.close()
+        I2C.Utilities.close()

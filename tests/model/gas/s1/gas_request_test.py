@@ -28,7 +28,7 @@ t_slope = 0.0
 rh_slope = 0.1
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    I2C.Sensors.open()
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
@@ -76,4 +76,4 @@ try:
     print(JSONify.dumps(request.as_json()))
 
 finally:
-    I2C.close()
+    I2C.Sensors.close()

@@ -72,7 +72,7 @@ if __name__ == '__main__':
         print("psu_monitor: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -152,4 +152,4 @@ if __name__ == '__main__':
         if psu_conf:
             Filesystem.rm(psu_conf.report_file)
 
-        I2C.close()
+        I2C.Utilities.close()
