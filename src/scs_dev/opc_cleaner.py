@@ -58,8 +58,10 @@ if __name__ == '__main__':
             exit(1)
 
         # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
-        I2C.open(i2c_bus)
+        if opc_conf.uses_spi():
+            I2C.Utilities.open()
+        else:
+            I2C.Sensors.open_for_bus(opc_conf.bus)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -103,4 +105,5 @@ if __name__ == '__main__':
     # end...
 
     finally:
-        I2C.close()
+        I2C.Sensors.close()
+        I2C.Utilities.close()

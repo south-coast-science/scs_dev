@@ -83,7 +83,7 @@ if __name__ == '__main__':
         print("pressure_sampler: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Sensors.open()
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -158,4 +158,4 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("pressure_sampler: finishing", file=sys.stderr)
 
-        I2C.close()
+        I2C.Sensors.close()

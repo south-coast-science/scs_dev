@@ -27,7 +27,7 @@ except ImportError:
 # --------------------------------------------------------------------------------------------------------------------
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    I2C.Sensors.open()
 
     system_id = SystemID.load(Host)
     tag = None if system_id is None else system_id.message_tag()
@@ -59,4 +59,4 @@ try:
     print(jstr)
 
 finally:
-    I2C.close()
+    I2C.Sensors.close()

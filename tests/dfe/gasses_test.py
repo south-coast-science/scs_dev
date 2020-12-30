@@ -30,7 +30,7 @@ from scs_host.sys.host import Host
 interface = None
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    I2C.Sensors.open()
 
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
@@ -86,4 +86,4 @@ finally:
     if interface:
         interface.power_gases(False)
 
-    I2C.close()
+    I2C.Sensors.close()

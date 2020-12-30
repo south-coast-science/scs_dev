@@ -74,6 +74,7 @@ SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
+scs_mfr/gas_inference_conf
 scs_mfr/interface_conf
 scs_mfr/scd30_conf
 scs_mfr/pt1000_calib
@@ -102,8 +103,7 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.client.gas.s1.gas_inference_client import GasInferenceClient
-# from scs_dev.client.gas.s2.gas_inference_client import GasInferenceClient
+from scs_core.model.gas.gas_model_conf import GasModelConf
 
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
@@ -119,8 +119,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
-# TODO: selector required for model interface
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -143,7 +141,8 @@ if __name__ == '__main__':
         print("gases_sampler: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Sensors.open()
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -196,7 +195,13 @@ if __name__ == '__main__':
         if cmd.verbose and a4_sensors:
             print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
 
-        if interface_conf.inference:
+        # GasModelConf...
+        inference_conf = GasModelConf.load(Host)
+
+        if inference_conf:
+            if cmd.verbose:
+                print("gases_sampler: %s" % inference_conf, file=sys.stderr)
+
             # AFECalib...                           # TODO: will need to support DSICalib
             afe_calib = AFECalib.load(Host)
 
@@ -214,11 +219,7 @@ if __name__ == '__main__':
                 exit(1)
 
             # inference client...
-            client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'), afe_calib)
-            # client = GasInferenceClient.construct(interface_conf.inference, schedule.item('scs-gases'))
-
-            if cmd.verbose:
-                print("gases_sampler: %s" % client, file=sys.stderr)
+            client = inference_conf.client(Host, schedule.item('scs-gases'), afe_calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -263,9 +264,8 @@ if __name__ == '__main__':
                 sys.stderr.flush()
 
             # inference...
-            if interface_conf.inference:
-                jdict = client.infer(sample)
-                # jdict = client.infer(sample, interface.status().temp)
+            if inference_conf:
+                jdict = client.infer(sample, interface.status().temp)
 
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)
@@ -297,4 +297,5 @@ if __name__ == '__main__':
         if interface:
             interface.power_gases(False)
 
-        I2C.close()
+        I2C.Sensors.close()
+        I2C.Utilities.close()

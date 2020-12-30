@@ -88,7 +88,7 @@ try:
 except ImportError:
     from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
 
-from scs_core.exegesis.particulate.text import Text
+from scs_core.model.particulates.pmx_model_conf import PMxModelConf
 
 from scs_core.sample.particulates_sample import ParticulatesSample
 
@@ -98,7 +98,6 @@ from scs_core.sync.timed_runner import TimedRunner
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
-from scs_dev.client.particulates.s1.pmx_inference_client import PMxInferenceClient
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.particulates_sampler import ParticulatesSampler
 
@@ -114,6 +113,8 @@ from scs_host.sys.host import Host
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    opc_conf = None
 
     opc = None
     sht = None
@@ -159,8 +160,12 @@ if __name__ == '__main__':
             exit(1)
 
         # I2C...
-        i2c_bus = Host.I2C_SENSORS if opc_conf.uses_spi() else opc_conf.bus
-        I2C.open(i2c_bus)
+        I2C.Utilities.open()
+
+        if opc_conf.uses_spi():
+            I2C.Sensors.open()
+        else:
+            I2C.Sensors.open_for_bus(opc_conf.bus)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -171,31 +176,22 @@ if __name__ == '__main__':
 
         interface = interface_conf.interface()
 
-        # inference client...
-        if opc_conf.inference:
-            client = PMxInferenceClient.construct(opc_conf.inference)
+        # PMxModelConf...
+        inference_conf = PMxModelConf.load(Host)
 
+        if inference_conf:
             if cmd.verbose:
-                print("particulates_sampler: %s" % client, file=sys.stderr)
+                print("particulates_sampler: %s" % inference_conf, file=sys.stderr)
 
-        # exegetes...
-        exegete_collection = ExegeteCollection.construct(opc_conf.exegete_names)
+            client = inference_conf.client(Host)
 
-        for name in opc_conf.exegete_names:
-            if not exegete_collection.has_member(name):
-                print("particulates_sampler: WARNING: exegete '%s' is not available - ignoring." % name,
-                      file=sys.stderr)
-                sys.stderr.flush()
-
-        # SHTConf...
-        if exegete_collection.uses_external_sht() or opc_conf.inference:
+            # SHT...
             sht_conf = SHTConf.load(Host)
 
             if sht_conf is None:
                 print("particulates_sampler: SHTConf not available.", file=sys.stderr)
                 exit(1)
 
-            # SHT...
             sht = sht_conf.ext_sht()
 
             if cmd.verbose:
@@ -247,8 +243,8 @@ if __name__ == '__main__':
             if opc_sample is None:
                 continue
 
-            # climate...
-            if exegete_collection.has_members() or opc_conf.inference:
+            if inference_conf:
+                # climate...
                 int_sht_sample = opc_sample.values.get('sht')
 
                 try:
@@ -256,17 +252,11 @@ if __name__ == '__main__':
 
                 except OSError as ex:
                     ext_sht_sample = None
-                    print("particulates_sampler: %s" % ex, file=sys.stderr)
+                    print("particulates_sampler: SHT: %s" % ex, file=sys.stderr)
                     sys.stderr.flush()
                     exit(1)
 
-            # exegesis...
-            if exegete_collection.has_members():
-                text = Text.construct_from_jdict(opc_sample.values)
-                opc_sample.exegeses = exegete_collection.interpretation(text, int_sht_sample, ext_sht_sample)
-
-            # inference...
-            if opc_conf.inference:
+                # inference...
                 jdict = client.infer(opc_sample, ext_sht_sample)
 
                 if jdict:
@@ -305,4 +295,5 @@ if __name__ == '__main__':
         if client:
             client.disconnect()
 
-        I2C.close()
+        I2C.Utilities.close()
+        I2C.Sensors.close()
