@@ -26,7 +26,8 @@ EXAMPLES
 ./psu_monitor.py -i 60 -x
 
 DOCUMENT EXAMPLE - OUTPUT
-{"rst": "00", "standby": false, "chg": "0000", "batt-flt": false, "host-3v3": 3.3, "pwr-in": 15.6, "prot-batt": 0.0}
+{"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
+"batt": {"chg": 99, "tte": null, "ttf": null}, "prot-batt": 4.1}
 
 SEE ALSO
 scs_dev/status_sampler
