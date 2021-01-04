@@ -35,7 +35,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    I2C.open(Host.I2C_SENSORS)
+    I2C.Utilities.open()
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -90,4 +90,4 @@ if __name__ == '__main__':
         if cmd and cmd.verbose:
             print("modem_power: finishing", file=sys.stderr)
 
-        I2C.close()
+        I2C.Utilities.close()

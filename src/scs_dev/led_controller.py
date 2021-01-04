@@ -71,7 +71,7 @@ if __name__ == '__main__':
         sys.stderr.flush()
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -155,4 +155,4 @@ if __name__ == '__main__':
         if controller:
             controller.stop()
 
-        I2C.close()
+        I2C.Utilities.close()

@@ -26,7 +26,7 @@ from scs_host.sys.host import Host
 sampler = None
 
 try:
-    I2C.open(Host.I2C_SENSORS)
+    I2C.Sensors.open()
 
     # SystemID...
     system_id = SystemID.load(Host)
@@ -36,7 +36,7 @@ try:
     interface_conf = InterfaceConf.load(Host)
 
     # OPCConf...
-    conf = OPCConf('N2', 5, True, False, None, None, None, [])
+    conf = OPCConf('N2', 5, True, False, None, None)
 
     # OPCMonitor...
     monitor = conf.opc_monitor(interface_conf.interface(), Host)
@@ -62,4 +62,4 @@ finally:
     if sampler:
         sampler.stop()
 
-        I2C.close()
+        I2C.Sensors.close()

@@ -45,13 +45,15 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-ap1-6", "rec": "2019-03-09T12:05:10Z", "val":
-{"airnow": {"site": "850MM123456789", "pocs": {"88102": 2, "88103": 3}},
+{"tag": "scs-opc-1", "rec": "2021-01-02T13:22:50Z", "val": {
 "tz": {"name": "Europe/London", "utc-offset": "+00:00"},
-"sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"gps": {"pos": [50.81931339, -0.12830144], "elv": -28.3, "qual": 0},
+"sch": {"scs-climate": {"interval": 10.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
 "scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
-"tmp": {"brd": 30.2, "hst": 47.8},
-"up": {"period": "00-18:30:00", "users": 2, "load": {"av1": 0.0, "av5": 0.0, "av15": 0.0}}}}
+"tmp": {"brd": 33.2},
+"up": {"period": "00-01:07:00", "users": 2, "load": {"av1": 0.06, "av5": 0.15, "av15": 0.26}},
+"psu": {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
+"batt": {"chg": 99, "tte": null, "ttf": null}, "prot-batt": 4.1}}}
 
 SEE ALSO
 scs_dev/interface_power
@@ -116,7 +118,8 @@ if __name__ == '__main__':
         print("status_sampler: %s" % cmd, file=sys.stderr)
 
     try:
-        I2C.open(Host.I2C_SENSORS)
+        I2C.Sensors.open()
+        I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -207,4 +210,5 @@ if __name__ == '__main__':
         if sampler:
             sampler.stop()
 
-        I2C.close()
+        I2C.Sensors.close()
+        I2C.Utilities.close()
