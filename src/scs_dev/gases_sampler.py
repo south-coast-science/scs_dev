@@ -248,7 +248,6 @@ if __name__ == '__main__':
         # run...
 
         interface.power_gases(True)
-
         sampler.init(scd30_conf)
 
         # signal handler...
