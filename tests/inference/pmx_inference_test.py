@@ -68,7 +68,7 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 # run...
 
 try:
-    client.connect()
+    client.open()
 
     start_time = time.time()
 
@@ -119,7 +119,7 @@ except KeyboardInterrupt:
     print(file=sys.stderr)
 
 finally:
-    client.disconnect()
+    client.close()
 
     print("pmx_inference_test: documents: %d processed: %d" % (document_count, processed_count),
           file=sys.stderr)

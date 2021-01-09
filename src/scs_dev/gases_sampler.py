@@ -254,7 +254,7 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         if client:
-            client.connect()
+            client.wait_for_server()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -291,7 +291,7 @@ if __name__ == '__main__':
             print("gases_sampler: finishing", file=sys.stderr)
 
         if client:
-            client.disconnect()
+            client.close()
 
         if interface:
             interface.power_gases(False)

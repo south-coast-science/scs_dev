@@ -72,7 +72,7 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 # run...
 
 try:
-    client.connect()
+    client.open()
 
     sample = ParticulatesSample('tag', opc_datum)
     climate = ClimateSample('tag', None, ext_sht, None)
@@ -108,4 +108,4 @@ except KeyboardInterrupt:
     print(file=sys.stderr)
 
 finally:
-    client.disconnect()
+    client.close()

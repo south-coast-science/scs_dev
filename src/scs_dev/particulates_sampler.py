@@ -237,7 +237,7 @@ if __name__ == '__main__':
         sampler.start()
 
         if client:
-            client.connect()
+            client.wait_for_server()
 
         for opc_sample in sampler.samples():
             if opc_sample is None:
@@ -293,7 +293,7 @@ if __name__ == '__main__':
             sampler.stop()
 
         if client:
-            client.disconnect()
+            client.close()
 
         I2C.Utilities.close()
         I2C.Sensors.close()
