@@ -184,6 +184,7 @@ if __name__ == '__main__':
                 print("particulates_sampler: %s" % inference_conf, file=sys.stderr)
 
             client = inference_conf.client(Host)
+            client.wait_for_server()
 
             # SHT...
             sht_conf = SHTConf.load(Host)
@@ -235,9 +236,6 @@ if __name__ == '__main__':
         SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         sampler.start()
-
-        if client:
-            client.wait_for_server()
 
         for opc_sample in sampler.samples():
             if opc_sample is None:
