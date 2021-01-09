@@ -35,7 +35,7 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
-from scs_core.model.particulates.s1.pmx_request import PMxRequest
+from scs_core.model.pmx.s1.pmx_request import PMxRequest
 
 from scs_core.sample.sample import Sample
 

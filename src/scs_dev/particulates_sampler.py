@@ -88,7 +88,7 @@ try:
 except ImportError:
     from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
 
-from scs_core.model.particulates.pmx_model_conf import PMxModelConf
+from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
 from scs_core.sample.particulates_sample import ParticulatesSample
 
