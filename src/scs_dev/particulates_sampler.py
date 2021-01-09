@@ -183,6 +183,7 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print("particulates_sampler: %s" % inference_conf, file=sys.stderr)
 
+            # inference client...
             client = inference_conf.client(Host)
             client.wait_for_server()
 
