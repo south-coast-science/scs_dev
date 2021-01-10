@@ -88,7 +88,7 @@ try:
 except ImportError:
     from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
 
-from scs_core.model.particulates.pmx_model_conf import PMxModelConf
+from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
 from scs_core.sample.particulates_sample import ParticulatesSample
 
@@ -183,7 +183,9 @@ if __name__ == '__main__':
             if cmd.verbose:
                 print("particulates_sampler: %s" % inference_conf, file=sys.stderr)
 
+            # inference client...
             client = inference_conf.client(Host)
+            client.wait_for_server()
 
             # SHT...
             sht_conf = SHTConf.load(Host)
@@ -235,9 +237,6 @@ if __name__ == '__main__':
         SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         sampler.start()
-
-        if client:
-            client.connect()
 
         for opc_sample in sampler.samples():
             if opc_sample is None:
@@ -293,7 +292,7 @@ if __name__ == '__main__':
             sampler.stop()
 
         if client:
-            client.disconnect()
+            client.close()
 
         I2C.Utilities.close()
         I2C.Sensors.close()
