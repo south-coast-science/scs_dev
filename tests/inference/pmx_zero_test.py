@@ -29,7 +29,7 @@ from scs_core.comms.uds_client import UDSClient
 from scs_core.data.json import JSONify
 
 from scs_core.climate.sht_datum import SHTDatum
-from scs_core.model.particulates.s1.pmx_request import PMxRequest
+from scs_core.model.pmx.s1.pmx_request import PMxRequest
 from scs_core.particulate.opc_datum import OPCDatum
 
 from scs_core.sample.particulates_sample import ParticulatesSample
@@ -72,7 +72,7 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 # run...
 
 try:
-    client.connect()
+    client.open()
 
     sample = ParticulatesSample('tag', opc_datum)
     climate = ClimateSample('tag', None, ext_sht, None)
@@ -108,4 +108,4 @@ except KeyboardInterrupt:
     print(file=sys.stderr)
 
 finally:
-    client.disconnect()
+    client.close()
