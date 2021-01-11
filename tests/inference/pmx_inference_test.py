@@ -35,7 +35,7 @@ from scs_core.data.datum import Datum
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
 
-from scs_core.model.particulates.s1.pmx_request import PMxRequest
+from scs_core.model.pmx.s1.pmx_request import PMxRequest
 
 from scs_core.sample.sample import Sample
 
@@ -68,7 +68,7 @@ print("pmx_inference_test: %s" % client, file=sys.stderr)
 # run...
 
 try:
-    client.connect()
+    client.open()
 
     start_time = time.time()
 
@@ -119,7 +119,7 @@ except KeyboardInterrupt:
     print(file=sys.stderr)
 
 finally:
-    client.disconnect()
+    client.close()
 
     print("pmx_inference_test: documents: %d processed: %d" % (document_count, processed_count),
           file=sys.stderr)

@@ -220,6 +220,7 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, schedule.item('scs-gases'), afe_calib)
+            client.wait_for_server()
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -248,14 +249,10 @@ if __name__ == '__main__':
         # run...
 
         interface.power_gases(True)
-
         sampler.init(scd30_conf)
 
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
-
-        if client:
-            client.connect()
 
         for sample in sampler.samples():
             if cmd.verbose:
@@ -292,7 +289,7 @@ if __name__ == '__main__':
             print("gases_sampler: finishing", file=sys.stderr)
 
         if client:
-            client.disconnect()
+            client.close()
 
         if interface:
             interface.power_gases(False)
