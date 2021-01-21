@@ -22,7 +22,6 @@ praxis.pmx.val.sfr, praxis.pmx.val.sht.hmd, praxis.pmx.val.sht.tmp
 """
 
 import json
-import logging
 import os
 import sys
 import time
@@ -38,6 +37,8 @@ from scs_core.data.path_dict import PathDict
 from scs_core.model.pmx.s1.pmx_request import PMxRequest
 
 from scs_core.sample.sample import Sample
+
+from scs_core.sys.logging import Logging
 
 from scs_host.sys.host import Host
 
@@ -56,11 +57,10 @@ start_time = None
 # resources...
 
 # logger...
-logger = logging.getLogger(__name__)
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+Logging.config(__name__, verbose=True)
 
 # inference client...
-client = UDSClient(os.path.join(Host.scs_path(), uds_path), logger)
+client = UDSClient(os.path.join(Host.scs_path(), uds_path))
 print("pmx_inference_test: %s" % client, file=sys.stderr)
 
 
