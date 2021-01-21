@@ -174,7 +174,7 @@ if __name__ == '__main__':
             mpl.init()
 
         for sample in sampler.samples():
-            logger.info("     sample: %s" % sample.rec.as_time())
+            logger.info("     rec: %s" % sample.rec.as_time())
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()

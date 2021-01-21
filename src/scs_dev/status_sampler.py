@@ -184,7 +184,7 @@ if __name__ == '__main__':
         sampler.start()
 
         for sample in sampler.samples():
-            logger.info("      sample: %s" % sample.rec.as_time())
+            logger.info("      rec: %s" % sample.rec.as_time())
 
             print(JSONify.dumps(sample.as_json()))
             sys.stdout.flush()
