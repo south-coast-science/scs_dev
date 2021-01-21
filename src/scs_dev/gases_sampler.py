@@ -85,11 +85,6 @@ scs_mfr/system_id
 RESOURCES
 Alphasense Application Note AAN 803-02
 https://en.wikipedia.org/wiki/ISO_8601
-
-Jan 21 13:48:14 arm sh[4447]: gases_sampler:       sample: 13:48:14.556
-Jan 21 13:48:14 arm sh[4447]: particulates_sampler:sample: 13:48:14.556
-Jan 21 13:48:14 arm sh[4447]: climate_sampler:     sample: 13:48:14.556
-Jan 21 13:48:14 arm sh[4447]: status_sampler:      sample: 13:48:14.556
 """
 
 import sys
