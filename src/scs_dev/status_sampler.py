@@ -78,12 +78,12 @@ import time
 
 from scs_core.aqcsv.conf.airnow_site_conf import AirNowSiteConf
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -114,8 +114,11 @@ if __name__ == '__main__':
 
     cmd = CmdStatusSampler()
 
-    if cmd.verbose:
-        print("status_sampler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('status_sampler', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Sensors.open()
@@ -132,14 +135,14 @@ if __name__ == '__main__':
 
         tag = None if system_id is None else system_id.message_tag()
 
-        if system_id and cmd.verbose:
-            print("status_sampler: %s" % system_id, file=sys.stderr)
+        if system_id:
+            logger.info(system_id)
 
         # AirNow...
         airnow = AirNowSiteConf.load(Host)
 
-        if airnow and cmd.verbose:
-            print("status_sampler: %s" % airnow, file=sys.stderr)
+        if airnow:
+            logger.info(airnow)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
@@ -159,21 +162,17 @@ if __name__ == '__main__':
 
         sampler = StatusSampler(runner, tag, airnow, interface, gps_monitor, psu_conf)
 
-        if cmd.verbose:
-            print("status_sampler: %s" % sampler, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(sampler)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            if cmd.verbose:
-                print("status_sampler: no schedule - halted.", file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("no schedule - halted.")
 
             while True:
-                time.sleep(1.0)
+                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -185,10 +184,7 @@ if __name__ == '__main__':
         sampler.start()
 
         for sample in sampler.samples():
-            if cmd.verbose:
-                now = LocalizedDatetime.now().utc()
-                print("%s:       status: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("      sample: %s" % sample.rec.as_time())
 
             print(JSONify.dumps(sample.as_json()))
             sys.stdout.flush()
@@ -198,14 +194,14 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("status_sampler: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("status_sampler: finishing", file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         if sampler:
             sampler.stop()
