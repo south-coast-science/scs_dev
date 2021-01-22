@@ -258,7 +258,7 @@ if __name__ == '__main__':
                     continue
 
             # report...
-            logger.info("sample: %s" % opc_sample.rec.as_time())
+            logger.info("rec: %s" % opc_sample.rec.as_time())
 
             print(JSONify.dumps(opc_sample))
             sys.stdout.flush()

@@ -253,7 +253,7 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
-            logger.info("       sample: %s" % sample.rec.as_time())
+            logger.info("       rec: %s" % sample.rec.as_time())
 
             # inference...
             if inference_conf:
