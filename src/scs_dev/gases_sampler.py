@@ -90,7 +90,6 @@ https://en.wikipedia.org/wiki/ISO_8601
 import sys
 import time
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
 from scs_core.gas.afe_calib import AFECalib
@@ -100,6 +99,7 @@ from scs_core.sample.gases_sample import GasesSample
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -137,8 +137,11 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
-    if cmd.verbose:
-        print("gases_sampler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('gases_sampler', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Sensors.open()
@@ -155,24 +158,24 @@ if __name__ == '__main__':
 
         tag = None if system_id is None else system_id.message_tag()
 
-        if system_id and cmd.verbose:
-            print("gases_sampler: %s" % system_id, file=sys.stderr)
+        if system_id:
+            logger.info(system_id)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
         if interface_conf is None:
-            print("gases_sampler: InterfaceConf not available.", file=sys.stderr)
+            logger.error("InterfaceConf not available.")
             exit(1)
 
         interface = interface_conf.interface()
 
         if interface is None:
-            print("gases_sampler: Interface not available.", file=sys.stderr)
+            logger.error("Interface not available.")
             exit(1)
 
-        if cmd.verbose and interface:
-            print("gases_sampler: %s" % interface, file=sys.stderr)
+        if interface:
+            logger.info(interface)
 
         # MPL115A2...
         mpl115a2_conf = MPL115A2Conf.load(Host)
@@ -186,36 +189,35 @@ if __name__ == '__main__':
         sht_conf = SHTConf.load(Host)
         sht = None if sht_conf is None else sht_conf.ext_sht()
 
-        if cmd.verbose and sht_conf:
-            print("gases_sampler: %s" % sht_conf, file=sys.stderr)
+        if sht_conf:
+            logger.info(sht_conf)
 
         # gas_sensors...
         a4_sensors = interface.gas_sensors(Host)
 
-        if cmd.verbose and a4_sensors:
-            print("gases_sampler: %s" % a4_sensors, file=sys.stderr)
+        if a4_sensors:
+            logger.info(a4_sensors)
 
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
 
         if inference_conf:
-            if cmd.verbose:
-                print("gases_sampler: %s" % inference_conf, file=sys.stderr)
+            logger.info(inference_conf)
 
             # AFECalib...                           # TODO: will need to support DSICalib
             afe_calib = AFECalib.load(Host)
 
             if afe_calib is None:
-                print("gases_sampler: AFECalib not available.", file=sys.stderr)
+                logger.error("AFECalib not available.")
                 exit(1)
 
             if afe_calib.calibrated_on is None:
-                print("gases_sampler: AFECalib has no calibration date.", file=sys.stderr)
+                logger.error("AFECalib has no calibration date.")
                 exit(1)
 
             # slope regression...
             if schedule is None or schedule.item('scs-gases') is None:
-                print("gases_sampler: Schedule not available.", file=sys.stderr)
+                logger.error("Schedule not available.")
                 exit(1)
 
             # inference client...
@@ -228,21 +230,17 @@ if __name__ == '__main__':
 
         sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, a4_sensors)
 
-        if cmd.verbose:
-            print("gases_sampler: %s" % sampler, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(sampler)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            if cmd.verbose:
-                print("gases_sampler: no schedule - halted.", file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("no schedule - halted.")
 
             while True:
-                time.sleep(1.0)
+                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -255,10 +253,7 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
-            if cmd.verbose:
-                now = LocalizedDatetime.now().utc()
-                print("%s:        gases: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("       rec: %s" % sample.rec.as_time())
 
             # inference...
             if inference_conf:
@@ -267,8 +262,7 @@ if __name__ == '__main__':
                 if jdict:
                     sample = GasesSample.construct_from_jdict(jdict)
                 else:
-                    print("gases_sampler: inference rejected: %s" % JSONify.dumps(sample), file=sys.stderr)
-                    sys.stdout.flush()
+                    logger.error("inference rejected: %s" % JSONify.dumps(sample))
                     continue
 
             print(JSONify.dumps(sample))
@@ -279,14 +273,14 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("gases_sampler: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("gases_sampler: finishing", file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         if client:
             client.close()

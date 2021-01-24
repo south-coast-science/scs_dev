@@ -80,7 +80,6 @@ https://en.wikipedia.org/wiki/ISO_8601
 import sys
 import time
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
 try:
@@ -95,6 +94,7 @@ from scs_core.sample.particulates_sample import ParticulatesSample
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -129,8 +129,11 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
-    if cmd.verbose:
-        print("particulates_sampler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('particulates_sampler', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -144,19 +147,19 @@ if __name__ == '__main__':
 
         tag = None if system_id is None else system_id.message_tag()
 
-        if system_id and cmd.verbose:
-            print("particulates_sampler: %s" % system_id, file=sys.stderr)
+        if system_id:
+            logger.info(system_id)
 
         # OPCConf...
         opc_conf = OPCConf.load(Host, name=cmd.name)
 
         if opc_conf is None:
-            print("particulates_sampler: OPCConf not available.", file=sys.stderr)
+            logger.error("OPCConf not available.")
             exit(1)
 
         if 0 < cmd.interval < opc_conf.sample_period:
-            print("particulates_sampler: interval (%d) must not be less than opc_conf sample period (%d)." %
-                  (cmd.interval, opc_conf.sample_period), file=sys.stderr)
+            logger.error("interval (%d) must not be less than opc_conf sample period (%d)." %
+                         (cmd.interval, opc_conf.sample_period))
             exit(1)
 
         # I2C...
@@ -171,7 +174,7 @@ if __name__ == '__main__':
         interface_conf = InterfaceConf.load(Host)
 
         if interface_conf is None:
-            print("particulates_sampler: InterfaceConf not available.", file=sys.stderr)
+            logger.error("InterfaceConf not available.")
             exit(1)
 
         interface = interface_conf.interface()
@@ -180,8 +183,7 @@ if __name__ == '__main__':
         inference_conf = PMxModelConf.load(Host)
 
         if inference_conf:
-            if cmd.verbose:
-                print("particulates_sampler: %s" % inference_conf, file=sys.stderr)
+            logger.info(inference_conf)
 
             # inference client...
             client = inference_conf.client(Host)
@@ -191,13 +193,11 @@ if __name__ == '__main__':
             sht_conf = SHTConf.load(Host)
 
             if sht_conf is None:
-                print("particulates_sampler: SHTConf not available.", file=sys.stderr)
+                logger.error("SHTConf not available.")
                 exit(1)
 
             sht = sht_conf.ext_sht()
-
-            if cmd.verbose:
-                print("particulates_sampler: %s" % sht, file=sys.stderr)
+            logger.info(sht)
 
         # OPCMonitor...
         opc_monitor = opc_conf.opc_monitor(interface, Host)
@@ -208,11 +208,7 @@ if __name__ == '__main__':
 
         # sampler...
         sampler = ParticulatesSampler(runner, tag, opc_conf.restart_on_zeroes, opc_monitor)
-
-        if cmd.verbose:
-            print("particulates_sampler: %s" % sampler, file=sys.stderr)
-
-        sys.stderr.flush()
+        logger.info(sampler)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -222,12 +218,10 @@ if __name__ == '__main__':
             interface.power_opc(True)
             opc_monitor.operations_off()            # display may need the SPI power to remain on
 
-            if cmd.verbose:
-                print("particulates_sampler: no schedule - halted.", file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("no schedule - halted.")
 
             while True:
-                time.sleep(1.0)
+                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -251,8 +245,7 @@ if __name__ == '__main__':
 
                 except OSError as ex:
                     ext_sht_sample = None
-                    print("particulates_sampler: SHT: %s" % ex, file=sys.stderr)
-                    sys.stderr.flush()
+                    logger.error("SHT: %s" % ex)
                     exit(1)
 
                 # inference...
@@ -261,15 +254,11 @@ if __name__ == '__main__':
                 if jdict:
                     opc_sample = ParticulatesSample.construct_from_jdict(jdict)
                 else:
-                    print("particulates_sampler: inference rejected: %s" % JSONify.dumps(opc_sample), file=sys.stderr)
-                    sys.stdout.flush()
+                    logger.error("inference rejected: %s" % JSONify.dumps(opc_sample))
                     continue
 
             # report...
-            if cmd.verbose:
-                now = LocalizedDatetime.now().utc()
-                print("%s: particulates: %s" % (now.as_time(), opc_sample.rec.as_time()), file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("rec: %s" % opc_sample.rec.as_time())
 
             print(JSONify.dumps(opc_sample))
             sys.stdout.flush()
@@ -279,14 +268,14 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("particulates_sampler: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("particulates_sampler: finishing", file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         if sampler:
             sampler.stop()
