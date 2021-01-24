@@ -59,12 +59,12 @@ import time
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
 from scs_core.sync.schedule import Schedule
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -94,8 +94,11 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
-    if cmd.verbose:
-        print("climate_sampler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('climate_sampler', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Sensors.open()
@@ -111,18 +114,17 @@ if __name__ == '__main__':
 
         tag = None if system_id is None else system_id.message_tag()
 
-        if system_id and cmd.verbose:
-            print("climate_sampler: %s" % system_id, file=sys.stderr)
+        if system_id:
+            logger.info(system_id)
 
         # SHTConf...
         sht_conf = SHTConf.load(Host)
 
         if sht_conf is None:
-            print("climate_sampler: SHTConf not available.", file=sys.stderr)
+            logger.error("SHTConf not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("climate_sampler: %s" % sht_conf, file=sys.stderr)
+        logger.info(sht_conf)
 
         # SHT...
         sht = sht_conf.ext_sht()
@@ -131,16 +133,15 @@ if __name__ == '__main__':
         mpl_conf = MPL115A2Conf.load(Host)
 
         if mpl_conf is not None:
-            if cmd.verbose:
-                print("climate_sampler: %s" % mpl_conf, file=sys.stderr)
+            logger.info(mpl_conf)
 
             altitude = mpl_conf.altitude
 
             # MPL115A2Calib...
             mpl_calib = MPL115A2Calib.load(Host)
 
-            if cmd.verbose and mpl_calib is not None:
-                print("climate_sampler: %s" % mpl_calib, file=sys.stderr)
+            if mpl_calib is not None:
+                logger.info(mpl_calib)
 
             # MPL115A2...
             mpl = MPL115A2.construct(mpl_calib)
@@ -150,22 +151,17 @@ if __name__ == '__main__':
             else ScheduleRunner(cmd.semaphore)
 
         sampler = ClimateSampler(runner, tag, sht, mpl, altitude)
-
-        if cmd.verbose:
-            print("climate_sampler: %s" % sampler, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(sampler)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
         if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            if cmd.verbose:
-                print("climate_sampler: no schedule - halted.", file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("no schedule - halted.")
 
             while True:
-                time.sleep(1.0)
+                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -178,10 +174,7 @@ if __name__ == '__main__':
             mpl.init()
 
         for sample in sampler.samples():
-            if cmd.verbose:
-                now = LocalizedDatetime.now().utc()
-                print("%s:      climate: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
-                sys.stderr.flush()
+            logger.info("     rec: %s" % sample.rec.as_time())
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
@@ -191,13 +184,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("climate_sampler: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("climate_sampler: finishing", file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         I2C.Sensors.close()

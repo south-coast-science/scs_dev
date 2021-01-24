@@ -73,12 +73,11 @@ from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger import CSVLogger
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
-
-from scs_dev.handler.csv_logger_reporter import CSVLoggerReporter
 
 from scs_host.sys.host import Host
 
@@ -88,6 +87,7 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     cmd = None
+    logger = None
     writer = None
     reader = None
     file_path = None
@@ -102,9 +102,11 @@ if __name__ == '__main__':
             cmd.print_help(sys.stderr)
             exit(2)
 
-        if cmd.verbose:
-            print("csv_logger (%s): %s" % (cmd.topic, cmd), file=sys.stderr)
+        # logging...
+        Logging.config('csv_logger (%s)' % cmd.topic, verbose=cmd.verbose)
+        logger = Logging.getLogger()
 
+        logger.info(cmd)
 
         # ------------------------------------------------------------------------------------------------------------
         # resources...
@@ -113,22 +115,21 @@ if __name__ == '__main__':
         system_id = SystemID.load(Host)
 
         if system_id is None:
-            print("csv_logger (%s): SystemID not available." % cmd.topic, file=sys.stderr)
+            logger.error("SystemID not available." % cmd.topic)
             exit(1)
 
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
 
         if conf is None:
-            print("csv_logger (%s): CSVLoggerConf not available." % cmd.topic, file=sys.stderr)
+            logger.error("CSVLoggerConf not available." % cmd.topic)
             exit(1)
 
         # writer...
         write_log = conf.csv_log(cmd.topic, tag=system_id.message_tag())
         writer = CSVLogger.construct(Host, write_log, conf.delete_oldest, conf.write_interval)
 
-        if cmd.verbose:
-            print("csv_logger (%s): %s" % (cmd.topic, writer), file=sys.stderr)
+        logger.info(writer)
 
         # reader...
         if cmd.echo:
@@ -141,24 +142,24 @@ if __name__ == '__main__':
                 project = Project.load(Host)
 
                 if project is None:
-                    print("csv_logger: Project not available.", file=sys.stderr)
+                    logger.error("csv_logger: Project not available.")
                     exit(1)
 
                 topic_path = project.subject_path(cmd.topic, system_id)
 
                 if topic_path is None:
-                    print("csv_logger: no topic found for subject '%s'." % cmd.topic, file=sys.stderr)
+                    logger.error("csv_logger: no topic found for subject '%s'." % cmd.topic)
                     exit(2)
 
             # APIAuth...
             api_auth = APIAuth.load(Host)
 
             if api_auth is None:
-                print("csv_logger (%s): APIAuth not available." % cmd.topic, file=sys.stderr)
+                logger.error("APIAuth not available." % cmd.topic)
                 exit(1)
 
             if api_auth.endpoint is None or api_auth.api_key is None:
-                print("csv_logger (%s): APIAuth is incomplete: %s" % (cmd.topic, api_auth), file=sys.stderr)
+                logger.error("APIAuth is incomplete: %s" % api_auth)
                 exit(1)
 
             # CSVLogQueueBuilder...
@@ -166,12 +167,9 @@ if __name__ == '__main__':
             queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
-            reporter = CSVLoggerReporter("csv_logger", cmd.topic, cmd.verbose)
-            reader = CSVLogReader(queue_builder, nullify=True, reporter=reporter)
+            reader = CSVLogReader(queue_builder, nullify=True)
 
-            if cmd.verbose:
-                print("csv_logger (%s) %s" % (cmd.topic, reader), file=sys.stderr)
-                sys.stderr.flush()
+            logger.info(reader)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -195,8 +193,7 @@ if __name__ == '__main__':
                 file_path = writer.write(jstr)
 
             except Exception as ex:
-                print("csv_logger (%s): %s: %s" % (cmd.topic, ex.__class__.__name__, ex), file=sys.stderr)
-                sys.stderr.flush()
+                logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
                 writer.writing_inhibited = True
 
@@ -208,8 +205,7 @@ if __name__ == '__main__':
 
             # direct echo...
             if writer.writing_inhibited:
-                print("csv_logger (%s): no CSV access" % cmd.topic, file=sys.stderr)
-                sys.stderr.flush()
+                logger.error("no CSV access" % cmd.topic)
 
                 print(jstr)
                 sys.stdout.flush()
@@ -224,14 +220,14 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, RuntimeError) as ex:
-        print("csv_logger (%s): %s" % (cmd.topic, ex), file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("csv_logger (%s): finishing" % cmd.topic, file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         if writer:
             writer.close()
