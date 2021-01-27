@@ -42,18 +42,12 @@ from scs_dev.cmd.cmd_display import CmdDisplay
 from scs_dfe.gps.gps_conf import GPSConf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-try:
-    from scs_display.display.display_conf import DisplayConf
-except ImportError:
-    from scs_core.display.display_conf import DisplayConf
-
-try:
-    from scs_psu.psu.psu_conf import PSUConf
-except ImportError:
-    from scs_core.psu.psu_conf import PSUConf
+from scs_display.display.display_conf import DisplayConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sys.host import Host
+
+from scs_psu.psu.psu_conf import PSUConf
 
 
 # --------------------------------------------------------------------------------------------------------------------
