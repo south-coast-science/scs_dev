@@ -110,6 +110,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: remove support for exegetes
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
