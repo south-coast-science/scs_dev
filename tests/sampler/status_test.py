@@ -41,11 +41,10 @@ try:
 
     # PSU...
     psu_conf = PSUConf.load(Host)
-    psu = psu_conf.psu(Host, interface_conf.model)
 
     runner = TimedRunner(10)
 
-    sampler = StatusSampler(runner, tag, None, None, gps_monitor, psu)
+    sampler = StatusSampler(runner, tag, None, None, gps_monitor, psu_conf)
     print(sampler)
     print("-")
 

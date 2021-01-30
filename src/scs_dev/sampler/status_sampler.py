@@ -85,8 +85,11 @@ class StatusSampler(Sampler):
         uptime = Host.uptime()
 
         # PSUReport...
-        psu_report_class = self.__psu_conf.psu_report_class()
-        psu_report = None if psu_report_class is None else psu_report_class.load(self.__psu_conf.report_file)
+        if self.__psu_conf:
+            psu_report_class = self.__psu_conf.psu_report_class()
+            psu_report = None if psu_report_class is None else psu_report_class.load(self.__psu_conf.report_file)
+        else:
+            psu_report = None
 
         # datum...
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention

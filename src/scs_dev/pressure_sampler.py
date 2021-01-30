@@ -50,6 +50,7 @@ https://en.wikipedia.org/wiki/ISO_8601
 import sys
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
+from scs_core.climate.mpl115a2_conf import MPL115A2Conf
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
@@ -62,7 +63,6 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.pressure_sampler import PressureSampler
 
-from scs_dfe.climate.mpl115a2_conf import MPL115A2Conf
 from scs_dfe.climate.mpl115a2 import MPL115A2
 
 from scs_host.bus.i2c import I2C
