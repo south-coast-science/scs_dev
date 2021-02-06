@@ -162,7 +162,7 @@ if __name__ == '__main__':
         if 0 < cmd.interval < opc_conf.sample_period:
             logger.error("interval (%d) must not be less than opc_conf sample period (%d)." %
                          (cmd.interval, opc_conf.sample_period))
-            exit(1)
+            exit(2)
 
         # I2C...
         I2C.Utilities.open()
