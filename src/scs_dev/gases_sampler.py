@@ -121,6 +121,8 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: protect against SCD30 interval being less than or equal to sampling interval
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -185,6 +187,11 @@ if __name__ == '__main__':
         # NDIR...
         scd30_conf = SCD30Conf.load(Host)
         scd30 = None if scd30_conf is None else scd30_conf.scd30()
+
+        if scd30_conf and (0 < cmd.interval <= scd30_conf.sample_interval):
+            logger.error("interval (%d) must be grater than SCD30Conf sample interval (%d)." %
+                         (cmd.interval, scd30_conf.sample_interval))
+            exit(2)
 
         # SHT...
         sht_conf = SHTConf.load(Host)
