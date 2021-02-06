@@ -82,11 +82,6 @@ import time
 
 from scs_core.data.json import JSONify
 
-try:
-    from scs_exegesis.particulate.exegete_collection import ExegeteCollection
-except ImportError:
-    from scs_core.exegesis.particulate.exegete_collection import ExegeteCollection
-
 from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
 from scs_core.sample.particulates_sample import ParticulatesSample
@@ -109,8 +104,6 @@ from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
-
-# TODO: remove support for exegetes
 
 # --------------------------------------------------------------------------------------------------------------------
 
