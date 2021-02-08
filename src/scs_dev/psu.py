@@ -122,7 +122,7 @@ if __name__ == '__main__':
 
     except (KeyboardInterrupt, SystemExit):
         if cmd.interactive:
-            print()
+            print(file=sys.stderr)
 
     finally:
         if cmd and cmd.verbose:
