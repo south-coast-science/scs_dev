@@ -11,7 +11,7 @@ The interface_power utility is used to simultaneously switch on and off the powe
 * GPS
 * OPC
 * NDIR
-* modem (currently 2G only)
+* modem (currently 2G or OPCube only)
 * integrated gas sensor interface (digital side only)
 
 Note that not all interface board types are able to switch off all of these subsystems. Where switching is not possible,
@@ -21,7 +21,7 @@ LED control is direct - it bypasses the led_controller process, if running. This
 situations, where led_controller service may already have stopped.
 
 The utility supports switch of any combination of peripherals, or all peripherals. Note that, in the case of 'all' the
-modem is not included.
+modem is switched on if the parameter is 1 but is skipped if the parameter is 0.
 
 SYNOPSIS
 interface_power.py { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] [-o ENABLE] [-l { R | A | G | 0 }] | ENABLE_ALL } \
@@ -53,7 +53,6 @@ except ImportError:
     from scs_core.gas.ndir.ndir_conf import NDIRConf
 
 
-# TODO: remove references to NDIRConf?
 # --------------------------------------------------------------------------------------------------------------------
 
 def power_gps(enable):
@@ -162,7 +161,10 @@ if __name__ == '__main__':
 
         if cmd.all is not None:
             interface.power_gases(cmd.all)
-            interface.power_modem(cmd.all)
+
+            if cmd.all:
+                interface.power_modem(cmd.all)          # 'all' shall not switch modem off
+
             power_gps(cmd.all)
             power_ndir(cmd.all)
             power_opc(cmd.all)
