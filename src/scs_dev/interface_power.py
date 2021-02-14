@@ -55,34 +55,34 @@ except ImportError:
 
 # --------------------------------------------------------------------------------------------------------------------
 
-def power_gps(enable):
+def power_gps(on):
     if gps is None:
-        interface.power_gps(enable)             # use interface if no GPS
+        interface.power_gps(on)             # use interface if no GPS
         return
 
-    if enable:
+    if on:
         gps.power_on()
     else:
         gps.power_off()
 
 
-def power_ndir(enable):
+def power_ndir(on):
     if ndir is None:
-        interface.power_ndir(enable)             # use interface if no NDIR
+        interface.power_ndir(on)             # use interface if no NDIR
         return
 
-    if enable:
+    if on:
         ndir.power_on()
     else:
         ndir.power_off()
 
 
-def power_opc(enable):
+def power_opc(on):
     if opc is None:
-        interface.power_opc(enable)             # use interface if no OPC
+        interface.power_opc(on)             # use interface if no OPC
         return
 
-    if enable:
+    if on:
         opc.power_on()
         opc.operations_on()
     else:
