@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# DEPRECATED. Replaced by https://github.com/south-coast-science/scs_mfr/wiki/git_pull
+
 # copy this file to the ~/SCS directory and edit as required...
 
 GIT_PATH=~/SCS/scs_airnow/                  # comment out if the package is not installed
