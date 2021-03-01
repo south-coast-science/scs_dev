@@ -267,13 +267,13 @@ if __name__ == '__main__':
 
             # inference...
             if inference_conf:
-                jdict = client.infer(sample, interface.status().temp)
+                inference = client.infer(sample, interface.status().temp)
 
-                if jdict:
-                    sample = GasesSample.construct_from_jdict(jdict)
-                else:
+                if inference is None:
                     logger.error("inference rejected: %s" % JSONify.dumps(sample))
                     continue
+
+                sample = GasesSample.construct_from_jdict(inference)
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()

@@ -241,13 +241,13 @@ if __name__ == '__main__':
                     exit(1)
 
                 # inference...
-                jdict = client.infer(opc_sample, ext_sht_sample)
+                inference = client.infer(opc_sample, ext_sht_sample)
 
-                if jdict:
-                    opc_sample = ParticulatesSample.construct_from_jdict(jdict)
-                else:
+                if inference is None:
                     logger.error("inference rejected: %s" % JSONify.dumps(opc_sample))
                     continue
+
+                opc_sample = ParticulatesSample.construct_from_jdict(inference)
 
             # report...
             logger.info("rec: %s" % opc_sample.rec.as_time())
