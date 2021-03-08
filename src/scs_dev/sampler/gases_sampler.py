@@ -5,12 +5,9 @@ Created on 20 Oct 2016
 """
 
 import sys
-import time
 
 from scs_core.data.datetime import LocalizedDatetime
-
 from scs_core.sample.gases_sample import GasesSample
-
 from scs_core.sampler.sampler import Sampler
 
 
@@ -47,19 +44,19 @@ class GasesSampler(Sampler):
         else:
             mpl115a2_datum = None
 
+        if not self.__scd30:
+            return
+
         actual_press = None if mpl115a2_datum is None else mpl115a2_datum.actual_press
 
-        if self.__scd30:
-            # self.__scd30.reset()
-            self.__scd30.set_auto_self_calib(True)
+        self.__scd30.set_auto_self_calib(True)
+        self.__scd30.set_measurement_interval(scd30_conf.sample_interval)
 
-            self.__scd30.set_measurement_interval(scd30_conf.sample_interval)
-            self.__scd30.set_temperature_offset(scd30_conf.temperature_offset)
+        self.__scd30.stop_periodic_measurement()
+        self.__scd30.start_periodic_measurement(ambient_pressure_kpa=actual_press)
 
-            self.__scd30.start_periodic_measurement(ambient_pressure_kpa=actual_press)
-            time.sleep(scd30_conf.sample_interval)
-
-            self.__scd30.sample()
+        self.__scd30.sample()
+        self.__scd30.start_periodic_measurement(ambient_pressure_kpa=actual_press)
 
 
     def sample(self):

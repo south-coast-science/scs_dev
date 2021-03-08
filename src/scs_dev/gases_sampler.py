@@ -121,8 +121,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: protect against SCD30 interval being less than or equal to sampling interval
-
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -130,6 +128,7 @@ if __name__ == '__main__':
     interface = None
     client = None
     sampler = None
+    scd30 = None
 
     afe_calib = None
     t_regression = None
@@ -294,6 +293,9 @@ if __name__ == '__main__':
 
         if client:
             client.close()
+
+        if scd30:
+            scd30.stop_periodic_measurement()
 
         if interface:
             interface.power_gases(False)
