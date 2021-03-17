@@ -45,6 +45,7 @@ from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_display.display.display_conf import DisplayConf
 
 from scs_host.bus.i2c import I2C
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 from scs_psu.psu.psu_conf import PSUConf
@@ -89,7 +90,7 @@ if __name__ == '__main__':
         gps_report_filename = None if gps_conf is None else gps_conf.report_file
 
         # UDSReader...
-        reader = UDSReader(cmd.uds)
+        reader = UDSReader(DomainSocket, cmd.uds)
 
         if cmd.verbose and cmd.uds:
             print("display: %s" % reader, file=sys.stderr)

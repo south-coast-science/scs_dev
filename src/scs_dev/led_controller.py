@@ -39,17 +39,16 @@ import json
 import sys
 
 from scs_core.comms.uds_reader import UDSReader
-
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
 
 from scs_dfe.interface.interface_conf import InterfaceConf
-
 from scs_dfe.led.led_controller import LEDController
 from scs_dfe.led.led_state import LEDState
 
 from scs_host.bus.i2c import I2C
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
@@ -77,7 +76,7 @@ if __name__ == '__main__':
         # resources...
 
         # UDSReader...
-        reader = UDSReader(cmd.uds)
+        reader = UDSReader(DomainSocket, cmd.uds)
 
         if cmd.verbose:
             print("led_controller: %s" % reader, file=sys.stderr)
