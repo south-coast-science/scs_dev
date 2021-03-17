@@ -64,6 +64,7 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_publisher import CmdAWSTopicPublisher
 
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
@@ -117,7 +118,7 @@ if __name__ == '__main__':
             sys.stderr.flush()
 
         # comms...
-        writer = UDSWriter(cmd.uds_pub)
+        writer = UDSWriter(DomainSocket, cmd.uds_pub)
 
         if cmd.verbose and cmd.uds_pub:
             print("aws_topic_publisher: %s" % cmd.uds_pub, file=sys.stderr)
