@@ -27,6 +27,8 @@ from scs_dev.cmd.cmd_uds import CmdUDS
 
 from scs_core.comms.uds_reader import UDSReader
 
+from scs_host.comms.domain_socket import DomainSocket
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -48,7 +50,7 @@ if __name__ == '__main__':
     # ----------------------------------------------------------------------------------------------------------------
     # resources...
 
-    uds = UDSReader(cmd.path)
+    uds = UDSReader(DomainSocket, cmd.path)
 
     if cmd.verbose:
         print("uds_receiver: %s" % uds, file=sys.stderr)

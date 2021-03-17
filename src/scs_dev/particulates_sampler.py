@@ -101,6 +101,7 @@ from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.particulate.opc_conf import OPCConf
 
 from scs_host.bus.i2c import I2C
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
@@ -178,7 +179,7 @@ if __name__ == '__main__':
             logger.info(inference_conf)
 
             # inference client...
-            client = inference_conf.client(Host)
+            client = inference_conf.client(Host, DomainSocket)
             client.wait_for_server()
 
             # SHT...

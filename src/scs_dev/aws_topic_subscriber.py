@@ -64,6 +64,7 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.cmd.cmd_aws_topic_subscriber import CmdAWSTopicSubscriber
 
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
@@ -90,7 +91,7 @@ if __name__ == '__main__':
         # resources...
 
         # comms...
-        source = UDSReader(cmd.uds_sub)
+        source = UDSReader(DomainSocket, cmd.uds_sub)
 
         if cmd.verbose:
             print("aws_mqtt_client: %s" % source, file=sys.stderr)
