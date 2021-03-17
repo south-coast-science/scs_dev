@@ -70,6 +70,7 @@ from scs_dev.handler.mqtt_reporter import MQTTReporter
 from scs_dev.handler.aws_mqtt_publisher import AWSMQTTPublisher
 from scs_dev.handler.aws_mqtt_subscription_handler import AWSMQTTSubscriptionHandler
 
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
@@ -117,7 +118,7 @@ if __name__ == '__main__':
             exit(1)
 
         # comms...
-        source = UDSReader(cmd.uds_pub)
+        source = UDSReader(DomainSocket, cmd.uds_pub)
 
         if cmd.verbose:
             print("aws_mqtt_client: %s" % source, file=sys.stderr)
@@ -152,7 +153,7 @@ if __name__ == '__main__':
             topic = project.channel_path(cmd.channel, system_id)
 
             # subscriber...
-            sub_comms = UDSWriter(cmd.channel_uds)
+            sub_comms = UDSWriter(DomainSocket, cmd.channel_uds)
 
             handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)
 
@@ -160,7 +161,7 @@ if __name__ == '__main__':
 
         else:
             for subscription in cmd.subscriptions:
-                sub_comms = UDSWriter(subscription.address)
+                sub_comms = UDSWriter(DomainSocket, subscription.address)
 
                 # subscriber...
                 handler = AWSMQTTSubscriptionHandler(reporter, sub_comms, cmd.echo)

@@ -40,6 +40,7 @@ from scs_core.sample.sample import Sample
 
 from scs_core.sys.logging import Logging
 
+from scs_host.comms.domain_socket import DomainSocket
 from scs_host.sys.host import Host
 
 
@@ -60,7 +61,7 @@ start_time = None
 Logging.config(__name__, verbose=True)
 
 # inference client...
-client = UDSClient(os.path.join(Host.scs_path(), uds_path))
+client = UDSClient(DomainSocket, os.path.join(Host.scs_path(), uds_path))
 print("pmx_inference_test: %s" % client, file=sys.stderr)
 
 
