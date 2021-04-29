@@ -186,6 +186,9 @@ if __name__ == '__main__':
 
         mpl115a2 = None if mpl115a2_conf is None else mpl115a2_conf.mpl115a(mpl115a2_calib)
 
+        if mpl115a2_conf:
+            logger.info(mpl115a2_conf)
+
         # NDIR...
         scd30_conf = SCD30Conf.load(Host)
         scd30 = None if scd30_conf is None else scd30_conf.scd30()
@@ -194,6 +197,9 @@ if __name__ == '__main__':
             logger.error("interval (%d) must be grater than SCD30Conf sample interval (%d)." %
                          (cmd.interval, scd30_conf.sample_interval))
             exit(2)
+
+        if scd30_conf:
+            logger.info(scd30_conf)
 
         # SHT...
         sht_conf = SHTConf.load(Host)
