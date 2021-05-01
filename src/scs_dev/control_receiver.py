@@ -173,14 +173,14 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
             # command...
-            command = Command.construct_from_tokens(datum.cmd_tokens, datum.timeout)
+            command = Command.construct_from_tokens(datum.cmd_tokens)
 
             if command.cmd is not None and not command.is_valid(Host):
                 command.error("invalid command")
 
             # execute immediate commands...
             elif command.cmd not in deferred_commands:
-                command.execute(Host)
+                command.execute(Host, datum.timeout)
 
             # receipt...
             if cmd.receipt:
@@ -191,13 +191,13 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
                 if cmd.verbose:
-                    print(JSONify.dumps(receipt), file=sys.stderr)
+                    print("control_receiver: %s" % receipt, file=sys.stderr)
                     sys.stderr.flush()
 
             # execute deferred commands...
             if command.cmd in deferred_commands:
                 time.sleep(10.0)                            # wait, hoping that the receipt is sent
-                command.execute(Host)
+                command.execute(Host, datum.timeout)
 
 
     # ----------------------------------------------------------------------------------------------------------------
