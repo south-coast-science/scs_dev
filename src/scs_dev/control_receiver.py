@@ -45,6 +45,7 @@ EXAMPLES
 /home/pi/SCS/scs_dev/src/scs_dev/aws_topic_subscriber.py -cX -s /home/pi/SCS/pipes/mqtt_control_subscription.uds | \
 /home/pi/SCS/scs_dev/src/scs_dev/control_receiver.py -r -v | \
 /home/pi/SCS/scs_dev/src/scs_dev/aws_topic_publisher.py -v -cX -p /home/pi/SCS/pipes/mqtt_publication.uds
+
 FILES
 ~/SCS/cmd/*
 ~/SCS/conf/system_id.json
@@ -136,7 +137,6 @@ if __name__ == '__main__':
     system_tag = system_id.message_tag()
     key = secret.key
 
-
     try:
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -173,7 +173,7 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
             # command...
-            command = Command.construct_from_tokens(datum.cmd_tokens)
+            command = Command.construct_from_tokens(datum.cmd_tokens, datum.timeout)
 
             if command.cmd is not None and not command.is_valid(Host):
                 command.error("invalid command")
