@@ -64,6 +64,7 @@ stdin to stdout from then on. No attempt is made to restart the reader process.
 """
 
 import sys
+import time
 
 from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
@@ -190,7 +191,18 @@ if __name__ == '__main__':
                 break
 
             try:
-                file_path = writer.write(jstr)
+                for i in range(5):
+                    try:
+                        file_path = writer.write(jstr)
+                        break
+
+                    except TimeoutError:
+                        time.sleep(1)
+
+                        if i < 4:
+                            continue
+
+                        raise TimeoutError("multiple write attempts failed")
 
             except Exception as ex:
                 logger.error("%s: %s" % (ex.__class__.__name__, ex))
@@ -200,7 +212,7 @@ if __name__ == '__main__':
                 if reader:
                     reader.stop()
 
-            if not cmd.echo:
+            if not cmd.echo and not writer.writing_inhibited:
                 continue
 
             # direct echo...
