@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 Created on 4 Sep 2020
 Updated 23 Mar 2021
@@ -40,7 +42,7 @@ with open('requirements.txt') as req_txt:
 
 setup(
     name='scs_dev',
-    version=get_version("scs_dev/__init__.py"),
+    version=get_version("src/scs_dev/__init__.py"),
     description='High-level scripts and command-line applications for South Coast Science data producers.',
     author='South Coast Science',
     author_email='contact@southcoastscience.com',
