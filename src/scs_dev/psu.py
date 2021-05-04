@@ -32,6 +32,7 @@ BUGS
 The psu utility is typically locked by the status_sampler utility, and is therefore not available to other processes.
 """
 
+import os
 import sys
 
 from scs_core.sys.signalled_exit import SignalledExit
@@ -51,6 +52,8 @@ from scs_psu.psu.psu_conf import PSUConf
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
+
+    history_filename = os.path.join(Host.scs_path(), PSUConf.conf_dir(), 'psu_history')
 
     psu = None
 
@@ -88,6 +91,8 @@ if __name__ == '__main__':
         if cmd.verbose:
             print("psu: %s" % psu, file=sys.stderr)
             sys.stderr.flush()
+
+        StdIO.set(history_filename=history_filename)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -129,6 +134,8 @@ if __name__ == '__main__':
     finally:
         if cmd and cmd.verbose:
             print("psu: finishing", file=sys.stderr)
+
+        StdIO.save_history(history_filename)
 
         if psu:
             psu.close()

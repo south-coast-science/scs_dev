@@ -45,6 +45,7 @@ EXAMPLES
 /home/pi/SCS/scs_dev/src/scs_dev/aws_topic_subscriber.py -cX -s /home/pi/SCS/pipes/mqtt_control_subscription.uds | \
 /home/pi/SCS/scs_dev/src/scs_dev/control_receiver.py -r -v | \
 /home/pi/SCS/scs_dev/src/scs_dev/aws_topic_publisher.py -v -cX -p /home/pi/SCS/pipes/mqtt_publication.uds
+
 FILES
 ~/SCS/cmd/*
 ~/SCS/conf/system_id.json
@@ -136,7 +137,6 @@ if __name__ == '__main__':
     system_tag = system_id.message_tag()
     key = secret.key
 
-
     try:
         # ------------------------------------------------------------------------------------------------------------
         # run...
@@ -180,7 +180,7 @@ if __name__ == '__main__':
 
             # execute immediate commands...
             elif command.cmd not in deferred_commands:
-                command.execute(Host)
+                command.execute(Host, datum.timeout)
 
             # receipt...
             if cmd.receipt:
@@ -191,13 +191,13 @@ if __name__ == '__main__':
                 sys.stdout.flush()
 
                 if cmd.verbose:
-                    print(JSONify.dumps(receipt), file=sys.stderr)
+                    print("control_receiver: %s" % receipt, file=sys.stderr)
                     sys.stderr.flush()
 
             # execute deferred commands...
             if command.cmd in deferred_commands:
                 time.sleep(10.0)                            # wait, hoping that the receipt is sent
-                command.execute(Host)
+                command.execute(Host, datum.timeout)
 
 
     # ----------------------------------------------------------------------------------------------------------------

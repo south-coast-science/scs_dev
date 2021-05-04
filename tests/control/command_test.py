@@ -26,7 +26,7 @@ print("command: %s" % command)
 print("is_valid: %s" % command.is_valid(Host))
 print("-")
 
-success = command.execute(Host)
+success = command.execute(Host, 20)
 print("success: %s" % success)
 
 print("stdout: %s" % command.stdout)
