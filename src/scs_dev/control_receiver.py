@@ -91,6 +91,8 @@ from scs_dev.cmd.cmd_control_receiver import CmdControlReceiver
 from scs_host.sys.host import Host
 
 
+# TODO: what happens if the symbolic link is invalid?
+
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
