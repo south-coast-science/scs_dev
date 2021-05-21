@@ -62,6 +62,7 @@ scs_dev/scheduler
 
 scs_mfr/airnow_conf
 scs_mfr/gps_conf
+scs_mfr/modem
 scs_mfr/schedule
 scs_mfr/system_id
 scs_mfr/timezone
