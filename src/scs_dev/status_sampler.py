@@ -45,15 +45,14 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-opc-1", "rec": "2021-01-02T13:22:50Z", "val": {
-"tz": {"name": "Europe/London", "utc-offset": "+00:00"},
-"gps": {"pos": [50.81931339, -0.12830144], "elv": -28.3, "qual": 0},
-"sch": {"scs-climate": {"interval": 10.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
-"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
-"tmp": {"brd": 33.2},
-"up": {"period": "00-01:07:00", "users": 2, "load": {"av1": 0.06, "av5": 0.15, "av15": 0.26}},
-"psu": {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFTF",
-"batt": {"chg": 99, "tte": null, "ttf": null}, "prot-batt": 4.1}}}
+{"rec": "2021-05-21T08:21:55Z", "tag": "scs-opc-1", "val": {"tz": {"name": "Europe/London", "utc-offset": "+01:00"},
+"gps": {"pos": [null, null], "elv": null, "qual": 0}, "sch": {"scs-climate": {"interval": 10.0, "tally": 1},
+"scs-gases": {"interval": 10.0, "tally": 1}, "scs-particulates": {"interval": 10.0, "tally": 1},
+"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 31.4},
+"up": {"period": "00-01:52:00", "users": 2, "load": {"av1": 0.07, "av5": 0.18, "av15": 0.24}},
+"psu": {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFFF",
+"batt": {"chg": 4, "tte": null, "ttf": null}, "prot-batt": 4.1},
+"sig": {"quality": 73, "recent": true}}}
 
 SEE ALSO
 scs_dev/interface_power
@@ -62,6 +61,7 @@ scs_dev/scheduler
 
 scs_mfr/airnow_conf
 scs_mfr/gps_conf
+scs_mfr/modem
 scs_mfr/schedule
 scs_mfr/system_id
 scs_mfr/timezone

@@ -91,11 +91,15 @@ class StatusSampler(Sampler):
         else:
             psu_report = None
 
+        # Signal
+        modem_conn = Host.modem_conn()
+        modem_signal = None if modem_conn is None else modem_conn.signal
+
         # datum...
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
         return StatusSample(self.__tag, recorded, self.__airnow, timezone, position, temperature,
-                            schedule, uptime, psu_report)
+                            schedule, uptime, psu_report, modem_signal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
