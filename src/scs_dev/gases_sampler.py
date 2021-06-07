@@ -136,6 +136,8 @@ if __name__ == '__main__':
     t_regression = None
     rh_regression = None
 
+    first_run = True
+
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -270,6 +272,10 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
+            if cmd.semaphore and scd30 and first_run:               # the first SCD30 reading is unreliable
+                first_run = False
+                continue
+
             logger.info("       rec: %s" % sample.rec.as_time())
 
             # inference...
