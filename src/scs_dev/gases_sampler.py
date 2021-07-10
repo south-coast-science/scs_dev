@@ -111,7 +111,7 @@ from scs_core.model.gas.gas_model_conf import GasModelConf
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.gases_sampler import GasesSampler
 
-from scs_dfe.climate.mpl115a2_conf import MPL115A2Conf
+from scs_dfe.climate.pressure_conf import PressureConf
 from scs_dfe.climate.sht_conf import SHTConf
 
 from scs_dfe.gas.scd30.scd30_conf import SCD30Conf
@@ -183,14 +183,14 @@ if __name__ == '__main__':
         if interface:
             logger.info(interface)
 
-        # MPL115A2...
-        mpl115a2_conf = MPL115A2Conf.load(Host)
+        # PressureConf...
+        pressure_conf = PressureConf.load(Host)
         mpl115a2_calib = MPL115A2Calib.load(Host)
 
-        mpl115a2 = None if mpl115a2_conf is None else mpl115a2_conf.mpl115a(mpl115a2_calib)
+        barometer = None if pressure_conf is None else pressure_conf.sensor(mpl115a2_calib)
 
-        if mpl115a2_conf:
-            logger.info(mpl115a2_conf)
+        if barometer:
+            logger.info(barometer)
 
         # NDIR...
         scd30_conf = SCD30Conf.load(Host)
@@ -247,7 +247,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, a4_sensors)
+        sampler = GasesSampler(runner, tag, barometer, scd30, sht, a4_sensors)
 
         logger.info(sampler)
 

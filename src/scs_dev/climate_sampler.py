@@ -127,7 +127,7 @@ if __name__ == '__main__':
         sht = sht_conf.ext_sht()
 
         # PressureConf...
-        pressure_conf = PressureConf.load(Host, default=None)
+        pressure_conf = PressureConf.load(Host)
 
         if pressure_conf is not None:
             logger.info(pressure_conf)
