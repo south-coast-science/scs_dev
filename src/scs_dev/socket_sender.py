@@ -61,7 +61,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
-        sender = NetworkSocket(cmd.hostname, cmd.port)
+        sender = NetworkSocket(host=cmd.hostname, port=cmd.port)
 
         if cmd.verbose:
             print("socket_sender: %s" % sender, file=sys.stderr)

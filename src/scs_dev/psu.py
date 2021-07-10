@@ -41,8 +41,8 @@ from scs_dev.cmd.cmd_psu import CmdPSU
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 
-from scs_host.comms.stdio import StdIO
 from scs_host.bus.i2c import I2C
+from scs_host.comms.stdio import StdIO
 from scs_host.lock.lock_timeout import LockTimeout
 from scs_host.sys.host import Host
 
