@@ -49,6 +49,7 @@ from scs_host.sys.host import Host
 from scs_psu.psu.psu_conf import PSUConf
 
 
+# TODO: fix prompt bug
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ DESCRIPTION
 The climate_sampler utility reads a Sensirion SHT 31 (or equivalent) sensor - it therefore provides a measurement of
 temperature and relative humidity. Output values are in degrees centigrade and percentage, respectively.
 
-The climate_sampler utility may also read an NXP MPL115A2 digital barometer. Depending on configuration, the
+The climate_sampler utility may also read an ICP-10101 or MPL115A2 digital barometer. Depending on configuration, the
 report from this sensor includes absolute pressure (pA), and optionally equivalent sea-level pressure (p0) and the
 MPL115A2 temperature. Pressure is reported in kilo pascals.
 
@@ -45,7 +45,7 @@ DOCUMENT EXAMPLE - OUTPUT
 SEE ALSO
 scs_dev/scheduler
 scs_mfr/mpl115a2_calib
-scs_mfr/mpl115a2_conf
+scs_mfr/pressure_conf
 scs_mfr/schedule
 scs_mfr/sht_conf
 scs_mfr/system_id
@@ -58,7 +58,6 @@ import sys
 import time
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
-from scs_core.climate.mpl115a2_conf import MPL115A2Conf
 
 from scs_core.data.json import JSONify
 
@@ -72,7 +71,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.climate_sampler import ClimateSampler
 
-from scs_dfe.climate.mpl115a2 import MPL115A2
+from scs_dfe.climate.pressure_conf import PressureConf
 from scs_dfe.climate.sht_conf import SHTConf
 
 from scs_host.bus.i2c import I2C
@@ -84,9 +83,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
-    mpl_conf = None
-    mpl = None
-
+    barometer = None
     altitude = None
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -129,13 +126,13 @@ if __name__ == '__main__':
         # SHT...
         sht = sht_conf.ext_sht()
 
-        # MPL115A2Conf...
-        mpl_conf = MPL115A2Conf.load(Host)
+        # PressureConf...
+        pressure_conf = PressureConf.load(Host)
 
-        if mpl_conf is not None:
-            logger.info(mpl_conf)
+        if pressure_conf is not None:
+            logger.info(pressure_conf)
 
-            altitude = mpl_conf.altitude
+            altitude = pressure_conf.altitude
 
             # MPL115A2Calib...
             mpl_calib = MPL115A2Calib.load(Host)
@@ -144,13 +141,13 @@ if __name__ == '__main__':
                 logger.info(mpl_calib)
 
             # MPL115A2...
-            mpl = MPL115A2.construct(mpl_calib)
+            barometer = pressure_conf.sensor(mpl_calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = ClimateSampler(runner, tag, sht, mpl, altitude)
+        sampler = ClimateSampler(runner, tag, sht, barometer, altitude)
         logger.info(sampler)
 
 
@@ -170,8 +167,8 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("climate_sampler", cmd.verbose)
 
-        if mpl is not None:
-            mpl.init()
+        if barometer is not None:
+            barometer.init()
 
         for sample in sampler.samples():
             logger.info("     rec: %s" % sample.rec.as_time())
