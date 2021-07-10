@@ -97,7 +97,7 @@ if __name__ == '__main__':
             print("pressure_sampler: %s" % system_id, file=sys.stderr)
 
         # PressureConf...
-        conf = PressureConf.load(Host)
+        conf = PressureConf.load(Host, default=None)
 
         if conf is None:
             print("pressure_sampler: PressureConf not available.", file=sys.stderr)
