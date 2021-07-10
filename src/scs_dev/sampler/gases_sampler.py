@@ -4,11 +4,12 @@ Created on 20 Oct 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import sys
-
 from scs_core.data.datetime import LocalizedDatetime
+
 from scs_core.sample.gases_sample import GasesSample
 from scs_core.sampler.sampler import Sampler
+
+from scs_core.sys.logging import Logging
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -20,7 +21,7 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, mpl115a2, scd30, sht, sensor_interface):
+    def __init__(self, runner, tag, barometer, scd30, sht, sensor_interface):
         """
         Constructor
         """
@@ -28,26 +29,28 @@ class GasesSampler(Sampler):
 
         self.__tag = tag
 
-        self.__mpl115a2 = mpl115a2                              # MPL115A2
+        self.__barometer = barometer                            # ICP10101 or MPL115A2
         self.__scd30 = scd30                                    # SCD30
         self.__sht = sht                                        # SHT31
         self.__sensor_interface = sensor_interface              # SensorInterface
+
+        self.__logger = Logging.getLogger()
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def init(self, scd30_conf):
-        if self.__mpl115a2:
-            self.__mpl115a2.init()
-            mpl115a2_datum = self.__mpl115a2.sample()
+        if self.__barometer:
+            self.__barometer.init()
+            pressure_datum = self.__barometer.sample()
 
         else:
-            mpl115a2_datum = None
+            pressure_datum = None
 
         if not self.__scd30:
             return
 
-        actual_press = None if mpl115a2_datum is None else mpl115a2_datum.actual_press
+        actual_press = None if pressure_datum is None else pressure_datum.actual_press
 
         self.__scd30.set_auto_self_calib(True)
         self.__scd30.set_measurement_interval(scd30_conf.sample_interval)
@@ -61,20 +64,18 @@ class GasesSampler(Sampler):
 
     def sample(self):
         try:
-            mpl115a2_datum = None if self.__mpl115a2 is None else self.__mpl115a2.sample()
+            pressure_datum = None if self.__barometer is None else self.__barometer.sample()
         except OSError:
             # noinspection PyUnresolvedReferences
-            mpl115a2_datum = self.__mpl115a2.null_datum()
+            pressure_datum = self.__barometer.null_datum()
 
-        actual_press = None if mpl115a2_datum is None else mpl115a2_datum.actual_press
+        actual_press = None if pressure_datum is None else pressure_datum.actual_press
 
         try:
             if self.__scd30:
-                if self.__mpl115a2 and actual_press is None:
+                if self.__barometer and actual_press is None:
                     scd30_datum = self.__scd30.null_datum()
-
-                    print("gases_sampler: pA specified but unavailable", file=sys.stderr)
-                    sys.stderr.flush()
+                    self.__logger('pA specified but unavailable')
 
                 else:
                     scd30_datum = self.__scd30.sample()
@@ -108,5 +109,5 @@ class GasesSampler(Sampler):
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{runner:%s, tag:%s, mpl115a2:%s, scd30:%s, sht:%s}" % \
-                    (self.runner, self.__tag, self.__mpl115a2, self.__scd30, self.__sht)
+        return "GasesSampler:{runner:%s, tag:%s, barometer:%s, scd30:%s, sht:%s}" % \
+                    (self.runner, self.__tag, self.__barometer, self.__scd30, self.__sht)

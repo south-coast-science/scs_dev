@@ -8,7 +8,7 @@ Created on 20 Oct 2016
 
 import time
 
-from scs_core.climate.mpl115a2_conf import MPL115A2Conf
+from scs_core.climate.pressure_conf import PressureConf
 
 from scs_core.data.json import JSONify
 from scs_core.sync.timed_runner import TimedRunner
@@ -16,9 +16,7 @@ from scs_core.sys.system_id import SystemID
 
 from scs_dev.sampler.gases_sampler import GasesSampler
 
-from scs_dfe.climate.mpl115a2 import MPL115A2
 from scs_dfe.climate.sht_conf import SHTConf
-
 from scs_dfe.gas.scd30.scd30_conf import SCD30Conf
 from scs_dfe.interface.interface_conf import InterfaceConf
 
@@ -41,8 +39,8 @@ try:
     tag = None if system_id is None else system_id.message_tag()
 
     # MPL115A2...
-    mpl115a2_conf = MPL115A2Conf.load(Host)
-    mpl115a2 = None if mpl115a2_conf is None else MPL115A2(None)
+    pressure_conf = PressureConf.load(Host)
+    barometer = None if pressure_conf is None else pressure_conf.sensor(None)
 
     # NDIR...
     scd30_conf = SCD30Conf.load(Host)
@@ -61,7 +59,7 @@ try:
     # runner...
     runner = TimedRunner(0)
 
-    sampler = GasesSampler(runner, tag, mpl115a2, scd30, sht, gas_sensors)
+    sampler = GasesSampler(runner, tag, barometer, scd30, sht, gas_sensors)
     print(sampler)
     print("-")
 
