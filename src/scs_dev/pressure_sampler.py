@@ -6,10 +6,10 @@ Created on 21 Jun 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The pressure_sampler utility reads a MPL115A2 digital barometer. It reports pressure in kilopascals and temperature
-in Centigrade. The utility always reports the actual atmospheric pressure (pA). It additionally reports temperature
-and equivalent pressure at sea level (p0) depending on whether the host device's  altitude has been configured and the
-MPL115A2's temperature sensor has been calibrated.
+The pressure_sampler utility reads an ICP-10101 or MPL115A2 digital barometer. It reports pressure in kilopascals and
+temperature in Centigrade. The utility always reports the actual atmospheric pressure (pA). It additionally reports
+temperature and equivalent pressure at sea level (p0) depending on whether the host device's  altitude has been
+configured and the MPL115A2's temperature sensor has been calibrated.
 
 The pressure_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON document
 with fields for:
@@ -29,7 +29,7 @@ EXAMPLES
 
 FILES
 ~/SCS/conf/mpl115a2_calib.json
-~/SCS/conf/mpl115a2_conf.json
+~/SCS/conf/pressure_conf.json
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
@@ -39,7 +39,7 @@ DOCUMENT EXAMPLE - OUTPUT
 SEE ALSO
 scs_dev/scheduler
 scs_mfr/mpl115a2_calib
-scs_mfr/mpl115a2_conf
+scs_mfr/pressure_conf
 scs_mfr/schedule
 scs_mfr/system_id
 
@@ -50,7 +50,6 @@ https://en.wikipedia.org/wiki/ISO_8601
 import sys
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
-from scs_core.climate.mpl115a2_conf import MPL115A2Conf
 
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
@@ -63,7 +62,7 @@ from scs_core.sys.system_id import SystemID
 from scs_dev.cmd.cmd_sampler import CmdSampler
 from scs_dev.sampler.pressure_sampler import PressureSampler
 
-from scs_dfe.climate.mpl115a2 import MPL115A2
+from scs_dfe.climate.pressure_conf import PressureConf
 
 from scs_host.bus.i2c import I2C
 from scs_host.sync.schedule_runner import ScheduleRunner
@@ -85,7 +84,6 @@ if __name__ == '__main__':
     try:
         I2C.Sensors.open()
 
-
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -97,24 +95,24 @@ if __name__ == '__main__':
         if system_id and cmd.verbose:
             print("pressure_sampler: %s" % system_id, file=sys.stderr)
 
-        # MPL115A2Conf...
-        conf = MPL115A2Conf.load(Host)
+        # PressureConf...
+        conf = PressureConf.load(Host)
 
         if conf is None:
-            print("pressure_sampler: MPL115A2Conf not available.", file=sys.stderr)
+            print("pressure_sampler: PressureConf not available.", file=sys.stderr)
             exit(1)
 
         if cmd.verbose:
             print("pressure_sampler: %s" % conf, file=sys.stderr)
 
         # MPL115A2Calib...
-        calib = MPL115A2Calib.load(Host)
+        mpl_calib = MPL115A2Calib.load(Host)
 
-        if cmd.verbose and calib is not None:
-            print("pressure_sampler: %s" % calib, file=sys.stderr)
+        if cmd.verbose and mpl_calib is not None:
+            print("pressure_sampler: %s" % mpl_calib, file=sys.stderr)
 
-        # MPL115A2...
-        barometer = MPL115A2.construct(calib)
+        # barometer...
+        barometer = conf.sensor(mpl_calib)
 
         # sampler...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
