@@ -214,8 +214,8 @@ if __name__ == '__main__':
         # gas_sensors...
         a4_sensors = interface.gas_sensors(Host)
 
-        if a4_sensors:
-            logger.info(a4_sensors)
+        # if a4_sensors:
+        #     logger.info(a4_sensors)
 
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
@@ -238,6 +238,8 @@ if __name__ == '__main__':
             if schedule is None or schedule.item('scs-gases') is None:
                 logger.error("Schedule not available.")
                 exit(1)
+
+            logger.info(afe_calib)
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
