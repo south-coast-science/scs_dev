@@ -141,7 +141,7 @@ if __name__ == '__main__':
             publication = Publication(topic, payload)       # TODO: problem here?
 
             try:
-                writer.connect(wait_for_availability=True)
+                writer.connect()
                 writer.write(JSONify.dumps(publication))
 
             finally:

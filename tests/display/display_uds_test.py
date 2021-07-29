@@ -30,7 +30,7 @@ try:
         message = "test: %s" % now.as_iso8601()
 
         uds.connect()
-        uds.write(message, True)
+        uds.write(message)
 
         print(message, file=sys.stderr)
         sys.stderr.flush()

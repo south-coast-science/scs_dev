@@ -74,10 +74,10 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("socket_sender", cmd.verbose)
 
-        sender.connect(True)
+        sender.connect()
 
         for line in sys.stdin:
-            sender.write(line, True)
+            sender.write(line)
 
             if cmd.echo:
                 print(line.strip())
