@@ -123,6 +123,7 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: -v should show which sensor interfaces are being used
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
