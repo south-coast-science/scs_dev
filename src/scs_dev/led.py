@@ -87,7 +87,7 @@ if __name__ == '__main__':
 
         state = LEDState(cmd.solid, cmd.solid) if cmd.solid is not None else LEDState(cmd.flash[0], cmd.flash[1])
 
-        writer.connect(wait_for_availability=True)
+        writer.connect()
 
         try:
             writer.write(JSONify.dumps(state))
