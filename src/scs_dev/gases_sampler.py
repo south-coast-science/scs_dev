@@ -180,8 +180,7 @@ if __name__ == '__main__':
             logger.error("Interface not available.")
             exit(1)
 
-        if interface:
-            logger.info(interface)
+        logger.info(interface)
 
         # PressureConf...
         pressure_conf = PressureConf.load(Host)
@@ -214,16 +213,13 @@ if __name__ == '__main__':
         # gas_sensors...
         a4_sensors = interface.gas_sensors(Host)
 
-        if a4_sensors:
-            logger.info(a4_sensors)
-
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
 
         if inference_conf:
             logger.info(inference_conf)
 
-            # AFECalib...                           # TODO: will need to support DSICalib
+            # AFECalib...                           # TODO: will need to support 'DSICalib'?
             afe_calib = AFECalib.load(Host)
 
             if afe_calib is None:
@@ -238,6 +234,8 @@ if __name__ == '__main__':
             if schedule is None or schedule.item('scs-gases') is None:
                 logger.error("Schedule not available.")
                 exit(1)
+
+            logger.info(afe_calib)
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
