@@ -217,7 +217,7 @@ if __name__ == '__main__':
 
             # direct echo...
             if writer.writing_inhibited:
-                logger.error("no CSV access (%s)" % str(cmd.topic))
+                logger.error("no CSV access")
 
                 print(jstr)
                 sys.stdout.flush()
