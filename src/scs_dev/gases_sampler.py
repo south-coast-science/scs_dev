@@ -123,7 +123,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: -v should show which sensor interfaces are being used
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -181,8 +180,7 @@ if __name__ == '__main__':
             logger.error("Interface not available.")
             exit(1)
 
-        if interface:
-            logger.info(interface)
+        logger.info(interface)
 
         # PressureConf...
         pressure_conf = PressureConf.load(Host)
@@ -215,16 +213,13 @@ if __name__ == '__main__':
         # gas_sensors...
         a4_sensors = interface.gas_sensors(Host)
 
-        # if a4_sensors:
-        #     logger.info(a4_sensors)
-
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
 
         if inference_conf:
             logger.info(inference_conf)
 
-            # AFECalib...                           # TODO: will need to support DSICalib
+            # AFECalib...                           # TODO: will need to support 'DSICalib'?
             afe_calib = AFECalib.load(Host)
 
             if afe_calib is None:
