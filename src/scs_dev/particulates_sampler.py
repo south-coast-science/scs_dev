@@ -84,6 +84,8 @@ from scs_core.data.json import JSONify
 
 from scs_core.model.pmx.pmx_model_conf import PMxModelConf
 
+from scs_core.particulate.opc_version import OPCVersion
+
 from scs_core.sample.particulates_sample import ParticulatesSample
 
 from scs_core.sync.schedule import Schedule
@@ -225,6 +227,10 @@ if __name__ == '__main__':
         SignalledExit.construct("particulates_sampler", cmd.verbose)
 
         sampler.start()
+
+        # update OPCVersion...
+        version = OPCVersion(opc_monitor.opc.serial_no(), opc_monitor.opc.firmware(), name=cmd.name)
+        version.save(Host)
 
         for opc_sample in sampler.samples():
             if opc_sample is None:
