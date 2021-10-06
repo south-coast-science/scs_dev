@@ -45,14 +45,11 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"rec": "2021-05-21T08:21:55Z", "tag": "scs-opc-1", "val": {"tz": {"name": "Europe/London", "utc-offset": "+01:00"},
-"gps": {"pos": [null, null], "elv": null, "qual": 0}, "sch": {"scs-climate": {"interval": 10.0, "tally": 1},
-"scs-gases": {"interval": 10.0, "tally": 1}, "scs-particulates": {"interval": 10.0, "tally": 1},
-"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 31.4},
-"up": {"period": "00-01:52:00", "users": 2, "load": {"av1": 0.07, "av5": 0.18, "av15": 0.24}},
-"psu": {"src": "Cv1", "standby": false, "in": true, "pwr-in": 11.5, "chgr": "TFFF",
-"batt": {"chg": 4, "tte": null, "ttf": null}, "prot-batt": 4.1},
-"sig": {"quality": 73, "recent": true}}}
+{"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"tz": {"name": "Europe/London",
+"utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
+"sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
+"load": {"av1": 0.02, "av5": 0.34, "av15": 0.67}}, "sig": {"quality": null, "recent": null}}}
 
 SEE ALSO
 scs_dev/interface_power

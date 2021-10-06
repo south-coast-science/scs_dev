@@ -34,7 +34,8 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"tag": "scs-be2-3", "rec": "2018-06-21T16:13:52.675+00:00", "val": {"pA": 102.2, "p0": 113.8, "tmp": 25.6}}
+{"rec": "2021-10-06T11:34:18Z", "tag": "scs-be2-3", "ver": 1.00,
+"val": {"bar": {"pA": 102.3, "p0": 103.5, "tmp": 24.0}}}
 
 SEE ALSO
 scs_dev/scheduler
