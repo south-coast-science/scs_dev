@@ -40,7 +40,7 @@ FILES
 ~/SCS/conf/system_id.json
 
 DOCUMENT EXAMPLE - OUTPUT
-{"rec": "2021-10-06T11:06:38Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"hmd": 45.1, "tmp": 23.4,
+{"rec": "2021-10-06T11:06:38Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"hmd": 45.1, "tmp": 23.4,
 "bar": {"pA": 102.3, "p0": 103.5}}}
 
 SEE ALSO
