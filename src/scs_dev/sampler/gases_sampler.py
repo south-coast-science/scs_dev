@@ -34,6 +34,7 @@ class GasesSampler(Sampler):
         self.__sht = sht                                        # SHT31
         self.__sensor_interface = sensor_interface              # SensorInterface
 
+        self.__src = None if sensor_interface is None else sensor_interface.src()
         self.__logger = Logging.getLogger()
 
 
@@ -103,11 +104,11 @@ class GasesSampler(Sampler):
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
-        return GasesSample(self.__tag, recorded, scd30_datum, electrochem_datum, sht_datum)
+        return GasesSample(self.__tag, recorded, scd30_datum, electrochem_datum, sht_datum, src=self.__src)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "GasesSampler:{runner:%s, tag:%s, barometer:%s, scd30:%s, sht:%s}" % \
-                    (self.runner, self.__tag, self.__barometer, self.__scd30, self.__sht)
+        return "GasesSampler:{runner:%s, tag:%s, src:%s, barometer:%s, scd30:%s, sht:%s}" % \
+                    (self.runner, self.__tag, self.__src, self.__barometer, self.__scd30, self.__sht)
