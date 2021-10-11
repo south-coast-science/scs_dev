@@ -62,7 +62,7 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE - v1.0
+DOCUMENT EXAMPLE - v0
 {"rec": "2021-10-11T11:00:32Z", "tag": "scs-bgx-431",
 "val": {"CO2": {"cnc": 417.2}, "NO2": {"weV": 0.28388, "aeV": 0.27657, "weC": 1e-05, "cnc": 15.0},
 "Ox": {"weV": 0.40332, "aeV": 0.40332, "weC": 0.00015, "cnc": 43.4},
@@ -71,13 +71,14 @@ DOCUMENT EXAMPLE - v1.0
 "sht": {"hmd": 55.4, "tmp": 16.2}},
 "exg": {"vB20": {"NO2": {"cnc": 21.6}}}}
 
-DOCUMENT EXAMPLE - v2.0
-{"rec": "2021-10-11T10:59:40Z", "tag": "scs-be2-3", "ver": 2.0, "src": "AFE",
-"val": {"NO2": {"weV": 0.29057, "aeV": 0.29544, "weC": 0.00131, "cnc": 20.9, "vCal": 15.41},
-"Ox": {"weV": 0.40101, "aeV": 0.39969, "weC": 0.00235, "cnc": 55.7, "vCal": 6.61, "xCal": -0.390731},
-"CO": {"weV": 0.44069, "aeV": 0.30213, "weC": 0.16795, "cnc": 685.4, "vCal": 562.256},
-"sht": {"hmd": 52.9, "tmp": 21.9}},
-"exg": {"src": "vB20", "val": {"NO2": {"cnc": 19.3}}}}
+DOCUMENT EXAMPLE - v2
+{"rec": "2021-10-11T15:48:19Z", "tag": "scs-be2-3", "ver": 2.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.29019, "aeV": 0.29494, "weC": 0.00181, "cnc": 22.8, "vCal": 15.858},
+"Ox": {"weV": 0.40057, "aeV": 0.39907, "weC": 0.00083, "cnc": 51.4, "vCal": 7.123, "xCal": -0.389858},
+"CO": {"weV": 0.59401, "aeV": 0.27619, "weC": 0.29396, "cnc": 1159.1, "vCal": 1236.165},
+"sht": {"hmd": 49.3, "tmp": 22.9}},
+"exg": {"src": "vB20", "val": {"NO2": {"cnc": 22.5}}}}
+
 
 SEE ALSO
 scs_dev/scheduler

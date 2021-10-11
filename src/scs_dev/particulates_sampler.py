@@ -48,7 +48,7 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE - v1.0:
+DOCUMENT EXAMPLE - v0:
 {"rec": "2021-10-11T11:06:57Z", "tag": "scs-bgx-431", "src": "N3",
 "val": {"per": 4.1, "pm1": 1.7, "pm2p5": 6.3, "pm10": 24.1,
 "bin": [106, 31, 25, 5, 9, 5, 2, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -56,7 +56,7 @@ DOCUMENT EXAMPLE - v1.0:
 "sht": {"hmd": 37.3, "tmp": 23.8}},
 "exg": {"rn20": {"pm1": 3.6, "pm2p5": 5.5, "pm10": 27.1}}}
 
-DOCUMENT EXAMPLE - v2.0:
+DOCUMENT EXAMPLE - v2:
 {"rec": "2021-10-11T11:11:14Z", "tag": "scs-be2-3", "ver": 2.0, "src": "N3",
 "val": {"per": 4.1, "pm1": 0.7, "pm2p5": 3.2, "pm10": 33.3,
 "bin": [50, 24, 6, 2, 4, 2, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
