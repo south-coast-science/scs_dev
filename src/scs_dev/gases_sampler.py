@@ -95,6 +95,7 @@ from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 from scs_core.data.json import JSONify
 
 from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.a4.a4_calibrated_datum import A4Calibrator
 
 from scs_core.sample.gases_sample import GasesSample
 
@@ -126,6 +127,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    ox_calibrator = None
     interface = None
     client = None
     sampler = None
@@ -236,6 +238,10 @@ if __name__ == '__main__':
 
             logger.info(afe_calib)
 
+            ox_index = afe_calib.sensor_index('Ox')
+            ox_calib = None if ox_index is None else afe_calib.sensor_calib(ox_index)
+            ox_calibrator = None if ox_calib is None else A4Calibrator(ox_calib)
+
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
             client.wait_for_server()
@@ -284,6 +290,8 @@ if __name__ == '__main__':
                     continue
 
                 sample = GasesSample.construct_from_jdict(inference)
+
+                # sample.set_ox_v_x_zero_cal(ox_calibrator)
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
