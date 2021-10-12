@@ -62,12 +62,23 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE - OUTPUT
-{"rec": "2021-10-06T11:07:54Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"NO2": {"weV": 0.3165, "aeV": 0.31107,
-"weC": 0.00188, "cnc": 22.8, "vCal": 23.073}, "CO": {"weV": 0.32163, "aeV": 0.25675, "weC": 0.07677, "cnc": 314.2,
-"vCal": 288.201}, "SO2": {"weV": 0.26788, "aeV": 0.26538, "weC": -0.00217, "cnc": 17.9, "vCal": -1.408},
-"H2S": {"weV": 0.20525, "aeV": 0.26, "weC": -0.02327, "cnc": -7.3, "vCal": -34.211},
-"sht": {"hmd": 45.3, "tmp": 23.4}}, "exg": {"vB20": {"NO2": {"cnc": 13.7}}}}
+DOCUMENT EXAMPLE - v0
+{"rec": "2021-10-11T11:00:32Z", "tag": "scs-bgx-431",
+"val": {"CO2": {"cnc": 417.2}, "NO2": {"weV": 0.28388, "aeV": 0.27657, "weC": 1e-05, "cnc": 15.0},
+"Ox": {"weV": 0.40332, "aeV": 0.40332, "weC": 0.00015, "cnc": 43.4},
+"NO": {"weV": 0.29882, "aeV": 0.28919, "weC": 0.01382, "cnc": -192.2},
+"CO": {"weV": 0.30882, "aeV": 0.27632, "weC": 0.01929, "cnc": 4.1},
+"sht": {"hmd": 55.4, "tmp": 16.2}},
+"exg": {"vB20": {"NO2": {"cnc": 21.6}}}}
+
+DOCUMENT EXAMPLE - v2
+{"rec": "2021-10-11T15:48:19Z", "tag": "scs-be2-3", "ver": 2.0, "src": "AFE",
+"val": {"NO2": {"weV": 0.29019, "aeV": 0.29494, "weC": 0.00181, "cnc": 22.8, "vCal": 15.858},
+"Ox": {"weV": 0.40057, "aeV": 0.39907, "weC": 0.00083, "cnc": 51.4, "vCal": 7.123, "xCal": -0.389858},
+"CO": {"weV": 0.59401, "aeV": 0.27619, "weC": 0.29396, "cnc": 1159.1, "vCal": 1236.165},
+"sht": {"hmd": 49.3, "tmp": 22.9}},
+"exg": {"src": "vB20", "val": {"NO2": {"cnc": 22.5}}}}
+
 
 SEE ALSO
 scs_dev/scheduler
@@ -95,6 +106,7 @@ from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 from scs_core.data.json import JSONify
 
 from scs_core.gas.afe_calib import AFECalib
+from scs_core.gas.a4.a4_calibrated_datum import A4Calibrator
 
 from scs_core.sample.gases_sample import GasesSample
 
@@ -126,6 +138,7 @@ from scs_host.sys.host import Host
 
 if __name__ == '__main__':
 
+    ox_calibrator = None
     interface = None
     client = None
     sampler = None
@@ -236,6 +249,10 @@ if __name__ == '__main__':
 
             logger.info(afe_calib)
 
+            ox_index = afe_calib.sensor_index('Ox')
+            ox_calib = None if ox_index is None else afe_calib.sensor_calib(ox_index)
+            ox_calibrator = None if ox_calib is None else A4Calibrator(ox_calib)
+
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
             client.wait_for_server()
@@ -284,6 +301,8 @@ if __name__ == '__main__':
                     continue
 
                 sample = GasesSample.construct_from_jdict(inference)
+
+                # sample.set_ox_v_x_zero_cal(ox_calibrator)
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
