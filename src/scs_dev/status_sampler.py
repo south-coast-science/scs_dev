@@ -44,8 +44,15 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE - OUTPUT
-{"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "ver": 1.00, "val": {"tz": {"name": "Europe/London",
+DOCUMENT EXAMPLE - v0
+{"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "val": {"tz": {"name": "Europe/London",
+"utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
+"sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
+"load": {"av1": 0.02, "av5": 0.34, "av15": 0.67}}, "sig": {"quality": null, "recent": null}}}
+
+DOCUMENT EXAMPLE - v1
+{"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"tz": {"name": "Europe/London",
 "utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
 "scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
