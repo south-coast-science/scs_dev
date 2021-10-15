@@ -255,6 +255,9 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
+            print("-")
+            print(client)
+            print("-")
             client.wait_for_server()
 
         # sampler...
