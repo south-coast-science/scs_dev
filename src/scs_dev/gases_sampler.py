@@ -254,7 +254,7 @@ if __name__ == '__main__':
             ox_calibrator = None if ox_calib is None else A4Calibrator(ox_calib)
 
             # inference client...
-            client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'), afe_calib)
+            client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
             print("-")
             print(client)
             print("-")
