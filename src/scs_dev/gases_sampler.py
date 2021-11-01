@@ -255,9 +255,6 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
-            print("-")
-            print(client)
-            print("-")
             client.wait_for_server()
 
         # sampler...
@@ -289,9 +286,12 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
-            if cmd.semaphore and scd30 and first_run:               # the first SCD30 reading is unreliable
+            if first_run:
                 first_run = False
-                continue
+                logger.info("greengrass model: %s" % client.model_name())
+
+                if cmd.semaphore:
+                    continue
 
             logger.info("       rec: %s" % sample.rec.as_time())
 
