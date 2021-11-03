@@ -46,7 +46,7 @@ controlled by an independent scheduling process via a Unix semaphore.
 Support for the Alphasense NDIR was withdrawn on 9 Sep 2020.
 
 SYNOPSIS
-gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -v | -d }]
 
 EXAMPLES
 ./gases_sampler.py -i10
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     # logging...
-    Logging.config('gases_sampler', verbose=cmd.verbose)
+    Logging.config('gases_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
 
     logger.info(cmd)

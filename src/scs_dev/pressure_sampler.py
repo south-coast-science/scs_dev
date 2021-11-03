@@ -22,7 +22,7 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-pressure_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+pressure_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -v | -d }]
 
 EXAMPLES
 ./pressure_sampler.py -i10
@@ -57,11 +57,11 @@ import sys
 
 from scs_core.climate.mpl115a2_calib import MPL115A2Calib
 
-from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
 from scs_core.sync.timed_runner import TimedRunner
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -84,8 +84,11 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
-    if cmd.verbose:
-        print("pressure_sampler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('climate_sampler', level=cmd.log_level())
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Sensors.open()
@@ -98,24 +101,23 @@ if __name__ == '__main__':
 
         tag = None if system_id is None else system_id.message_tag()
 
-        if system_id and cmd.verbose:
-            print("pressure_sampler: %s" % system_id, file=sys.stderr)
+        if system_id:
+            logger.info(system_id)
 
         # PressureConf...
         conf = PressureConf.load(Host)
 
         if conf is None:
-            print("pressure_sampler: PressureConf not available.", file=sys.stderr)
+            logger.error("PressureConf not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("pressure_sampler: %s" % conf, file=sys.stderr)
+        logger.info(conf)
 
         # MPL115A2Calib...
         mpl_calib = MPL115A2Calib.load(Host)
 
-        if cmd.verbose and mpl_calib is not None:
-            print("pressure_sampler: %s" % mpl_calib, file=sys.stderr)
+        if mpl_calib is not None:
+            logger.info(mpl_calib)
 
         # barometer...
         barometer = conf.sensor(mpl_calib)
@@ -126,9 +128,7 @@ if __name__ == '__main__':
 
         sampler = PressureSampler(runner, tag, barometer, conf.altitude)
 
-        if cmd.verbose:
-            print("pressure_sampler: %s" % sampler, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(sampler)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -140,10 +140,8 @@ if __name__ == '__main__':
         sampler.init()
 
         for sample in sampler.samples():
-            if cmd.verbose:
-                now = LocalizedDatetime.now().utc()
-                print("%s:     pressure: %s" % (now.as_time(), sample.rec.as_time()), file=sys.stderr)
-                sys.stderr.flush()
+            # report...
+            logger.info("rec: %s" % sample.rec.as_time())
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
@@ -153,13 +151,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("pressure_sampler: %s" % ex, file=sys.stderr)
+        logger.error(ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("pressure_sampler: finishing", file=sys.stderr)
+        if cmd:
+            logger.info("finishing")
 
         I2C.Sensors.close()

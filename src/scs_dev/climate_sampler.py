@@ -27,7 +27,7 @@ South Coast Science equipment may carry one or two SHT sensors. The configuratio
 scs_mfr/sht_conf utility.
 
 SYNOPSIS
-climate_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+climate_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -v | -d }]
 
 EXAMPLES
 ./climate_sampler.py -i10
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     # logging...
-    Logging.config('climate_sampler', verbose=cmd.verbose)
+    Logging.config('climate_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
 
     logger.info(cmd)

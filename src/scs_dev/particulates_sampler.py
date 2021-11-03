@@ -38,7 +38,7 @@ Command-line options allow for single-shot reading, multiple readings with speci
 controlled by an independent scheduling process via a Unix semaphore.
 
 SYNOPSIS
-particulates_sampler.py [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [-v]
+particulates_sampler.py [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [{ -v | -d }]
 
 EXAMPLES
 ./particulates_sampler.py -v -f /home/pi/SCS/conf/opc_conf_cs1.json
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     # logging...
-    Logging.config('particulates_sampler', verbose=cmd.verbose)
+    Logging.config('particulates_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
 
     logger.info(cmd)
