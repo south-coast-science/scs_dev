@@ -4,6 +4,7 @@ Created on 13 Jul 2016
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
+import logging
 import optparse
 
 
@@ -17,7 +18,7 @@ class CmdSampler(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] "
-                                                    "[-v]", version="%prog 1.0")
+                                                    "[{ -v | -d }]", version="%prog 1.0")
 
         # optional...
         self.__parser.add_option("--name", "-n", type="string", nargs=1, action="store", dest="name",
@@ -35,6 +36,9 @@ class CmdSampler(object):
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        self.__parser.add_option("--debug", "-d", action="store_true", dest="debug", default=False,
+                                 help="report detailed narrative to stderr")
+
         self.__opts, self.__args = self.__parser.parse_args()
 
 
@@ -47,7 +51,20 @@ class CmdSampler(object):
         if self.__opts.interval is None and self.__opts.samples is not None:
             return False
 
+        if self.verbose and self.debug:
+            return False
+
         return True
+
+
+    def log_level(self):
+        if self.debug:
+            return logging.DEBUG
+
+        if self.verbose:
+            return logging.INFO
+
+        return logging.ERROR
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -77,6 +94,11 @@ class CmdSampler(object):
         return self.__opts.verbose
 
 
+    @property
+    def debug(self):
+        return self.__opts.debug
+
+
     # ----------------------------------------------------------------------------------------------------------------
 
     def print_help(self, file):
@@ -84,5 +106,5 @@ class CmdSampler(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdSampler:{name:%s, semaphore:%s, interval:%s, samples:%s, verbose:%s}" % \
-                    (self.name, self.semaphore, self.interval, self.samples, self.verbose)
+        return "CmdSampler:{name:%s, semaphore:%s, interval:%s, samples:%s, verbose:%s, debug:%s}" % \
+                    (self.name, self.semaphore, self.interval, self.samples, self.verbose, self.debug)

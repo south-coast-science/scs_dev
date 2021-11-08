@@ -46,7 +46,7 @@ controlled by an independent scheduling process via a Unix semaphore.
 Support for the Alphasense NDIR was withdrawn on 9 Sep 2020.
 
 SYNOPSIS
-gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]
+gases_sampler.py [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [{ -v | -d }]
 
 EXAMPLES
 ./gases_sampler.py -i10
@@ -156,7 +156,7 @@ if __name__ == '__main__':
     cmd = CmdSampler()
 
     # logging...
-    Logging.config('gases_sampler', verbose=cmd.verbose)
+    Logging.config('gases_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
 
     logger.info(cmd)
@@ -255,9 +255,6 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
-            print("-")
-            print(client)
-            print("-")
             client.wait_for_server()
 
         # sampler...
@@ -289,9 +286,12 @@ if __name__ == '__main__':
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
         for sample in sampler.samples():
-            if cmd.semaphore and scd30 and first_run:               # the first SCD30 reading is unreliable
+            if first_run:
                 first_run = False
-                continue
+                logger.info("greengrass model: %s" % client.model_name())
+
+                if cmd.semaphore:
+                    continue
 
             logger.info("       rec: %s" % sample.rec.as_time())
 
