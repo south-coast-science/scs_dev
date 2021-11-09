@@ -288,7 +288,8 @@ if __name__ == '__main__':
         for sample in sampler.samples():
             if first_run:
                 first_run = False
-                logger.info("greengrass model: %s" % client.model_name())
+                if inference_conf:
+                    logger.info("greengrass model: %s" % client.model_name())
 
                 if cmd.semaphore:
                     continue
