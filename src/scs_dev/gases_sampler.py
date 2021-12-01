@@ -329,7 +329,10 @@ if __name__ == '__main__':
             client.close()
 
         if scd30:
-            scd30.stop_periodic_measurement()
+            try:
+                scd30.stop_periodic_measurement()
+            except OSError:
+                pass
 
         if interface:
             interface.power_gases(False)
