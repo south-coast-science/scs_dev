@@ -235,16 +235,16 @@ if __name__ == '__main__':
             afe_calib = AFECalib.load(Host)
 
             if afe_calib is None:
-                logger.error("AFECalib not available.")
+                logger.error("inference: AFECalib not available.")
                 exit(1)
 
             if afe_calib.calibrated_on is None:
-                logger.error("AFECalib has no calibration date.")
+                logger.error("inference: AFECalib has no calibration date.")
                 exit(1)
 
             # slope regression...
             if schedule is None or schedule.item('scs-gases') is None:
-                logger.error("Schedule not available.")
+                logger.error("inference: Schedule not available.")
                 exit(1)
 
             logger.info(afe_calib)
