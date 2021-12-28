@@ -84,6 +84,7 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print("aws_topic_publisher: %s" % cmd, file=sys.stderr)
+        sys.stderr.flush()
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -138,7 +139,7 @@ if __name__ == '__main__':
 
             payload = jdict
 
-            publication = Publication(topic, payload)       # TODO: problem here?
+            publication = Publication(topic, payload)
 
             try:
                 writer.connect()
