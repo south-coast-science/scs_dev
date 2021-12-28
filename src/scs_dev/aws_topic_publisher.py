@@ -84,6 +84,7 @@ if __name__ == '__main__':
 
     if cmd.verbose:
         print("aws_topic_publisher: %s" % cmd, file=sys.stderr)
+        sys.stderr.flush()
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -131,6 +132,9 @@ if __name__ == '__main__':
         SignalledExit.construct("aws_topic_publisher (%s)" % topic, cmd.verbose)
 
         for line in sys.stdin:
+            print("aws_topic_publisher: line: %s" % line.strip(), file=sys.stderr)
+            sys.stderr.flush()
+
             try:
                 jdict = json.loads(line, object_hook=OrderedDict)
             except ValueError:
@@ -138,7 +142,7 @@ if __name__ == '__main__':
 
             payload = jdict
 
-            publication = Publication(topic, payload)       # TODO: problem here?
+            publication = Publication(topic, payload)
 
             try:
                 writer.connect()
