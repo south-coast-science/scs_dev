@@ -83,7 +83,6 @@ from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
 from scs_host.sys.host import Host
 
 
-# TODO: writing should be possible even if the reader's queue builder has not yet got a response from the cloud
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
