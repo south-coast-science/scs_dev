@@ -53,6 +53,7 @@ from scs_host.sys.host import Host
 from scs_psu.psu.psu_conf import PSUConf
 
 
+# TODO: add mode where shutdown happens N minutes since DC in
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
