@@ -157,7 +157,10 @@ if __name__ == '__main__':
         opc_conf = OPCConf.load(Host, name=cmd.name)
 
         if opc_conf is None:
-            logger.error("OPCConf not available.")
+            if cmd.name:
+                logger.error("OPCConf '%s' not available." % cmd.name)
+            else:
+                logger.error("OPCConf not available.")
             exit(1)
 
         if 0 < cmd.interval < opc_conf.sample_period:
@@ -206,7 +209,9 @@ if __name__ == '__main__':
         opc_monitor = opc_conf.opc_monitor(interface, Host)
 
         # runner...
-        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
+        samples = None if cmd.samples is None else cmd.samples + 1      # first OPC reading is discarded?
+
+        runner = TimedRunner(cmd.interval, samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
         # sampler...
