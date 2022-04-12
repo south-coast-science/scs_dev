@@ -255,6 +255,8 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
+            logger.info(client)
+
             client.wait_for_server()
 
         # sampler...
@@ -306,7 +308,7 @@ if __name__ == '__main__':
 
                 sample = GasesSample.construct_from_jdict(inference)
 
-                # sample.set_ox_v_x_zero_cal(ox_calibrator)
+                # sample.set_ox_vx_x_zero_cal(ox_calibrator)
 
             print(JSONify.dumps(sample))
             sys.stdout.flush()
