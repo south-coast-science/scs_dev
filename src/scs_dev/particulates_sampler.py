@@ -209,9 +209,7 @@ if __name__ == '__main__':
         opc_monitor = opc_conf.opc_monitor(interface, Host)
 
         # runner...
-        samples = None if cmd.samples is None else cmd.samples + 1      # first OPC reading is discarded?
-
-        runner = TimedRunner(cmd.interval, samples) if cmd.semaphore is None \
+        runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
         # sampler...
