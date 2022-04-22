@@ -16,7 +16,7 @@ class CmdStatusSampler(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-n SAMPLES] }] [-v]",
+        self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [-v]",
                                               version="%prog 1.0")
 
         # optional...
@@ -26,8 +26,8 @@ class CmdStatusSampler(object):
         self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
                                  help="sampling interval in seconds")
 
-        self.__parser.add_option("--samples", "-n", type="int", nargs=1, action="store", dest="samples",
-                                 help="number of samples (1 if interval not specified)")
+        self.__parser.add_option("--samples", "-c", type="int", nargs=1, action="store", dest="samples",
+                                 help="sample count (1 if interval not specified)")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
