@@ -255,7 +255,7 @@ if __name__ == '__main__':
 
             # inference client...
             client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
-            logger.info(client)
+            logger.info(client.__class__.__name__)
 
             client.wait_for_server()
 

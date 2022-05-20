@@ -13,6 +13,8 @@ If the --config-interval flag is used, frequency of reporting is specified by th
 the reporting interval can be set explicitly with the --interval flag. Note that the frequency of polling for user
 and PSU events is hard-coded, and is typically every second.
 
+If no interval is specified, then the psu_monitor utility delivers one report and stops.
+
 Unless inhibited by the --no-output flag, the report is written to stdout. If the PSU configuration specifies a report
 file path, then the PSU status report is (also) written to this file. When the utility terminates, the file is deleted.
 
@@ -20,7 +22,7 @@ The status_sampler utility reads the PSU report file, if available. The psu_moni
 therefore be set to match the status_sampler reporting frequency.
 
 SYNOPSIS
-psu_monitor.py { -c | -i INTERVAL } [-x] [-o] [-v]
+psu_monitor.py [{ -c | -i INTERVAL } [-x] [-o]] [-v]
 
 EXAMPLES
 ./psu_monitor.py -i 60 -x
@@ -53,7 +55,7 @@ from scs_host.sys.host import Host
 from scs_psu.psu.psu_conf import PSUConf
 
 
-# TODO: add mode where shutdown happens N minutes since DC in
+# TODO: add mode where shutdown happens N minutes since DC in?
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -133,6 +135,9 @@ if __name__ == '__main__':
             if cmd.output:
                 print(JSONify.dumps(status.as_json()))
                 sys.stdout.flush()
+
+            if cmd.single_shot_mode():
+                break
 
 
     # ----------------------------------------------------------------------------------------------------------------
