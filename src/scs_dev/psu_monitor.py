@@ -22,7 +22,7 @@ The status_sampler utility reads the PSU report file, if available. The psu_moni
 therefore be set to match the status_sampler reporting frequency.
 
 SYNOPSIS
-psu_monitor.py [{ -c | -i INTERVAL }] [-x] [-o] [-v]
+psu_monitor.py [{ -c | -i INTERVAL } [-x] [-o]] [-v]
 
 EXAMPLES
 ./psu_monitor.py -i 60 -x

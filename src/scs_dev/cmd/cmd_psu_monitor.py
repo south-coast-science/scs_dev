@@ -20,7 +20,7 @@ class CmdPSUMonitor(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL }] [-x] [-o] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL } [-x] [-o]] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
@@ -46,6 +46,9 @@ class CmdPSUMonitor(object):
 
     def is_valid(self):
         if self.config_interval and self.__opts.interval is not None:
+            return False
+
+        if self.single_shot_mode() and (self.ignore_standby or self.__opts.no_output):
             return False
 
         return True
