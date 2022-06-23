@@ -84,7 +84,7 @@ SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
 scs_mfr/afe_calib
-scs_mfr/gas_inference_conf
+scs_mfr/gas_model_conf
 scs_mfr/interface_conf
 scs_mfr/scd30_baseline
 scs_mfr/scd30_conf
