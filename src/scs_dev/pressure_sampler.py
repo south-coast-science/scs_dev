@@ -84,6 +84,10 @@ if __name__ == '__main__':
 
     cmd = CmdSampler()
 
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
     # logging...
     Logging.config('climate_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
