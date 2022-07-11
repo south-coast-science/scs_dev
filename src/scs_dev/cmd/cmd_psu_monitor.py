@@ -12,8 +12,6 @@ import optparse
 class CmdPSUMonitor(object):
     """unix command line handler"""
 
-    __SINGLE_SHOT_INTERVAL = 10.0
-
     # ----------------------------------------------------------------------------------------------------------------
 
     def __init__(self):
@@ -67,7 +65,7 @@ class CmdPSUMonitor(object):
 
     @property
     def interval(self):
-        return self.__SINGLE_SHOT_INTERVAL if self.__opts.interval is None else self.__opts.interval
+        return 0 if self.__opts.interval is None else self.__opts.interval
 
 
     @property
