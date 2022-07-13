@@ -112,6 +112,7 @@ if __name__ == '__main__':
             exit(1)
 
         interval = psu_conf.reporting_interval if cmd.config_interval else cmd.interval
+        # interval = cmd.interval if cmd.interval is not None else psu_conf.reporting_interval
 
         timer = IntervalTimer(interval)
 
@@ -123,6 +124,8 @@ if __name__ == '__main__':
         SignalledExit.construct("psu_monitor", cmd.verbose)
 
         psu_monitor.start()
+
+        # TODO: wait for 1 second then reset the timer
 
         while timer.true():
             status = psu_monitor.sample()

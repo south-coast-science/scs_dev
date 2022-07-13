@@ -89,7 +89,7 @@ if __name__ == '__main__':
         exit(2)
 
     # logging...
-    Logging.config('climate_sampler', level=cmd.log_level())
+    Logging.config('pressure_sampler', level=cmd.log_level())
     logger = Logging.getLogger()
 
     logger.info(cmd)
