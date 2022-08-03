@@ -79,7 +79,6 @@ DOCUMENT EXAMPLE - v2
 "sht": {"hmd": 49.3, "tmp": 22.9}},
 "exg": {"src": "vB20", "val": {"NO2": {"cnc": 22.5}}}}
 
-
 SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
@@ -110,7 +109,7 @@ from scs_core.gas.a4.a4_calibrated_datum import A4Calibrator
 
 from scs_core.sample.gases_sample import GasesSample
 
-from scs_core.sync.schedule import Schedule
+from scs_core.sync.schedule import Schedule, ScheduleItem
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.logging import Logging
@@ -174,6 +173,7 @@ if __name__ == '__main__':
 
         # Schedule...
         schedule = Schedule.load(Host)
+        semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -246,19 +246,26 @@ if __name__ == '__main__':
                 logger.error("inference: AFECalib has no calibration date.")
                 exit(1)
 
-            # slope regression...
-            if schedule is None or schedule.item('scs-gases') is None:
-                logger.error("inference: Schedule not available.")
-                exit(1)
-
-            logger.info(afe_calib)
-
             ox_index = afe_calib.sensor_index('Ox')
             ox_calib = None if ox_index is None else afe_calib.sensor_calib(ox_index)
             ox_calibrator = None if ox_calib is None else A4Calibrator(ox_calib)
 
+            logger.info(afe_calib)
+
+            # slope regression...
+            if cmd.interval:
+                schedule_item = ScheduleItem(semaphore, cmd.interval, 1)
+
+            elif schedule and schedule.item(semaphore):
+                schedule_item = schedule.item(semaphore)
+
+            else:
+                schedule_item = ScheduleItem(semaphore, 10, 1)
+
+            logger.info("schedule for inference: %s" % schedule_item)
+
             # inference client...
-            client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
+            client = inference_conf.client(Host, DomainSocket, schedule_item)
             logger.info(client.__class__.__name__)
 
             client.wait_for_server()
