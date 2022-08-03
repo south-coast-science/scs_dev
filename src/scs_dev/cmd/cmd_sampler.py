@@ -45,7 +45,7 @@ class CmdSampler(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if self.__opts.semaphore is not None and self.__opts.interval is not None:
+        if self.__opts.semaphore is not None and (self.__opts.interval is not None or self.__opts.samples is not None):
             return False
 
         if self.__opts.interval is None and self.__opts.samples is not None:

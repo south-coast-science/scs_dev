@@ -79,7 +79,6 @@ DOCUMENT EXAMPLE - v2
 "sht": {"hmd": 49.3, "tmp": 22.9}},
 "exg": {"src": "vB20", "val": {"NO2": {"cnc": 22.5}}}}
 
-
 SEE ALSO
 scs_dev/scheduler
 scs_mfr/afe_baseline
@@ -174,7 +173,7 @@ if __name__ == '__main__':
 
         # Schedule...
         schedule = Schedule.load(Host)
-        semaphore = 'scs-gases' if cmd.semaphore is None else cmd.semaphore
+        semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
 
         # SystemID...
         system_id = SystemID.load(Host)
