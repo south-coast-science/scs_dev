@@ -174,6 +174,7 @@ if __name__ == '__main__':
 
         # Schedule...
         schedule = Schedule.load(Host)
+        semaphore = 'scs-gases' if cmd.semaphore is None else cmd.semaphore
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -254,13 +255,13 @@ if __name__ == '__main__':
 
             # slope regression...
             if cmd.interval:
-                schedule_item = ScheduleItem('scs-gases', cmd.interval, 1)
+                schedule_item = ScheduleItem(semaphore, cmd.interval, 1)
 
-            elif schedule and schedule.item('scs-gases'):
-                schedule_item = schedule.item('scs-gases')
+            elif schedule and schedule.item(semaphore):
+                schedule_item = schedule.item(semaphore)
 
             else:
-                schedule_item = ScheduleItem('scs-gases', 10, 1)
+                schedule_item = ScheduleItem(semaphore, 10, 1)
 
             logger.info("schedule for inference: %s" % schedule_item)
 
