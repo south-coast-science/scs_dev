@@ -110,7 +110,7 @@ from scs_core.gas.a4.a4_calibrated_datum import A4Calibrator
 
 from scs_core.sample.gases_sample import GasesSample
 
-from scs_core.sync.schedule import Schedule
+from scs_core.sync.schedule import Schedule, ScheduleItem
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.logging import Logging
@@ -246,19 +246,26 @@ if __name__ == '__main__':
                 logger.error("inference: AFECalib has no calibration date.")
                 exit(1)
 
-            # slope regression...
-            if schedule is None or schedule.item('scs-gases') is None:
-                logger.error("inference: Schedule not available.")
-                exit(1)
-
-            logger.info(afe_calib)
-
             ox_index = afe_calib.sensor_index('Ox')
             ox_calib = None if ox_index is None else afe_calib.sensor_calib(ox_index)
             ox_calibrator = None if ox_calib is None else A4Calibrator(ox_calib)
 
+            logger.info(afe_calib)
+
+            # slope regression...
+            if cmd.interval:
+                schedule_item = ScheduleItem('scs-gases', cmd.interval, 1)
+
+            elif schedule and schedule.item('scs-gases'):
+                schedule_item = schedule.item('scs-gases')
+
+            else:
+                schedule_item = ScheduleItem('scs-gases', 10, 1)
+
+            logger.info("schedule for inference: %s" % schedule_item)
+
             # inference client...
-            client = inference_conf.client(Host, DomainSocket, schedule.item('scs-gases'))
+            client = inference_conf.client(Host, DomainSocket, schedule_item)
             logger.info(client.__class__.__name__)
 
             client.wait_for_server()
