@@ -97,9 +97,7 @@ class GasesSampler(Sampler):
             sht_datum = self.__sht.null_datum()
 
         try:
-            electrochem_datum = None if self.__sensor_interface is None else \
-                self.__sensor_interface.sample(sht_datum)
-
+            electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
         except OSError:
             # noinspection PyUnresolvedReferences
             electrochem_datum = self.__sensor_interface.null_datum()
