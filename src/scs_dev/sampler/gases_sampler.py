@@ -29,10 +29,10 @@ class GasesSampler(Sampler):
 
         self.__tag = tag
 
-        self.__barometer = barometer                            # ICP10101 or MPL115A2
-        self.__scd30 = scd30                                    # SCD30
-        self.__sht = sht                                        # SHT31
-        self.__sensor_interface = sensor_interface              # SensorInterface
+        self.__barometer = barometer                                # ICP10101 or MPL115A2
+        self.__scd30 = scd30                                        # SCD30
+        self.__sht = sht                                            # SHT31
+        self.__sensor_interface = sensor_interface                  # GasSensorInterface
 
         self.__src = None if sensor_interface is None else sensor_interface.src()
         self.__logger = Logging.getLogger()
