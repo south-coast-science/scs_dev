@@ -227,7 +227,7 @@ if __name__ == '__main__':
             logger.info(sht_conf)
 
         # gas_sensors...
-        a4_sensors = interface.gas_sensors(Host)
+        gas_sensor_interface = interface.gas_sensor_interface(Host)
 
         # GasModelConf...
         inference_conf = GasModelConf.load(Host)
@@ -235,7 +235,7 @@ if __name__ == '__main__':
         if inference_conf:
             logger.info(inference_conf)
 
-            # AFECalib...                           # TODO: will need to support 'DSICalib'?
+            # AFECalib...
             afe_calib = AFECalib.load(Host)
 
             if afe_calib is None:
@@ -274,7 +274,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = GasesSampler(runner, tag, barometer, scd30, sht, a4_sensors)
+        sampler = GasesSampler(runner, tag, barometer, scd30, sht, gas_sensor_interface)
 
         logger.info(sampler)
 
