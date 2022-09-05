@@ -118,6 +118,10 @@ if __name__ == '__main__':
 
     cmd = CmdStatusSampler()
 
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
+
     # logging...
     Logging.config('status_sampler', verbose=cmd.verbose)
     logger = Logging.getLogger()

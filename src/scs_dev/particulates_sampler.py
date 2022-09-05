@@ -115,7 +115,6 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
-# TODO: whole system needs a shutdown / reboot if OPC is giving CRC errors? (Parasitic power is keeping the OPC alive?)
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -131,6 +130,10 @@ if __name__ == '__main__':
     # cmd...
 
     cmd = CmdSampler()
+
+    if not cmd.is_valid():
+        cmd.print_help(sys.stderr)
+        exit(2)
 
     # logging...
     Logging.config('particulates_sampler', level=cmd.log_level())

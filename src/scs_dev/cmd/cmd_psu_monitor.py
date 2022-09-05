@@ -12,11 +12,13 @@ import optparse
 class CmdPSUMonitor(object):
     """unix command line handler"""
 
+    # ----------------------------------------------------------------------------------------------------------------
+
     def __init__(self):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -c | -i INTERVAL } [-x] [-o] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL } [-x] [-o]] [-v]", version="%prog 1.0")
 
         # compulsory...
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
@@ -41,13 +43,17 @@ class CmdPSUMonitor(object):
     # ----------------------------------------------------------------------------------------------------------------
 
     def is_valid(self):
-        if not self.config_interval and self.interval is None:
+        if self.config_interval and self.__opts.interval is not None:
             return False
 
-        if self.config_interval and self.interval is not None:
+        if self.single_shot_mode() and (self.ignore_standby or self.__opts.no_output):
             return False
 
         return True
+
+
+    def single_shot_mode(self):
+        return not self.config_interval and self.__opts.interval is None
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -59,7 +65,7 @@ class CmdPSUMonitor(object):
 
     @property
     def interval(self):
-        return self.__opts.interval
+        return 0 if self.__opts.interval is None else self.__opts.interval
 
 
     @property
@@ -84,5 +90,7 @@ class CmdPSUMonitor(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPSUMonitor:{config_interval:%s, interval:%s, ignore_standby:%s, no_output:%s, verbose:%s}" % \
-                    (self.config_interval, self.interval, self.ignore_standby, self.__opts.no_output, self.verbose)
+        return "CmdPSUMonitor:{config_interval:%s, interval:%s, ignore_standby:%s, no_output:%s, " \
+               "verbose:%s}" % \
+                    (self.config_interval, self.__opts.interval, self.ignore_standby, self.__opts.no_output,
+                     self.verbose)
