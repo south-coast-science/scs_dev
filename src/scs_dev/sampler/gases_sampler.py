@@ -21,7 +21,7 @@ class GasesSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, barometer, scd30, sht, sensor_interface):
+    def __init__(self, runner, tag, barometer, scd30, sht, gas_sensor_interface):
         """
         Constructor
         """
@@ -29,12 +29,12 @@ class GasesSampler(Sampler):
 
         self.__tag = tag
 
-        self.__barometer = barometer                            # ICP10101 or MPL115A2
-        self.__scd30 = scd30                                    # SCD30
-        self.__sht = sht                                        # SHT31
-        self.__sensor_interface = sensor_interface              # SensorInterface
+        self.__barometer = barometer                                # ICP10101 or MPL115A2
+        self.__scd30 = scd30                                        # SCD30
+        self.__sht = sht                                            # SHT31
+        self.__gas_sensor_interface = gas_sensor_interface          # GasSensorInterface
 
-        self.__src = None if sensor_interface is None else sensor_interface.src()
+        self.__src = None if gas_sensor_interface is None else gas_sensor_interface.src()
         self.__logger = Logging.getLogger()
 
 
@@ -97,10 +97,12 @@ class GasesSampler(Sampler):
             sht_datum = self.__sht.null_datum()
 
         try:
-            electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
+            electrochem_datum = None if self.__gas_sensor_interface is None else \
+                self.__gas_sensor_interface.sample(sht_datum)
+
         except OSError:
             # noinspection PyUnresolvedReferences
-            electrochem_datum = self.__sensor_interface.null_datum()
+            electrochem_datum = self.__gas_sensor_interface.null_datum()
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
