@@ -12,10 +12,10 @@ The xx utility is used to
 #### SYNOPSIS
 xx
 
-| Options |   | 
-|:--------|---|
-| -h, --help | show this help message and exit |
-| -v, --verbose | report narrative to stderr |
+| Options       |                                 | 
+|:--------------|---------------------------------|
+| -h, --help    | show this help message and exit |
+| -v, --verbose | report narrative to stderr      |
 
 #### EXAMPLES
 ```

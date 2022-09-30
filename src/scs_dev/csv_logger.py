@@ -64,9 +64,9 @@ stdin to stdout from then on. No attempt is made to restart the reader process.
 """
 
 import sys
+import requests
 import time
 
-from scs_core.aws.client.api_auth import APIAuth
 from scs_core.aws.config.project import Project
 from scs_core.aws.manager.byline_manager import BylineManager
 
@@ -152,19 +152,8 @@ if __name__ == '__main__':
                     logger.error("csv_logger: no topic found for subject '%s'." % cmd.topic)
                     exit(2)
 
-            # APIAuth...
-            api_auth = APIAuth.load(Host)
-
-            if api_auth is None:
-                logger.error("APIAuth not available." % cmd.topic)
-                exit(1)
-
-            if api_auth.endpoint is None or api_auth.api_key is None:
-                logger.error("APIAuth is incomplete: %s" % api_auth)
-                exit(1)
-
             # CSVLogQueueBuilder...
-            manager = BylineManager(api_auth)
+            manager = BylineManager(requests)
             queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
 
             # CSVLogReader...
