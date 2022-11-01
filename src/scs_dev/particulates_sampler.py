@@ -22,7 +22,7 @@ the process power cycles the OPC if its laser safety control has tripped.
 The scs_mfr/opc_conf utility is used to specify the OPC model, background process sampling time, and OPC control
 power saving mode.
 
-When the particulates_sampler utility starts, it power cycles the OPC. When the utility stops, it stops operations
+When the particulates_sampler utility starts, it power-cycles the OPC. When the utility stops, it stops operations
 on the OPC, and stops the OPC fan.
 
 The particulates_sampler writes its output to stdout. As for all sensing utilities, the output format is a JSON
@@ -115,6 +115,7 @@ from scs_host.sync.schedule_runner import ScheduleRunner
 from scs_host.sys.host import Host
 
 
+# TODO: support "empty" OPCConf when no OPC is present?
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':

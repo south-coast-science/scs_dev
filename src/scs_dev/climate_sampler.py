@@ -110,10 +110,19 @@ if __name__ == '__main__':
         I2C.Sensors.open()
 
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
         # Schedule...
+
         schedule = Schedule.load(Host)
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            logger.info("no schedule - halted.")
+
+            while True:
+                time.sleep(60.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -158,16 +167,6 @@ if __name__ == '__main__':
 
         sampler = ClimateSampler(runner, tag, sht, barometer, altitude)
         logger.info(sampler)
-
-
-        # ------------------------------------------------------------------------------------------------------------
-        # check...
-
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            logger.info("no schedule - halted.")
-
-            while True:
-                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
