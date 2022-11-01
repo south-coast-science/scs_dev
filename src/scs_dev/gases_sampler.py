@@ -169,11 +169,20 @@ if __name__ == '__main__':
         I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
         # Schedule...
+
         schedule = Schedule.load(Host)
         semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            logger.info("no schedule - halted.")
+
+            while True:
+                time.sleep(60.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -277,16 +286,6 @@ if __name__ == '__main__':
         sampler = GasesSampler(runner, tag, barometer, scd30, sht, gas_sensor_interface)
 
         logger.info(sampler)
-
-
-        # ------------------------------------------------------------------------------------------------------------
-        # check...
-
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            logger.info("no schedule - halted.")
-
-            while True:
-                time.sleep(60.0)
 
 
         # ------------------------------------------------------------------------------------------------------------
