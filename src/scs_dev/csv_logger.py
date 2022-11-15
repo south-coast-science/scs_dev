@@ -116,14 +116,14 @@ if __name__ == '__main__':
         system_id = SystemID.load(Host)
 
         if system_id is None:
-            logger.error("SystemID not available." % cmd.topic)
+            logger.error("SystemID not available.")
             exit(1)
 
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
 
         if conf is None:
-            logger.error("CSVLoggerConf not available." % cmd.topic)
+            logger.error("CSVLoggerConf not available.")
             exit(1)
 
         # writer...
@@ -149,7 +149,7 @@ if __name__ == '__main__':
                 topic_path = project.subject_path(cmd.topic, system_id)
 
                 if topic_path is None:
-                    logger.error("csv_logger: no topic found for subject '%s'." % cmd.topic)
+                    logger.error("no topic found for subject.")
                     exit(2)
 
             # CSVLogQueueBuilder...
