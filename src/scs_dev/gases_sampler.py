@@ -297,15 +297,10 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
+        if inference_conf:
+            logger.info("greengrass model: %s" % client.model_name())
+
         for sample in sampler.samples():
-            if first_run:
-                first_run = False
-                if inference_conf:
-                    logger.info("greengrass model: %s" % client.model_name())
-
-                if cmd.semaphore:
-                    continue
-
             logger.info("       rec: %s" % sample.rec.as_time())
 
             # inference...
