@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
         logger.info(cmd)
 
+
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -143,7 +144,7 @@ if __name__ == '__main__':
                 project = Project.load(Host)
 
                 if project is None:
-                    logger.error("csv_logger: Project not available.")
+                    logger.error("Project not available.")
                     exit(1)
 
                 topic_path = project.subject_path(cmd.topic, system_id)
@@ -221,7 +222,7 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, RuntimeError) as ex:
-        logger.error(ex)
+        logger.error("%s: %s" % (ex.__class__.__name__, ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
