@@ -83,7 +83,6 @@ from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
 from scs_host.sys.host import Host
 
 
-# TODO: missing SD card reported strangely?
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
