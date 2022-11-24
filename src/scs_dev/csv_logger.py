@@ -195,8 +195,7 @@ if __name__ == '__main__':
                         raise TimeoutError("multiple write attempts failed")
 
             except Exception as ex:
-                logger.error("%s: %s" % (ex.__class__.__name__, ex))
-
+                logger.error(repr(ex))
                 writer.writing_inhibited = True
 
                 if reader:
@@ -222,7 +221,7 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, RuntimeError) as ex:
-        logger.error("%s: %s" % (ex.__class__.__name__, ex))
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
