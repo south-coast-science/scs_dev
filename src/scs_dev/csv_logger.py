@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
         logger.info(cmd)
 
+
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
@@ -116,14 +117,14 @@ if __name__ == '__main__':
         system_id = SystemID.load(Host)
 
         if system_id is None:
-            logger.error("SystemID not available." % cmd.topic)
+            logger.error("SystemID not available.")
             exit(1)
 
         # CSVLoggerConf...
         conf = CSVLoggerConf.load(Host)
 
         if conf is None:
-            logger.error("CSVLoggerConf not available." % cmd.topic)
+            logger.error("CSVLoggerConf not available.")
             exit(1)
 
         # writer...
@@ -143,13 +144,13 @@ if __name__ == '__main__':
                 project = Project.load(Host)
 
                 if project is None:
-                    logger.error("csv_logger: Project not available.")
+                    logger.error("Project not available.")
                     exit(1)
 
                 topic_path = project.subject_path(cmd.topic, system_id)
 
                 if topic_path is None:
-                    logger.error("csv_logger: no topic found for subject '%s'." % cmd.topic)
+                    logger.error("no topic found for subject.")
                     exit(2)
 
             # CSVLogQueueBuilder...
@@ -194,8 +195,7 @@ if __name__ == '__main__':
                         raise TimeoutError("multiple write attempts failed")
 
             except Exception as ex:
-                logger.error("%s: %s" % (ex.__class__.__name__, ex))
-
+                logger.error(repr(ex))
                 writer.writing_inhibited = True
 
                 if reader:
@@ -221,7 +221,7 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, RuntimeError) as ex:
-        logger.error(ex)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass

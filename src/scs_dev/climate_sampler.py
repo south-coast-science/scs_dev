@@ -110,10 +110,19 @@ if __name__ == '__main__':
         I2C.Sensors.open()
 
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
         # Schedule...
+
         schedule = Schedule.load(Host)
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            logger.info("no schedule - halted.")
+
+            while True:
+                time.sleep(60.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -161,16 +170,6 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # check...
-
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            logger.info("no schedule - halted.")
-
-            while True:
-                time.sleep(60.0)
-
-
-        # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
@@ -190,7 +189,7 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        logger.error(ex)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass

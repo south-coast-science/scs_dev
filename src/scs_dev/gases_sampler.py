@@ -147,8 +147,6 @@ if __name__ == '__main__':
     t_regression = None
     rh_regression = None
 
-    first_run = True
-
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
 
@@ -169,11 +167,20 @@ if __name__ == '__main__':
         I2C.Utilities.open()
 
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
         # Schedule...
+
         schedule = Schedule.load(Host)
         semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
+
+        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+            logger.info("no schedule - halted.")
+
+            while True:
+                time.sleep(60.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -280,16 +287,6 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # check...
-
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
-            logger.info("no schedule - halted.")
-
-            while True:
-                time.sleep(60.0)
-
-
-        # ------------------------------------------------------------------------------------------------------------
         # run...
 
         interface.power_gases(True)
@@ -298,15 +295,10 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("gases_sampler", cmd.verbose)
 
+        if inference_conf:
+            logger.info("greengrass model: %s" % client.model_name())
+
         for sample in sampler.samples():
-            if first_run:
-                first_run = False
-                if inference_conf:
-                    logger.info("greengrass model: %s" % client.model_name())
-
-                if cmd.semaphore:
-                    continue
-
             logger.info("       rec: %s" % sample.rec.as_time())
 
             # inference...
@@ -329,7 +321,7 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        logger.error(ex)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
