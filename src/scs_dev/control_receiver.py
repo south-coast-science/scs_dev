@@ -6,7 +6,7 @@ Created on 17 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The function of the control_receiver utility is execute commands received over a messaging topic. In addition to
+The function of the control_receiver utility is executed commands received over a messaging topic. In addition to
 enabling secure remote management, the utility provides a secure challenge-response facility.
 
 A typical South Coast Science device is provided with a messaging topic whose purpose is to enable bidirectional
@@ -30,8 +30,8 @@ If validated, the control_receiver utility executes the command, then publishes 
 Entries in ~/SCS/cmd/ are typically symbolic links to commands that are implemented elsewhere, either by the operating
 system, or by South Coast Science packages.
 
-It is the responsibility of the device administrator to mange the ~/SCS/cmd/ directory. Care should be taken to exclude
-commands that:
+It is the responsibility of the device administrator to manage the ~/SCS/cmd/ directory. Care should be taken to
+exclude commands that:
 
 * could cause harm to the system
 * require an interactive mode
