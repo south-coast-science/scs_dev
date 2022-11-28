@@ -6,7 +6,7 @@ Created on 17 Apr 2017
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The function of the control_receiver utility is execute commands received over a messaging topic. In addition to
+The function of the control_receiver utility is executed commands received over a messaging topic. In addition to
 enabling secure remote management, the utility provides a secure challenge-response facility.
 
 A typical South Coast Science device is provided with a messaging topic whose purpose is to enable bidirectional
