@@ -30,8 +30,8 @@ If validated, the control_receiver utility executes the command, then publishes 
 Entries in ~/SCS/cmd/ are typically symbolic links to commands that are implemented elsewhere, either by the operating
 system, or by South Coast Science packages.
 
-It is the responsibility of the device administrator to mange the ~/SCS/cmd/ directory. Care should be taken to exclude
-commands that:
+It is the responsibility of the device administrator to manage the ~/SCS/cmd/ directory. Care should be taken to
+exclude commands that:
 
 * could cause harm to the system
 * require an interactive mode
