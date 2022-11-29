@@ -43,6 +43,7 @@ from scs_core.data.json import JSONify
 from scs_core.sync.interval_timer import IntervalTimer
 
 from scs_core.sys.filesystem import Filesystem
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_psu_monitor import CmdPSUMonitor
@@ -72,8 +73,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("psu_monitor: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('psu_monitor', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Utilities.open()
@@ -90,30 +94,25 @@ if __name__ == '__main__':
         psu_conf = PSUConf.load(Host)
 
         if psu_conf is None:
-            print("psu_monitor: PSUConf not available.", file=sys.stderr)
+            logger.error("psu_monitor: PSUConf not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("psu_monitor: %s" % psu_conf, file=sys.stderr)
+        logger.info("psu_monitor: %s" % psu_conf)
 
         psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.ignore_standby)
 
         if psu_monitor is None:
-            print("psu_monitor: PSUMonitor not available.", file=sys.stderr)
+            logger.error("psu_monitor: PSUMonitor not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("psu_monitor: %s" % psu_monitor, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info("psu_monitor: %s" % psu_monitor)
 
         # IntervalTimer...
         if cmd.config_interval and psu_conf.reporting_interval is None:
-            print("psu_monitor: PSUConf reporting interval is None", file=sys.stderr)
+            logger.error("psu_monitor: PSUConf reporting interval is None")
             exit(1)
 
         interval = psu_conf.reporting_interval if cmd.config_interval else cmd.interval
-        # interval = cmd.interval if cmd.interval is not None else psu_conf.reporting_interval
-
         timer = IntervalTimer(interval)
 
 
@@ -124,8 +123,6 @@ if __name__ == '__main__':
         SignalledExit.construct("psu_monitor", cmd.verbose)
 
         psu_monitor.start()
-
-        # TODO: wait for 1 second then reset the timer
 
         while timer.true():
             status = psu_monitor.sample()
@@ -147,14 +144,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("psu_monitor: %s" % ex, file=sys.stderr)
+        logger.error("psu_monitor: %s" % ex)
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("psu_monitor: finishing", file=sys.stderr)
+        logger.info("psu_monitor: finishing")
 
         if psu_monitor:
             psu_monitor.stop()
