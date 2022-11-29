@@ -94,22 +94,22 @@ if __name__ == '__main__':
         psu_conf = PSUConf.load(Host)
 
         if psu_conf is None:
-            logger.error("psu_monitor: PSUConf not available.")
+            logger.error("PSUConf not available.")
             exit(1)
 
-        logger.info("psu_monitor: %s" % psu_conf)
+        logger.info(psu_conf)
 
         psu_monitor = psu_conf.psu_monitor(Host, interface_model, cmd.ignore_standby)
 
         if psu_monitor is None:
-            logger.error("psu_monitor: PSUMonitor not available.")
+            logger.error("PSUMonitor not available.")
             exit(1)
 
-        logger.info("psu_monitor: %s" % psu_monitor)
+        logger.info(psu_monitor)
 
         # IntervalTimer...
         if cmd.config_interval and psu_conf.reporting_interval is None:
-            logger.error("psu_monitor: PSUConf reporting interval is None")
+            logger.error("PSUConf reporting interval is None.")
             exit(1)
 
         interval = psu_conf.reporting_interval if cmd.config_interval else cmd.interval
@@ -144,13 +144,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        logger.error("psu_monitor: %s" % ex)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        logger.info("psu_monitor: finishing")
+        logger.info("finishing")
 
         if psu_monitor:
             psu_monitor.stop()
