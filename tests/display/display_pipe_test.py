@@ -35,7 +35,7 @@ try:
 
 
 except KeyboardInterrupt:
-    print("KeyboardInterrupt", file=sys.stderr)
+    print(file=sys.stderr)
 
 finally:
     print("exiting", file=sys.stderr)
