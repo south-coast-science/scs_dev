@@ -71,8 +71,7 @@ if __name__ == '__main__':
     # end...
 
     except KeyboardInterrupt:
-        if cmd.verbose:
-            print("uds_receiver: KeyboardInterrupt", file=sys.stderr)
+        print(file=sys.stderr)
 
     finally:
         uds.close()
