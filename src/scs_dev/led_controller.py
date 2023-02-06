@@ -6,7 +6,7 @@ Created on 30 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The led_controller utility operates the a two-colour (red / green) LED mounted on the South Coast Science free-to-air
+The led_controller utility operates the two-colour (red / green) LED mounted on the South Coast Science free-to-air
 SHT board. LEDs can be made to flash or have steady state. The utility is intended to run as a systemd service, or as
 an (un-managed) background process.
 
