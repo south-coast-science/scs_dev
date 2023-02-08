@@ -336,7 +336,7 @@ if __name__ == '__main__':
         if scd30:
             try:
                 scd30.stop_periodic_measurement()
-            except OSError:
+            except (OSError, RuntimeError):                     # RuntimeError includes LockTimeout
                 pass
 
         if interface:
