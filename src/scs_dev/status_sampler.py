@@ -135,9 +135,9 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # Schedule...
 
-        schedule = Schedule.load(Host)
+        schedule = Schedule.load(Host, skeleton=True)
 
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+        if cmd.semaphore and cmd.semaphore not in schedule:
             logger.info("no schedule - halted.")
 
             while True:
