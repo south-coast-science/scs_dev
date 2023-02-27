@@ -6,7 +6,7 @@ Created on 21 Jan 2017
 
 import optparse
 
-from scs_dfe.led.led import LED
+from scs_core.led.led import LED
 
 
 # --------------------------------------------------------------------------------------------------------------------
