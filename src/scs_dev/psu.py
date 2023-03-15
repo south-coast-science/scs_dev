@@ -111,7 +111,7 @@ if __name__ == '__main__':
         else:
             # use stdin...
             while True:
-                command = StdIO.prompt('> ')
+                command = StdIO.prompt('')
 
                 if not command:
                     continue
