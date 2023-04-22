@@ -19,7 +19,7 @@ EXAMPLES
 
 DOCUMENT EXAMPLE - OUTPUT
 {"ppid": 1069, "pid": 1071, "uid": 1000, "tty": "?", "pcpu": 0.9, "pmem": 0.0, "cpu": "00-00:00:03.000",
-"elapsed": "00-02:50:12.000", "cmd": "python3 /home/pi/SCS/scs_dev/src/scs_dev/osio_topic_publisher.py -v -cG"}
+"elapsed": "00-02:50:12.000", "cmd": "python3 /home/pi/SCS/scs_dev/src/scs_dev/aws_topic_publisher.py -v -cG"}
 
 SEE ALSO
 scs_dev/control_receiver
