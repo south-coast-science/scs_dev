@@ -67,7 +67,6 @@ DOCUMENT EXAMPLE - RESPONSE
 
 SEE ALSO
 scs_analysis/aws_mqtt_control
-scs_analysis/osio_mqtt_control
 scs_mfr/shared_secret
 """
 

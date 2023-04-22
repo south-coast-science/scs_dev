@@ -54,11 +54,6 @@ echo ${GIT_PATH}
 git -C ${GIT_PATH} pull
 echo '-'
 
-GIT_PATH=~/SCS/scs_osio/                    # comment out if the package is not installed
-echo ${GIT_PATH}
-git -C ${GIT_PATH} pull
-echo '-'
-
 GIT_PATH=~/SCS/scs_philips_hue/             # comment out if the package is not installed
 echo ${GIT_PATH}
 git -C ${GIT_PATH} pull

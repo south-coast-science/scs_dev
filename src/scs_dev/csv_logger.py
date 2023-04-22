@@ -83,6 +83,7 @@ from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
 from scs_host.sys.host import Host
 
 
+# Apr 21 12:02:25 arm sh[1077]: csv_logger (particulates): AttributeError("'NoneType' object has no attribute 'free'")
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
