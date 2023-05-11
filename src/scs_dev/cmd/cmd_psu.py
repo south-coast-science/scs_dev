@@ -67,4 +67,5 @@ class CmdPSU(object):
 
 
     def __str__(self, *args, **kwargs):
-        return "CmdPSU:{interactive:%s, verbose:%s}" % (self.interactive, self.verbose)
+        return "CmdPSU:{interactive:%s, psu_command:%s, verbose:%s}" % \
+            (self.interactive, self.psu_command, self.verbose)
