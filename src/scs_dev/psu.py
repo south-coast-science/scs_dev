@@ -106,7 +106,7 @@ if __name__ == '__main__':
         else:
             # use stdin...
             while True:
-                command = StdIO.prompt('> ')
+                command = StdIO.prompt('psu')
 
                 if not command:
                     continue
@@ -123,8 +123,7 @@ if __name__ == '__main__':
         logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
-        if cmd.interactive:
-            print(file=sys.stderr)
+        pass
 
     finally:
         logger.info("finishing")
