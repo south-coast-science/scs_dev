@@ -15,7 +15,7 @@ and PSU events is hard-coded, and is typically every second.
 
 If no interval is specified, then the psu_monitor utility delivers one report and stops.
 
-Unless inhibited by the --no-output flag, the report is written to stdout. If the PSU configuration specifies a report
+Unless inhibited by the --no-output flag, the report is writen to stdout. If the PSU configuration specifies a report
 file path, then the PSU status report is (also) written to this file. When the utility terminates, the file is deleted.
 
 The status_sampler utility reads the PSU report file, if available. The psu_monitor reporting frequency should
