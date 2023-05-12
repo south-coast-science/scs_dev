@@ -27,14 +27,12 @@ FILES
 
 SEE ALSO
 scs_mfr/psu_conf
-
-BUGS
-The psu utility is typically locked by the status_sampler utility, and is therefore not available to other processes.
 """
 
 import os
 import sys
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_psu import CmdPSU
@@ -53,9 +51,7 @@ from scs_psu.psu.psu_conf import PSUConf
 
 if __name__ == '__main__':
 
-    history_filename = os.path.join(Host.scs_path(), PSUConf.conf_dir(), 'psu_history')
-
-    psu = None
+    history_filename = os.path.join(Host.scs_path(), PSUConf.conf_dir(), 'psu_history.history')
 
     # ----------------------------------------------------------------------------------------------------------------
     # cmd...
@@ -66,8 +62,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("psu: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('psu_monitor', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Utilities.open()
@@ -85,12 +84,10 @@ if __name__ == '__main__':
         psu = psu_conf.psu(Host, interface_model)
 
         if psu is None:
-            print("psu: no PSU present", file=sys.stderr)
+            logger.error("no PSU present.")
             exit(1)
 
-        if cmd.verbose:
-            print("psu: %s" % psu, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(psu)
 
         StdIO.set(history_filename=history_filename)
 
@@ -101,8 +98,6 @@ if __name__ == '__main__':
         # signal handler...
         SignalledExit.construct("psu", cmd.verbose)
 
-        psu.open()
-
         if cmd.has_psu_command():
             # use cmd args...
             response = psu.communicate(cmd.psu_command)
@@ -111,7 +106,7 @@ if __name__ == '__main__':
         else:
             # use stdin...
             while True:
-                command = StdIO.prompt('')
+                command = StdIO.prompt('psu')
 
                 if not command:
                     continue
@@ -125,19 +120,15 @@ if __name__ == '__main__':
     # end...
 
     except (ConnectionError, LockTimeout) as ex:
-        print("psu: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
-        if cmd.interactive:
-            print(file=sys.stderr)
+        pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("psu: finishing", file=sys.stderr)
+        logger.info("finishing")
 
-        StdIO.save_history(history_filename)
-
-        if psu:
-            psu.close()
+        if cmd.interactive:
+            StdIO.save_history(history_filename)
 
         I2C.Utilities.close()
