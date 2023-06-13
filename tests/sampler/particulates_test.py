@@ -36,10 +36,10 @@ try:
     interface_conf = InterfaceConf.load(Host)
 
     # OPCConf...
-    conf = OPCConf('N2', 5, True, False, None, None)
+    conf = OPCConf('N3', 5, True, False, Host.opc_spi_dev_path())
 
     # OPCMonitor...
-    monitor = conf.opc_monitor(interface_conf.interface(), Host)
+    monitor = conf.opc_monitor(interface_conf.interface())
 
     runner = TimedRunner(10)
 
