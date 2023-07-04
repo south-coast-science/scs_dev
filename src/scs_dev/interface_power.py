@@ -141,7 +141,7 @@ if __name__ == '__main__':
 
         # OPC...
         opc_conf = OPCConf.load(Host)
-        opc = None if opc_conf is None else opc_conf.opc(interface, Host)
+        opc = None if opc_conf is None else opc_conf.opc(interface)
 
         if cmd.verbose and opc:
             print("interface_power: %s" % opc, file=sys.stderr)
