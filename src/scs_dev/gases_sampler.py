@@ -169,10 +169,10 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # Schedule...
 
-        schedule = Schedule.load(Host)
+        schedule = Schedule.load(Host, skeleton=True)
         semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
 
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+        if cmd.semaphore and cmd.semaphore not in schedule:
             logger.info("no schedule - halted.")
 
             while True:
@@ -336,7 +336,7 @@ if __name__ == '__main__':
         if scd30:
             try:
                 scd30.stop_periodic_measurement()
-            except OSError:
+            except (OSError, RuntimeError):                     # RuntimeError includes LockTimeout
                 pass
 
         if interface:

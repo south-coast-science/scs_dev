@@ -6,7 +6,7 @@ Created on 30 Apr 2018
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 
 DESCRIPTION
-The led_controller utility operates the a two-colour (red / green) LED mounted on the South Coast Science free-to-air
+The led_controller utility operates the two-colour (red / green) LED mounted on the South Coast Science free-to-air
 SHT board. LEDs can be made to flash or have steady state. The utility is intended to run as a systemd service, or as
 an (un-managed) background process.
 
@@ -39,13 +39,13 @@ import json
 import sys
 
 from scs_core.comms.uds_reader import UDSReader
+from scs_core.led.led_state import LEDState
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
 
 from scs_dfe.interface.interface_conf import InterfaceConf
 from scs_dfe.led.led_controller import LEDController
-from scs_dfe.led.led_state import LEDState
 
 from scs_host.bus.i2c import I2C
 from scs_host.comms.domain_socket import DomainSocket

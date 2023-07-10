@@ -12,7 +12,7 @@ from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 from scs_core.data.queue_report import QueueReport, QueueStatus
 
-from scs_dfe.led.led_state import LEDState
+from scs_core.led.led_state import LEDState
 
 from scs_host.comms.domain_socket import DomainSocket
 

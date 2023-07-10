@@ -63,7 +63,7 @@ class AWSMQTTPublisher(object):
         # connect...
         while True:
             try:
-                if self.__client.connect(self.__auth, self.__conf.debug):
+                if self.__client.connect(self.__auth, debug=self.__conf.debug):
                     break
 
                 self.__reporter.print("connect: failed")

@@ -147,7 +147,7 @@ if __name__ == '__main__':
         # resources...
 
         # Schedule...
-        schedule = Schedule.load(Host)
+        schedule = Schedule.load(Host, skeleton=True)
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
             logger.info(sht)
 
         # OPCMonitor...
-        opc_monitor = opc_conf.opc_monitor(interface, Host)
+        opc_monitor = opc_conf.opc_monitor(interface)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
@@ -224,7 +224,7 @@ if __name__ == '__main__':
         # ------------------------------------------------------------------------------------------------------------
         # check...
 
-        if cmd.semaphore and (schedule is None or not schedule.contains(cmd.semaphore)):
+        if cmd.semaphore and cmd.semaphore not in schedule:
             interface.power_opc(True)
             opc_monitor.operations_off()            # display may need the SPI power to remain on
 
