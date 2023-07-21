@@ -42,7 +42,6 @@ class CmdSampler(object):
         self.__parser.add_option("--debug", "-d", action="store_true", dest="debug", default=False,
                                  help="report detailed narrative to stderr")
 
-        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 
