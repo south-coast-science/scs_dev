@@ -6,6 +6,8 @@ Created on 2 Aug 2016
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,7 +19,7 @@ class CmdCSVReader(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [-s] [-n] [-l LIMIT] [-a] [-v] [FILENAME_1 .. FILENAME_N]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # optional...
         self.__parser.add_option("--string", "-s", action="store_true", dest="string", default=False,
@@ -26,15 +28,17 @@ class CmdCSVReader(object):
         self.__parser.add_option("--nullify", "-n", action="store_true", dest="nullify", default=False,
                                  help="convert empty or \"NULL\" strings to nulls")
 
-        self.__parser.add_option("--limit", "-l", type="int", nargs=1, action="store", dest="limit",
+        self.__parser.add_option("--limit", "-l", type="int", action="store", dest="limit",
                                  help="output a maximum of LIMIT rows")
 
+        # output...
         self.__parser.add_option("--array", "-a", action="store_true", dest="array", default=False,
                                  help="output JSON documents as array instead of a sequence")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

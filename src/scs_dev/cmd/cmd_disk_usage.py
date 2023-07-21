@@ -6,6 +6,8 @@ Created on 20 May 2018
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,15 +18,17 @@ class CmdDiskUsage(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] { -c | PATH }", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] { -c | PATH }", version=version())
 
         # optional...
         self.__parser.add_option("--csv", "-c", action="store_true", dest="csv", default=False,
                                  help="use PATH specified by csv_logger_conf")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

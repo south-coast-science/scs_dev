@@ -6,6 +6,8 @@ Created on 13 Jul 2016
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -17,21 +19,23 @@ class CmdStatusSampler(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # optional...
-        self.__parser.add_option("--semaphore", "-s", type="string", nargs=1, action="store", dest="semaphore",
+        self.__parser.add_option("--semaphore", "-s", type="string", action="store", dest="semaphore",
                                  help="sampling controlled by SEMAPHORE")
 
-        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
+        self.__parser.add_option("--interval", "-i", type="float", action="store", dest="interval",
                                  help="sampling interval in seconds")
 
-        self.__parser.add_option("--samples", "-c", type="int", nargs=1, action="store", dest="samples",
+        self.__parser.add_option("--samples", "-c", type="int", action="store", dest="samples",
                                  help="sample count (1 if interval not specified)")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

@@ -6,6 +6,7 @@ Created on 20 Feb 2017
 
 import optparse
 
+from scs_dev import version
 from scs_dfe.led.io_led import LED
 
 
@@ -20,22 +21,23 @@ class CmdLED(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog { -s { R | A | G | 0 } | "
                                                     "-f { R | A | G | 0 } { R | A | G | 0 } } [-u UDS] [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # compulsory...
-        self.__parser.add_option("--solid", "-s", type="string", nargs=1, action="store", dest="solid",
+        self.__parser.add_option("--solid", "-s", type="string", action="store", dest="solid",
                                  help="continuous colour")
 
         self.__parser.add_option("--flash", "-f", type="string", nargs=2, action="store", dest="flash",
                                  help="flashing colours")
 
-        # optional...
-        self.__parser.add_option("--uds", "-u", type="string", nargs=1, action="store", dest="uds",
+        # output...
+        self.__parser.add_option("--uds", "-u", type="string", action="store", dest="uds",
                                  help="send to Unix domain socket instead of stdout")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

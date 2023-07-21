@@ -7,3 +7,7 @@ https://packaging.python.org/guides/single-sourcing-package-version/
 """
 
 __version__ = '2.8.1'
+
+
+def version():
+    return 'SCS Device ' + __version__

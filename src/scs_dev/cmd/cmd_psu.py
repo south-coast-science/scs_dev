@@ -6,6 +6,8 @@ Created on 10 Aug 2017
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,15 +18,17 @@ class CmdPSU(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog { -i | CMD [PARAM] } [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog { -i | CMD [PARAM] } [-v]", version=version())
 
         # optional...
         self.__parser.add_option("--interactive", "-i", action="store_true", dest="interactive", default=False,
                                  help="interactive mode")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

@@ -7,6 +7,7 @@ Created on 21 Jan 2017
 import optparse
 
 from scs_core.led.led import LED
+from scs_dev import version
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -43,30 +44,32 @@ class CmdPower(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog { [-g ENABLE] [-p ENABLE] [-m ENABLE] [-n ENABLE] "
                                                     "[-o ENABLE] [-l { R | A | G | 0 }] | ENABLE_ALL } [-v]",
-                                              version="%prog 1.0")
+                                              version=version())
 
         # optional...
-        self.__parser.add_option("--gases", "-g", type="int", nargs=1, action="store", dest="gases",
+        self.__parser.add_option("--gases", "-g", type="int", action="store", dest="gases",
                                  help="switch gas sensors ON (1) or OFF (0)")
 
-        self.__parser.add_option("--gps", "-p", type="int", nargs=1, action="store", dest="gps",
+        self.__parser.add_option("--gps", "-p", type="int", action="store", dest="gps",
                                  help="switch GPS receiver ON (1) or OFF (0)")
 
-        self.__parser.add_option("--modem", "-m", type="int", nargs=1, action="store", dest="modem",
+        self.__parser.add_option("--modem", "-m", type="int", action="store", dest="modem",
                                  help="switch modem ON (1) or OFF (0)")
 
-        self.__parser.add_option("--ndir", "-n", type="int", nargs=1, action="store", dest="ndir",
+        self.__parser.add_option("--ndir", "-n", type="int", action="store", dest="ndir",
                                  help="switch NDIR sensor ON (1) or OFF (0)")
 
-        self.__parser.add_option("--opc", "-o", type="int", nargs=1, action="store", dest="opc",
+        self.__parser.add_option("--opc", "-o", type="int", action="store", dest="opc",
                                  help="switch particulate sensor ON (1) or OFF (0)")
 
-        self.__parser.add_option("--led", "-l", type="string", nargs=1, action="store", dest="led",
+        self.__parser.add_option("--led", "-l", type="string", action="store", dest="led",
                                  help="set the LED to the given colour")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 

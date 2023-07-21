@@ -8,6 +8,8 @@ source repo: scs_analysis
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,12 +20,13 @@ class CmdCSVWriter(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -a | -x }] [-e] [-v] [FILENAME]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ -a | -x }] [-e] [-v] [FILENAME]", version=version())
 
         # optional...
         self.__parser.add_option("--append", "-a", action="store_true", dest="append", default=False,
                                  help="append rows to existing file")
 
+        # output...
         self.__parser.add_option("--exclude-header", "-x", action="store_true", dest="exclude_header", default=False,
                                  help="do not write the header row to stdout")
 
@@ -33,6 +36,7 @@ class CmdCSVWriter(object):
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
+        # build...
         self.__opts, self.__args = self.__parser.parse_args()
 
 
