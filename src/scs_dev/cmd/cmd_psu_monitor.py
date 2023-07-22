@@ -22,7 +22,7 @@ class CmdPSUMonitor(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL } [-x] [-o]] [-v]", version=version())
 
-        # compulsory...
+        # mode...
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
                                  help="use PSU configuration interval specification")
 

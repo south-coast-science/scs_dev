@@ -20,7 +20,7 @@ class CmdDiskUsage(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-v] { -c | PATH }", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--csv", "-c", action="store_true", dest="csv", default=False,
                                  help="use PATH specified by csv_logger_conf")
 

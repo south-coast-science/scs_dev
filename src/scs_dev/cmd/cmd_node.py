@@ -24,7 +24,7 @@ class CmdNode(object):
         self.__parser = optparse.OptionParser(usage="%prog [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] "
                                                     "[SUB_PATH_1 .. SUB_PATH_N]", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--exclude", "-x", action="store_true", dest="exclude", default=False,
                                  help="include all sub-paths except the named one(s)")
 

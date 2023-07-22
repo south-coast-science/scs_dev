@@ -20,7 +20,7 @@ class CmdLEDController(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-u UDS] [-v] ", version=version())
 
-        # optional...
+        # input...
         self.__parser.add_option("--uds", "-u", type="string", action="store", dest="uds",
                                  help="receive  state updates from Unix domain socket (instead of stdin)")
 

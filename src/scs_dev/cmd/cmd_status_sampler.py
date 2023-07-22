@@ -21,7 +21,7 @@ class CmdStatusSampler(object):
         self.__parser = optparse.OptionParser(usage="%prog [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [-v]",
                                               version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--semaphore", "-s", type="string", action="store", dest="semaphore",
                                  help="sampling controlled by SEMAPHORE")
 

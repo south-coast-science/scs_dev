@@ -22,10 +22,11 @@ class CmdSampler(object):
         self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] "
                                                     "[{ -v | -d }]", version=version())
 
-        # optional...
+        # identity...
         self.__parser.add_option("--name", "-n", type="string", action="store", dest="name",
                                  help="the name of the sampler configuration")
 
+        # mode...
         self.__parser.add_option("--semaphore", "-s", type="string", action="store", dest="semaphore",
                                  help="sampling controlled by SEMAPHORE")
 

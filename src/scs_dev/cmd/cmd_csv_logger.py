@@ -20,7 +20,7 @@ class CmdCSVLogger(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-a] [-e] [-v] TOPIC", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--absolute", "-a", action="store_true", dest="absolute", default=False,
                                  help="absolute topic path (default is find from AWS project)")
 

@@ -20,7 +20,7 @@ class CmdSocketSender(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version=version())
 
-        # optional
+        # input...
         self.__parser.add_option("--port", "-p", type="int", action="store", default=2000, dest="port",
                                  help="socket port [default 2000]")
 

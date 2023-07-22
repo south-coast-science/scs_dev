@@ -20,10 +20,11 @@ class CmdOPCCleaner(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [-n NAME] [-p] [-v]", version=version())
 
-        # optional...
+        # identity...
         self.__parser.add_option("--name", "-n", type="string", action="store", dest="name",
                                  help="the name of the OPC configuration")
 
+        # mode...
         self.__parser.add_option("--power", "-p", action="store_true", dest="power", default=False,
                                  help="force OPC power on and off")
 

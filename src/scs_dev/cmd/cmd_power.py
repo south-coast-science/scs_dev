@@ -46,7 +46,7 @@ class CmdPower(object):
                                                     "[-o ENABLE] [-l { R | A | G | 0 }] | ENABLE_ALL } [-v]",
                                               version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--gases", "-g", type="int", action="store", dest="gases",
                                  help="switch gas sensors ON (1) or OFF (0)")
 

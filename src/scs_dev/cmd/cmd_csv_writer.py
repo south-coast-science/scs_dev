@@ -22,7 +22,7 @@ class CmdCSVWriter(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog [{ -a | -x }] [-e] [-v] [FILENAME]", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--append", "-a", action="store_true", dest="append", default=False,
                                  help="append rows to existing file")
 

@@ -20,7 +20,7 @@ class CmdPSU(object):
         """
         self.__parser = optparse.OptionParser(usage="%prog { -i | CMD [PARAM] } [-v]", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--interactive", "-i", action="store_true", dest="interactive", default=False,
                                  help="interactive mode")
 

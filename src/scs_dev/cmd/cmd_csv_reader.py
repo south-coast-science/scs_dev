@@ -21,7 +21,7 @@ class CmdCSVReader(object):
         self.__parser = optparse.OptionParser(usage="%prog [-s] [-n] [-l LIMIT] [-a] [-v] [FILENAME_1 .. FILENAME_N]",
                                               version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--string", "-s", action="store_true", dest="string", default=False,
                                  help="interpret all values as strings")
 

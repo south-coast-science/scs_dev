@@ -23,7 +23,7 @@ class CmdLED(object):
                                                     "-f { R | A | G | 0 } { R | A | G | 0 } } [-u UDS] [-v]",
                                               version=version())
 
-        # compulsory...
+        # mode...
         self.__parser.add_option("--solid", "-s", type="string", action="store", dest="solid",
                                  help="continuous colour")
 
