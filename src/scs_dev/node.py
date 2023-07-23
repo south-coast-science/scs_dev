@@ -109,7 +109,7 @@ if __name__ == '__main__':
             if cmd.exclude and not cmd.sub_paths:
                 continue                                # everything is excluded
 
-            # build...
+    
             if not cmd.sub_paths:
                 target = datum                          # everything is included
 

@@ -6,6 +6,8 @@ Created on 15 Oct 2020
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,9 +18,9 @@ class CmdDiskVolume(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-v] MOUNTED_ON", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-v] MOUNTED_ON", version=version())
 
-        # optional...
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 

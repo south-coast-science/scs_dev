@@ -13,7 +13,7 @@ cases, the modem manager may override the operation of this utility. The modem_p
 Raspberry Pi systems.
 
 SYNOPSIS
-modem_power.py { 1 | 0 } [-v]
+modem_power.py { 0 | 1 } [-v]
 
 EXAMPLES
 ./modem_power.py 1
