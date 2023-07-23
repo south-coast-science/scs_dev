@@ -9,6 +9,7 @@ source repo: scs_analysis
 import optparse
 
 from scs_core.data.path_dict import PathDict
+from scs_dev import version
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,9 +22,9 @@ class CmdNode(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] "
-                                                    "[SUB_PATH_1 .. SUB_PATH_N]", version="%prog 1.0")
+                                                    "[SUB_PATH_1 .. SUB_PATH_N]", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--exclude", "-x", action="store_true", dest="exclude", default=False,
                                  help="include all sub-paths except the named one(s)")
 
@@ -33,10 +34,11 @@ class CmdNode(object):
         self.__parser.add_option("--sequence", "-s", action="store_true", dest="sequence", default=False,
                                  help="output the contents of the input array node(s) as a sequence")
 
-        self.__parser.add_option("--file", "-f", type="string", nargs=1, action="store", dest="filename",
+        self.__parser.add_option("--file", "-f", type="string", action="store", dest="filename",
                                  help="read from FILE instead of stdin")
 
-        self.__parser.add_option("--indent", "-i", type="int", nargs=1, action="store", dest="indent",
+        # output...
+        self.__parser.add_option("--indent", "-i", type="int", action="store", dest="indent",
                                  help="pretty-print the output with INDENT")
 
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,

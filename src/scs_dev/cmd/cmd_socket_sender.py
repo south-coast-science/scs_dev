@@ -6,6 +6,8 @@ Created on 13 Jul 2016
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,12 +18,13 @@ class CmdSocketSender(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog HOSTNAME [-p PORT] [-e] [-v]", version=version())
 
-        # optional
-        self.__parser.add_option("--port", "-p", type="int", nargs=1, action="store", default=2000, dest="port",
+        # input...
+        self.__parser.add_option("--port", "-p", type="int", action="store", default=2000, dest="port",
                                  help="socket port [default 2000]")
 
+        # output...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout")
 

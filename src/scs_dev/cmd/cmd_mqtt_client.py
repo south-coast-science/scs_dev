@@ -7,6 +7,7 @@ Created on 23 Mar 2017
 import optparse
 
 from scs_core.data.str import Str
+from scs_dev import version
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,24 +22,25 @@ class CmdMQTTClient(object):
         self.__parser = optparse.OptionParser(usage="%prog [-p UDS_PUB] "
                                                     "[-s] { -c { C | G | P | S | X } (UDS_SUB_1) | "
                                                     "[SUB_TOPIC_1 (UDS_SUB_1) .. SUB_TOPIC_N (UDS_SUB_N)] } "
-                                                    "[-e] [-l LED_UDS] [-v]", version="%prog 1.0")
+                                                    "[-e] [-l LED_UDS] [-v]", version=version())
 
-        # optional...
-        self.__parser.add_option("--pub", "-p", type="string", nargs=1, action="store", dest="uds_pub",
+        # mode...
+        self.__parser.add_option("--pub", "-p", type="string", action="store", dest="uds_pub",
                                  default=None, help="read publications from UDS instead of stdin")
 
         self.__parser.add_option("--sub", "-s", action="store_true", dest="uds_sub",
                                  help="write subscriptions to UDS instead of stdout")
 
-        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+        self.__parser.add_option("--channel", "-c", type="string", action="store", dest="channel",
                                  help="subscribe to channel")
 
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo input to stdout (if not writing subscriptions to stdout)")
 
-        self.__parser.add_option("--led", "-l", type="string", nargs=1, action="store", dest="led_uds",
+        self.__parser.add_option("--led", "-l", type="string", action="store", dest="led_uds",
                                  help="send LED commands to LED_UDS")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
