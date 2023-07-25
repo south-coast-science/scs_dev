@@ -6,6 +6,8 @@ Created on 17 Apr 2017
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,9 +18,9 @@ class CmdControlReceiver(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-r] [-e] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-r] [-e] [-v]", version=version())
 
-        # optional...
+        # output...
         self.__parser.add_option("--receipt", "-r", action="store_true", dest="receipt", default=False,
                                  help="print receipt to stdout")
 

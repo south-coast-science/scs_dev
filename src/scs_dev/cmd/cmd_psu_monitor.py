@@ -6,6 +6,8 @@ Created on 13 Jul 2016
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -18,19 +20,20 @@ class CmdPSUMonitor(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL } [-x] [-o]] [-v]", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [{ -c | -i INTERVAL } [-x] [-o]] [-v]", version=version())
 
-        # compulsory...
+        # mode...
         self.__parser.add_option("--config-interval", "-c", action="store_true", dest="config_interval", default=False,
                                  help="use PSU configuration interval specification")
 
-        self.__parser.add_option("--interval", "-i", type="float", nargs=1, action="store", dest="interval",
+        self.__parser.add_option("--interval", "-i", type="float", action="store", dest="interval",
                                  default=None, help="sampling interval in seconds")
 
         # optional...
         self.__parser.add_option("--ignore-standby", "-x", action="store_true", dest="ignore_standby", default=False,
                                  help="ignore PSU standby status")
 
+        # output...
         self.__parser.add_option("--no-output", "-o", action="store_true", dest="no_output", default=False,
                                  help="suppress reporting on stdout")
 

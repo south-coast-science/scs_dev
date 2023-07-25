@@ -53,7 +53,6 @@ SEE ALSO
 scs_dev/csv_log_sync
 scs_dev/csv_reader
 scs_dev/csv_writer
-scs_mfr/aws_api_auth
 scs_mfr/aws_project
 scs_mfr/csv_logger_conf
 scs_mfr/system_id

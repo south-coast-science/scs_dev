@@ -6,6 +6,8 @@ Created on 16 Apr 2018
 
 import optparse
 
+from scs_dev import version
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
@@ -16,12 +18,13 @@ class CmdCSVLogger(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [-a] [-e] [-v] TOPIC", version="%prog 1.0")
+        self.__parser = optparse.OptionParser(usage="%prog [-a] [-e] [-v] TOPIC", version=version())
 
-        # optional...
+        # mode...
         self.__parser.add_option("--absolute", "-a", action="store_true", dest="absolute", default=False,
                                  help="absolute topic path (default is find from AWS project)")
 
+        # output...
         self.__parser.add_option("--echo", "-e", action="store_true", dest="echo", default=False,
                                  help="echo stdin to stdout (mediated by storage and byline)")
 

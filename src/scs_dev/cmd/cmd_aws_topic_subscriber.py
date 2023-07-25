@@ -7,6 +7,7 @@ Created on 19 Nov 2016
 import optparse
 
 from scs_core.aws.config.project import Project
+from scs_dev import version
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -19,19 +20,20 @@ class CmdAWSTopicSubscriber(object):
         Constructor
         """
         self.__parser = optparse.OptionParser(usage="%prog { -t TOPIC_PATH | -c { C | G | P | S | X } } [-s UDS_SUB] "
-                                                    "[-v]", version="%prog 1.0")
+                                                    "[-v]", version=version())
 
         # compulsory...
-        self.__parser.add_option("--topic", "-t", type="string", nargs=1, action="store", dest="topic",
+        self.__parser.add_option("--topic", "-t", type="string", action="store", dest="topic",
                                  help="topic path")
 
-        self.__parser.add_option("--channel", "-c", type="string", nargs=1, action="store", dest="channel",
+        self.__parser.add_option("--channel", "-c", type="string", action="store", dest="channel",
                                  help="publication channel")
 
         # optional...
-        self.__parser.add_option("--sub", "-s", type="string", nargs=1, action="store", dest="uds_sub",
+        self.__parser.add_option("--sub", "-s", type="string", action="store", dest="uds_sub",
                                  help="read subscriptions from UDS instead of stdin")
 
+        # output...
         self.__parser.add_option("--verbose", "-v", action="store_true", dest="verbose", default=False,
                                  help="report narrative to stderr")
 
