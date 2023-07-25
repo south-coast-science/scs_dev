@@ -16,7 +16,7 @@ from scs_host.sys.host import Host
 
 root_path = '/Volumes/SCS/data'
 
-conf = CSVLoggerConf(root_path, True, 0)
+conf = CSVLoggerConf(root_path, True, 0, None)
 print(conf)
 print("-")
 
