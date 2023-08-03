@@ -6,8 +6,6 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-import requests
-
 from scs_core.aws.manager.byline_manager import BylineManager
 
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
@@ -38,8 +36,10 @@ print(conf)
 system_id = SystemID.load(Host)
 print(system_id)
 
-manager = BylineManager(requests)
+manager = BylineManager()
 print(manager)
+
+# conf, credentials, message_tag, topic_name, topic_path
 
 queue_builder = CSVLogQueueBuilder(topic_name, topic_path, manager, system_id, conf)
 print(queue_builder)
