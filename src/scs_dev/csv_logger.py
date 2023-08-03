@@ -63,11 +63,12 @@ stdin to stdout from then on. No attempt is made to restart the reader process.
 """
 
 import sys
-import requests
 import time
 
 from scs_core.aws.config.project import Project
-from scs_core.aws.manager.byline_manager import BylineManager
+
+from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
+from scs_core.aws.security.cognito_login_manager import CognitoLoginManager
 
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger import CSVLogger
@@ -82,7 +83,8 @@ from scs_dev.cmd.cmd_csv_logger import CmdCSVLogger
 from scs_host.sys.host import Host
 
 
-# Apr 21 12:02:25 arm sh[1077]: csv_logger (particulates): AttributeError("'NoneType' object has no attribute 'free'")
+# TODO: Apr 21 12:02:25 arm sh[1077]: csv_logger (particulates):
+#  AttributeError("'NoneType' object has no attribute 'free'")
 # --------------------------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__':
@@ -108,6 +110,19 @@ if __name__ == '__main__':
         logger = Logging.getLogger()
 
         logger.info(cmd)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # pre-authentication...
+
+        credentials = CognitoDeviceCredentials.load_credentials_for_device(Host)
+
+        gatekeeper = CognitoLoginManager()
+        auth = gatekeeper.device_login(credentials)
+
+        if not auth.is_ok():
+            logger.error(auth.authentication_status.description)
+            exit(1)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -154,8 +169,7 @@ if __name__ == '__main__':
                     exit(2)
 
             # CSVLogQueueBuilder...
-            manager = BylineManager(requests)
-            queue_builder = CSVLogQueueBuilder(cmd.topic, topic_path, manager, system_id, conf)
+            queue_builder = CSVLogQueueBuilder(conf, credentials, system_id.message_tag(), cmd.topic, topic_path)
 
             # CSVLogReader...
             reader = CSVLogReader(queue_builder, nullify=True)
