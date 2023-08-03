@@ -6,7 +6,7 @@ Created on 3 May 2021
 https://packaging.python.org/guides/single-sourcing-package-version/
 """
 
-__version__ = '2.8.3'
+__version__ = '3.0.0'
 
 
 def version():
