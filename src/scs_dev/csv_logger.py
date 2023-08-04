@@ -65,6 +65,8 @@ stdin to stdout from then on. No attempt is made to restart the reader process.
 import sys
 import time
 
+from requests.exceptions import ConnectionError
+
 from scs_core.aws.config.project import Project
 
 from scs_core.aws.security.cognito_device import CognitoDeviceCredentials
@@ -90,6 +92,7 @@ from scs_host.sys.host import Host
 if __name__ == '__main__':
 
     cmd = None
+    auth = None
     logger = None
     writer = None
     reader = None
@@ -118,7 +121,15 @@ if __name__ == '__main__':
         credentials = CognitoDeviceCredentials.load_credentials_for_device(Host)
 
         gatekeeper = CognitoLoginManager()
-        auth = gatekeeper.device_login(credentials)
+
+        while True:
+            try:
+                auth = gatekeeper.device_login(credentials)
+                break
+
+            except ConnectionError as ex:
+                logger.info(ex)
+                time.sleep(10)
 
         if not auth.is_ok():
             logger.error(auth.authentication_status.description)
