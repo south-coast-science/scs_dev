@@ -6,15 +6,16 @@ Created on 14 Jan 2020
 @author: Bruno Beloff (bruno.beloff@southcoastscience.com)
 """
 
-from scs_core.aws.manager.byline_manager import BylineManager
+from scs_core.aws.manager.byline.byline_manager import BylineManager
 
 from scs_core.csv.csv_log_reader import CSVLogReader, CSVLogQueueBuilder
 from scs_core.csv.csv_logger_conf import CSVLoggerConf
 
 from scs_core.data.datetime import LocalizedDatetime
 
-from scs_host.sys.host import Host
 from scs_core.sys.system_id import SystemID
+
+from scs_host.sys.host import Host
 
 
 # --------------------------------------------------------------------------------------------------------------------
