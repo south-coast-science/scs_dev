@@ -23,13 +23,14 @@ class StatusSampler(Sampler):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def __init__(self, runner, tag, airnow, interface, gps_monitor, psu_conf):
+    def __init__(self, runner, tag, manager, airnow, interface, gps_monitor, psu_conf):
         """
         Constructor
         """
         Sampler.__init__(self, runner)
 
         self.__tag = tag
+        self.__manager = manager
         self.__airnow = airnow
 
         self.__interface = interface
@@ -91,6 +92,9 @@ class StatusSampler(Sampler):
         else:
             psu_report = None
 
+        # Networks...
+        networks = self.__manager.networks()
+
         # Signal
         modem_conn = Host.modem_conn()
         modem_signal = None if modem_conn is None else modem_conn.signal
@@ -99,11 +103,13 @@ class StatusSampler(Sampler):
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
 
         return StatusSample(self.__tag, recorded, self.__airnow, timezone, position, temperature,
-                            schedule, uptime, psu_report, modem_signal)
+                            schedule, uptime, psu_report, networks, modem_signal)
 
 
     # ----------------------------------------------------------------------------------------------------------------
 
     def __str__(self, *args, **kwargs):
-        return "StatusSampler:{runner:%s, tag:%s, airnow:%s, interface:%s, gps_monitor:%s, psu_conf:%s}" % \
-               (self.runner, self.__tag, self.__airnow, self.__interface, self.__gps_monitor, self.__psu_conf)
+        return "StatusSampler:{runner:%s, tag:%s, manager:%s, airnow:%s, interface:%s, gps_monitor:%s, " \
+               "psu_conf:%s}" % \
+               (self.runner, self.__tag, self.__manager, self.__airnow, self.__interface, self.__gps_monitor,
+                self.__psu_conf)
