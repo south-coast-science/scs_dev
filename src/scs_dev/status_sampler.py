@@ -177,7 +177,7 @@ if __name__ == '__main__':
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \
             else ScheduleRunner(cmd.semaphore)
 
-        sampler = StatusSampler(runner, tag, airnow, interface, gps_monitor, psu_conf)
+        sampler = StatusSampler(runner, tag, Host, airnow, interface, gps_monitor, psu_conf)
 
         logger.info(sampler)
 
