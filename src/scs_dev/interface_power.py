@@ -36,6 +36,7 @@ https://github.com/south-coast-science/docs/wiki/Praxis-LED-colours
 
 import sys
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_power import CmdPower
@@ -105,8 +106,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("interface_power: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('interface_power', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -116,48 +120,45 @@ if __name__ == '__main__':
         interface_conf = InterfaceConf.load(Host)
 
         if interface_conf is None:
-            print("interface_power: InterfaceConf not available.", file=sys.stderr)
+            logger.error("InterfaceConf not available.")
             exit(1)
 
         interface = interface_conf.interface()
-
-        if cmd.verbose:
-            print("interface_power: %s" % interface, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(interface)
 
         # GPS...
         gps_conf = GPSConf.load(Host)
         gps = None if gps_conf is None else gps_conf.gps(interface, Host)
 
-        if cmd.verbose and gps:
-            print("interface_power: %s" % gps, file=sys.stderr)
+        if gps:
+            logger.info(gps)
 
         # NDIR...
         ndir_conf = NDIRConf.load(Host)
         ndir = None if ndir_conf is None else ndir_conf.ndir(interface, Host)
 
-        if cmd.verbose and ndir:
-            print("interface_power: %s" % ndir, file=sys.stderr)
+        if ndir:
+            logger.info(ndir)
 
         # OPC...
         opc_conf = OPCConf.load(Host)
         opc = None if opc_conf is None else opc_conf.opc(interface)
 
-        if cmd.verbose and opc:
-            print("interface_power: %s" % opc, file=sys.stderr)
+        if opc:
+            logger.info(opc)
 
         # LED...
         led = interface.led()
 
-        if cmd.verbose and led:
-            print("interface_power: %s" % led, file=sys.stderr)
+        if led:
+            logger.info(led)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("interface_power", cmd.verbose)
+        SignalledExit.construct()
 
         if cmd.all is not None:
             interface.power_gases(cmd.all)
@@ -193,13 +194,12 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("interface_power: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("interface_power: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         I2C.Utilities.close()

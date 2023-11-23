@@ -81,6 +81,7 @@ from scs_core.control.control_receipt import ControlReceipt
 from scs_core.data.datetime import LocalizedDatetime
 from scs_core.data.json import JSONify
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.shared_secret import SharedSecret
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
@@ -105,8 +106,11 @@ if __name__ == '__main__':
 
     cmd = CmdControlReceiver()
 
-    if cmd.verbose:
-        print("control_receiver: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('control_receiver', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
 
     # ------------------------------------------------------------------------------------------------------------
@@ -116,22 +120,19 @@ if __name__ == '__main__':
     system_id = SystemID.load(Host)
 
     if system_id is None:
-        print("control_receiver: SystemID not available.", file=sys.stderr)
+        logger.error("SystemID not available.")
         exit(1)
 
-    if cmd.verbose:
-        print("control_receiver: %s" % system_id, file=sys.stderr)
+    logger.info(system_id)
 
     # SharedSecret...
     secret = SharedSecret.load(Host)
 
     if secret is None:
-        print("control_receiver: SharedSecret not available.", file=sys.stderr)
+        logger.error("SharedSecret not available.")
         exit(1)
 
-    if cmd.verbose:
-        print("control_receiver: %s" % secret, file=sys.stderr)
-        sys.stderr.flush()
+    logger.info(secret)
 
     system_tag = system_id.message_tag()
     key = secret.key
@@ -141,7 +142,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("control_receiver", cmd.verbose)
+        SignalledExit.construct()
 
         for line in sys.stdin:
             # control...
@@ -158,13 +159,10 @@ if __name__ == '__main__':
             if datum.attn != system_tag:
                 continue
 
-            if cmd.verbose:
-                print("control_receiver: %s" % datum, file=sys.stderr)
-                sys.stderr.flush()
+            logger.info(datum)
 
             if not datum.is_valid(key):
-                print("control_receiver: invalid digest: %s" % datum, file=sys.stderr)
-                sys.stderr.flush()
+                logger.error("invalid digest: %s" % datum)
                 continue
 
             if cmd.echo:
@@ -189,9 +187,7 @@ if __name__ == '__main__':
                 print(JSONify.dumps(receipt))
                 sys.stdout.flush()
 
-                if cmd.verbose:
-                    print("control_receiver: %s" % receipt, file=sys.stderr)
-                    sys.stderr.flush()
+                logger.info(receipt)
 
             # execute deferred commands...
             if command.cmd in deferred_commands:
@@ -203,11 +199,10 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("control_receiver: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("control_receiver: finishing", file=sys.stderr)
+        logger.info("finishing")

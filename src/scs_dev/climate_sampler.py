@@ -127,10 +127,10 @@ if __name__ == '__main__':
         # SystemID...
         system_id = SystemID.load(Host)
 
-        tag = None if system_id is None else system_id.message_tag()
-
         if system_id:
             logger.info(system_id)
+
+        tag = None if system_id is None else system_id.message_tag()
 
         # SHTConf...
         sht_conf = SHTConf.load(Host)
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("climate_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         if barometer is not None:
             barometer.init()
@@ -195,7 +195,6 @@ if __name__ == '__main__':
         pass
 
     finally:
-        if cmd:
-            logger.info("finishing")
+        logger.info("finishing")
 
         I2C.Sensors.close()

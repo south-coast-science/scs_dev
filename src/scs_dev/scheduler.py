@@ -42,9 +42,9 @@ scs_dev/status_sampler
 scs_mfr/schedule
 """
 
-import sys
-
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
+
 from scs_core.sync.schedule import Schedule
 
 from scs_dev.cmd.cmd_verbose import CmdVerbose
@@ -64,8 +64,11 @@ if __name__ == '__main__':
 
     cmd = CmdVerbose()
 
-    if cmd.verbose:
-        print("scheduler: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('scheduler', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -75,22 +78,20 @@ if __name__ == '__main__':
         schedule = Schedule.load(Host)
 
         if schedule is None:
-            print("scheduler: Schedule not available.", file=sys.stderr)
+            logger.error("Schedule not available.")
             exit(1)
 
-        if cmd.verbose:
-            print("scheduler: %s" % schedule, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(schedule)
 
         # Scheduler...
-        scheduler = Scheduler(schedule, True)          # cmd.verbose
+        scheduler = Scheduler(schedule, verbose=cmd.verbose)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("scheduler", cmd.verbose)
+        SignalledExit.construct()
 
         scheduler.start()
         scheduler.join()
@@ -100,14 +101,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("scheduler: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("scheduler: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if scheduler:
             scheduler.stop()
