@@ -59,6 +59,7 @@ from scs_core.comms.uds_reader import UDSReader
 from scs_core.data.json import JSONify
 from scs_core.data.publication import Publication
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 from scs_core.sys.system_id import SystemID
 
@@ -83,8 +84,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("aws_topic_subscriber: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('aws_topic_subscriber', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -92,10 +96,7 @@ if __name__ == '__main__':
 
         # comms...
         source = UDSReader(DomainSocket, cmd.uds_sub)
-
-        if cmd.verbose:
-            print("aws_mqtt_client: %s" % source, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(source)
 
         # topic...
         if cmd.channel:
@@ -103,17 +104,16 @@ if __name__ == '__main__':
             system_id = SystemID.load(Host)
 
             if system_id is None:
-                print("aws_topic_subscriber: SystemID not available.", file=sys.stderr)
+                logger.error("SystemID not available.")
                 exit(1)
 
-            if cmd.verbose:
-                print("aws_topic_subscriber: %s" % system_id, file=sys.stderr)
+            logger.info(system_id)
 
             # Project...
             project = Project.load(Host)
 
             if project is None:
-                print("aws_topic_subscriber: Project not available.", file=sys.stderr)
+                logger.error("Project not available.")
                 exit(1)
 
             topic = project.channel_path(cmd.channel, system_id)
@@ -121,15 +121,14 @@ if __name__ == '__main__':
         else:
             topic = cmd.topic
 
-        if cmd.verbose:
-            print("aws_topic_subscriber: %s" % topic, file=sys.stderr)
+        logger.info(topic)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("aws_topic_subscriber", cmd.verbose)
+        SignalledExit.construct()
 
         # data source...
         source.connect()
@@ -151,14 +150,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("aws_topic_subscriber: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("aws_topic_subscriber: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if source:
             source.close()

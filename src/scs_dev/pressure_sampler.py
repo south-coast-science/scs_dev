@@ -139,7 +139,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("pressure_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         sampler.init()
 

@@ -238,7 +238,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("particulates_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         sampler.start()
 

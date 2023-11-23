@@ -36,10 +36,12 @@ https://unix.stackexchange.com/questions/139490/continuous-reading-from-named-pi
 """
 
 import json
-import sys
 
 from scs_core.comms.uds_reader import UDSReader
+
 from scs_core.led.led_state import LEDState
+
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led_controller import CmdLEDController
@@ -65,9 +67,11 @@ if __name__ == '__main__':
 
     cmd = CmdLEDController()
 
-    if cmd.verbose:
-        print("led_controller: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    # logging...
+    Logging.config('led_controller', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Utilities.open()
@@ -77,36 +81,31 @@ if __name__ == '__main__':
 
         # UDSReader...
         reader = UDSReader(DomainSocket, cmd.uds)
-
-        if cmd.verbose:
-            print("led_controller: %s" % reader, file=sys.stderr)
+        logger.info(reader)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
 
         if interface_conf is None:
-            print("led_controller: InterfaceConf not available.", file=sys.stderr)
+            logger.error("InterfaceConf not available.")
             exit(1)
 
         interface = interface_conf.interface()
 
         if interface is None:
-            print("led_controller: Interface not available.", file=sys.stderr)
+            logger.error("interface not available.")
             exit(1)
 
         # LEDController..
         controller = LEDController(interface.led())
-
-        if cmd.verbose:
-            print("led_controller: %s" % controller, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(controller)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("led_controller", cmd.verbose)
+        SignalledExit.construct()
 
         controller.start()
 
@@ -123,9 +122,7 @@ if __name__ == '__main__':
             if state is None or state == prev_state:
                 continue
 
-            if cmd.verbose:
-                print("led_controller: %s" % state, file=sys.stderr)
-                sys.stderr.flush()
+            logger.info(state)
 
             if not state.is_valid():
                 continue
@@ -139,14 +136,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("led_controller: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("led_controller: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if reader:
             reader.close()

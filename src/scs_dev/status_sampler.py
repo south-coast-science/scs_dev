@@ -44,19 +44,30 @@ FILES
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
 
-DOCUMENT EXAMPLE - v0
+DOCUMENT EXAMPLE - v0.0
 {"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "val": {"tz": {"name": "Europe/London",
 "utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
 "scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
 "load": {"av1": 0.02, "av5": 0.34, "av15": 0.67}}, "sig": {"quality": null, "recent": null}}}
 
-DOCUMENT EXAMPLE - v1
+DOCUMENT EXAMPLE - v1.0
 {"rec": "2021-10-06T11:13:07Z", "tag": "scs-be2-3", "ver": 1.0, "val": {"tz": {"name": "Europe/London",
 "utc-offset": "+01:00"}, "gps": {"pos": [null, null], "elv": null, "qual": 0},
 "sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
 "scs-status": {"interval": 60.0, "tally": 1}}, "tmp": {"brd": 29.4}, "up": {"period": "00-00:22:00", "users": 3,
 "load": {"av1": 0.02, "av5": 0.34, "av15": 0.67}}, "sig": {"quality": null, "recent": null}}}
+
+DOCUMENT EXAMPLE - v2.0
+{"rec": "2023-10-18T08:15:05Z", "tag": "scs-bgx-882", "ver": 2.0, "val": {"tz": {"name": "Europe/London",
+"utc-offset": "+01:00"}, "gps": {"pos": [50.82305824, -0.12288824], "elv": 60.3, "qual": 2},
+"sch": {"scs-climate": {"interval": 60.0, "tally": 1}, "scs-gases": {"interval": 10.0, "tally": 1},
+"scs-particulates": {"interval": 10.0, "tally": 1}, "scs-status": {"interval": 60.0, "tally": 1}},
+"tmp": {"brd": 30.7}, "up": {"period": "00-19:33:00", "users": 0, "load": {"av1": 0.15, "av5": 0.1, "av15": 0.1}},
+"psu": {"src": "Ov1", "standby": false, "in": true, "pwr-in": 11.6, "rst": "FF", "chgr": "TFFF", "batt-flt": false,
+"host-3v3": 3.4, "prot-batt": 8.3}, "net": {"eth0": {"kind": "ethernet", "state": "connected",
+"conn": "Ethernet eth0"}, "cdc-wdm0": {"kind": "gsm", "state": "unavailable"}},
+"sig": {"quality": 0, "recent": false}}}
 
 SEE ALSO
 scs_dev/interface_power
@@ -186,7 +197,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("status_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         sampler.start()
 

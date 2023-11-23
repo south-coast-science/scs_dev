@@ -41,8 +41,12 @@ scs_dev/led_controller
 import sys
 
 from scs_core.comms.uds_writer import UDSWriter
+
 from scs_core.data.json import JSONify
+
 from scs_core.led.led_state import LEDState
+
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_led import CmdLED
@@ -65,24 +69,25 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("led: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('led', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
         # resources...
 
         writer = UDSWriter(DomainSocket, cmd.uds)
-
-        if cmd.verbose:
-            print("led: %s" % writer, file=sys.stderr)
+        logger.info(writer)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("led", cmd.verbose)
+        SignalledExit.construct()
 
         state = LEDState(cmd.solid, cmd.solid) if cmd.solid is not None else LEDState(cmd.flash[0], cmd.flash[1])
 
@@ -95,22 +100,20 @@ if __name__ == '__main__':
                 print(JSONify.dumps(state), file=sys.stderr)
 
         except OSError:
-            if cmd.verbose:
-                print("led: unable to write to %s" % cmd.uds, file=sys.stderr)
+            logger.error("unable to write to %s" % cmd.uds)
 
 
     # ----------------------------------------------------------------------------------------------------------------
     # end...
 
     except ConnectionError as ex:
-        print("led: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("led: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if writer:
             writer.close()
