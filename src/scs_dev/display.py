@@ -35,6 +35,7 @@ import sys
 from scs_core.comms.mqtt_conf import MQTTConf
 from scs_core.comms.uds_reader import UDSReader
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_display import CmdDisplay
@@ -64,8 +65,11 @@ if __name__ == '__main__':
 
     cmd = CmdDisplay()
 
-    if cmd.verbose:
-        print("display: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('display', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         I2C.Utilities.open()
@@ -92,33 +96,33 @@ if __name__ == '__main__':
         # UDSReader...
         reader = UDSReader(DomainSocket, cmd.uds)
 
-        if cmd.verbose and cmd.uds:
-            print("display: %s" % reader, file=sys.stderr)
+        if cmd.uds:
+            logger.info(reader)
 
         # Interface...
         interface_conf = InterfaceConf.load(Host)
         interface = None if interface_conf is None else interface_conf.interface()
 
-        if cmd.verbose and interface:
-            print("display: %s" % interface, file=sys.stderr)
+        if interface:
+            logger.info(interface)
 
         # DisplayConf...
         try:
             conf = DisplayConf.load(Host)
 
             if conf is None:
-                print("display: DisplayConf not set.", file=sys.stderr)
+                logger.error("DisplayConf not set.")
                 exit(1)
 
         except NotImplementedError:
-            print("display: not available.", file=sys.stderr)
+            logger.error("not available.")
             exit(1)
 
         monitor = conf.monitor(software_report, psu_report_class, psu_report_filename, queue_report_filename,
                                gps_report_filename)
 
-        if cmd.verbose and monitor:
-            print("display: %s" % monitor, file=sys.stderr)
+        if monitor:
+            logger.info(monitor)
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -128,17 +132,14 @@ if __name__ == '__main__':
             interface.power_opc(True)                       # otherwise the SPI bus is held low
 
         # signal handler...
-        SignalledExit.construct("display", cmd.verbose)
+        SignalledExit.construct()
 
         monitor.start()
 
         reader.connect()
 
         for message in reader.messages():
-            if cmd.verbose:
-                print("display: %s" % message, file=sys.stderr)
-                sys.stderr.flush()
-
+            logger.info(message)
             monitor.set_message(message)
 
 
@@ -146,14 +147,13 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("display: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("display: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         if monitor:
             monitor.stop()

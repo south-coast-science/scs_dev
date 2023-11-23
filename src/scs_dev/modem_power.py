@@ -21,6 +21,7 @@ EXAMPLES
 
 import sys
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_power import CmdPower
@@ -46,8 +47,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("modem_power: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('modem_power', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -57,21 +61,18 @@ if __name__ == '__main__':
         interface_conf = InterfaceConf.load(Host)
 
         if interface_conf is None:
-            print("modem_power: InterfaceConf not available.", file=sys.stderr)
+            logger.error("InterfaceConf not available.")
             exit(1)
 
         interface = interface_conf.interface()
-
-        if cmd.verbose:
-            print("modem_power: %s" % interface, file=sys.stderr)
-            sys.stderr.flush()
+        logger.info(interface)
 
 
         # ------------------------------------------------------------------------------------------------------------
         # run...
 
         # signal handler...
-        SignalledExit.construct("modem_power", cmd.verbose)
+        SignalledExit.construct()
 
         if cmd.all is not None:
             interface.power_modem(cmd.all)
@@ -81,13 +82,12 @@ if __name__ == '__main__':
     # end...
 
     except ConnectionError as ex:
-        print("modem_power: %s" % ex, file=sys.stderr)
+        logger.error(repr(ex))
 
     except (KeyboardInterrupt, SystemExit):
         pass
 
     finally:
-        if cmd and cmd.verbose:
-            print("modem_power: finishing", file=sys.stderr)
+        logger.info("finishing")
 
         I2C.Utilities.close()

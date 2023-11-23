@@ -120,7 +120,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("psu_monitor", cmd.verbose)
+        SignalledExit.construct()
 
         psu_monitor.start()
 

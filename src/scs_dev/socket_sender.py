@@ -32,6 +32,7 @@ may take time to be garbage collected.
 
 import sys
 
+from scs_core.sys.logging import Logging
 from scs_core.sys.signalled_exit import SignalledExit
 
 from scs_dev.cmd.cmd_socket_sender import CmdSocketSender
@@ -54,8 +55,11 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("socket_sender: %s" % cmd, file=sys.stderr)
+    # logging...
+    Logging.config('socket_sender', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -72,7 +76,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("socket_sender", cmd.verbose)
+        SignalledExit.construct()
 
         sender.connect()
 

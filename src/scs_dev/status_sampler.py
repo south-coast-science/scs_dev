@@ -197,7 +197,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("status_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         sampler.start()
 

@@ -293,7 +293,7 @@ if __name__ == '__main__':
         sampler.init(scd30_conf)
 
         # signal handler...
-        SignalledExit.construct("gases_sampler", cmd.verbose)
+        SignalledExit.construct()
 
         if inference_conf:
             logger.info("greengrass model: %s" % client.model_name())

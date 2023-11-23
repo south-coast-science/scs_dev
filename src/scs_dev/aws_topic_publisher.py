@@ -129,7 +129,7 @@ if __name__ == '__main__':
         # run...
 
         # signal handler...
-        SignalledExit.construct("aws_topic_publisher (%s)" % topic, cmd.verbose)
+        SignalledExit.construct()
 
         for line in sys.stdin:
             try:
