@@ -116,24 +116,11 @@ if __name__ == '__main__':
 
 
         # ------------------------------------------------------------------------------------------------------------
-        # pre-authentication...
+        # authentication...
 
         credentials = CognitoDeviceCredentials.load_credentials_for_device(Host)
 
         gatekeeper = CognitoLoginManager()
-
-        # while True:
-        #     try:
-        #         auth = gatekeeper.device_login(credentials)
-        #         break
-        #
-        #     except ConnectionError as ex:
-        #         logger.info(ex)
-        #         time.sleep(10)
-        #
-        # if not auth.is_ok():
-        #     logger.error(auth.authentication_status.description)
-        #     exit(1)
 
 
         # ------------------------------------------------------------------------------------------------------------
