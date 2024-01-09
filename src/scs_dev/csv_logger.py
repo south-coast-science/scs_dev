@@ -190,26 +190,26 @@ if __name__ == '__main__':
             if jstr is None:
                 break
 
-            # try:
-            for i in range(5):
-                try:
-                    file_path = writer.write(jstr)
-                    break
+            try:
+                for i in range(5):
+                    try:
+                        file_path = writer.write(jstr)
+                        break
 
-                except TimeoutError:
-                    time.sleep(1)
+                    except TimeoutError:
+                        time.sleep(1)
 
-                    if i < 4:
-                        continue
+                        if i < 4:
+                            continue
 
-                    raise TimeoutError("multiple write attempts failed")
+                        raise TimeoutError("multiple write attempts failed")
 
-            # except Exception as ex:
-            #     logger.error(repr(ex))
-            #     writer.writing_inhibited = True
-            #
-            #     if reader:
-            #         reader.stop()
+            except Exception as ex:
+                logger.error(ex)
+                writer.writing_inhibited = True
+
+                if reader:
+                    reader.stop()
 
             if not cmd.echo and not writer.writing_inhibited:
                 continue
