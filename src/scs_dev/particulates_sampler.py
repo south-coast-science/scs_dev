@@ -37,6 +37,9 @@ document with fields for:
 Command-line options allow for single-shot reading, multiple readings with specified time intervals, or readings
 controlled by an independent scheduling process via a Unix semaphore.
 
+If any errors are detected while the OPC is running, these are logged. the log can be interrogated using the
+mfr/opc_error_log utility.
+
 SYNOPSIS
 particulates_sampler.py [-n NAME] [{ -s SEMAPHORE | -i INTERVAL [-c SAMPLES] }] [{ -v | -d }]
 
@@ -47,6 +50,7 @@ FILES
 ~/SCS/conf/opc_conf.json
 ~/SCS/conf/schedule.json
 ~/SCS/conf/system_id.json
+~/SCS/log/opc_error_log.csv
 
 DOCUMENT EXAMPLE - v0:
 {"rec": "2021-10-11T11:06:57Z", "tag": "scs-bgx-431", "src": "N3",
@@ -71,6 +75,7 @@ scs_dev/scheduler
 
 scs_mfr/opc_cleaning_interval
 scs_mfr/opc_conf
+scs_mfr/opc_error_log
 scs_mfr/opc_firmware_conf
 scs_mfr/opc_version
 scs_mfr/schedule
