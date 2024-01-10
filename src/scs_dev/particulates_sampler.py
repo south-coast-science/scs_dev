@@ -210,7 +210,7 @@ if __name__ == '__main__':
             logger.info(sht)
 
         # OPCMonitor...
-        opc_monitor = opc_conf.opc_monitor(interface)
+        opc_monitor = opc_conf.opc_monitor(Host, interface)
 
         # runner...
         runner = TimedRunner(cmd.interval, cmd.samples) if cmd.semaphore is None \

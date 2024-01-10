@@ -38,7 +38,7 @@ try:
     conf = OPCConf('N3', 5, True, False, Host.opc_spi_dev_path())
 
     # OPCMonitor...
-    monitor = conf.opc_monitor(interface_conf.interface())
+    monitor = conf.opc_monitor(Host, interface_conf.interface())
 
     runner = TimedRunner(10)
 
