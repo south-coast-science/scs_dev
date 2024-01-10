@@ -13,7 +13,7 @@ documents on stdin, and the extracted node(s) are passed to stdout. Alternativel
 can be read from a file.The extracted node may be a leaf node or an internal node.
 
 By default, only the specified nodes are passed to the output. In the --exclude mode, all nodes are passed to stdout,
-with the exception of the specified nodes. In the default mode, if no node path is specified, the whole input document
+except the specified nodes. In the default mode, if no node path is specified, the whole input document
 is passed to stdout. In the --exclude mode, if no node path is specified, then nothing is output.
 
 By default, output is in the form of a sequence of JSON documents, separated by newlines. If the array (-a) option is
@@ -22,6 +22,13 @@ the ',' character, and the output is terminated by a ']' character.
 
 Alternatively, if the node is an array or other iterable type, then it may be output as a sequence (a list of items
 separated by newline characters) according to the -s flag.
+
+The ordering of output nodes is as follows:
+* Exclude mode - by input nodes
+* Default mode - by nodes specified on the command line
+
+WARNING: node ordering is overridden by the internal node structure. Thus the specified ordering: a.b.c, x.b.c, a.b.d
+would be rendered as: a.b.c, a.b.d, x.b.c
 
 SYNOPSIS
 node.py [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] [SUB_PATH_1 .. SUB_PATH_N]
@@ -43,10 +50,13 @@ array mode:
 {"val": {"hmd": 73.6, "tmp": 10.8}, "rec": "2019-02-17T08:57:53Z"}]
 """
 
+import json
 import sys
 
 from scs_core.data.json import JSONify
 from scs_core.data.path_dict import PathDict
+
+from scs_core.sys.logging import Logging
 
 from scs_dev.cmd.cmd_node import CmdNode
 
@@ -67,9 +77,10 @@ if __name__ == '__main__':
         cmd.print_help(sys.stderr)
         exit(2)
 
-    if cmd.verbose:
-        print("node: %s" % cmd, file=sys.stderr)
-        sys.stderr.flush()
+    Logging.config('node', verbose=cmd.verbose)
+    logger = Logging.getLogger()
+
+    logger.info(cmd)
 
     try:
         # ------------------------------------------------------------------------------------------------------------
@@ -81,11 +92,20 @@ if __name__ == '__main__':
                     source = [file.read()]
 
             except FileNotFoundError:
-                print("node: file not found: %s" % cmd.filename, file=sys.stderr)
+                logger.error("file not found: %s" % cmd.filename)
                 exit(1)
 
         else:
             source = sys.stdin
+
+        if cmd.sequence:
+            for document in source:
+                try:
+                    source = [json.dumps(item) for item in json.loads(document)]
+                except json.JSONDecodeError:
+                    logger.error("invalid document: '%s'" % document.strip())
+                    exit(1)
+                break
 
 
         # ------------------------------------------------------------------------------------------------------------
@@ -98,19 +118,18 @@ if __name__ == '__main__':
         first = True
 
         for document in source:
-            jstr = document.strip()
-            datum = PathDict.construct_from_jstr(jstr)
+            datum = PathDict.construct_from_jstr(document)
 
             if datum is None:
                 continue
 
             document_count += 1
 
-            if cmd.exclude and not cmd.sub_paths:
+            if cmd.exclude and not cmd.has_sub_paths():
                 continue                                # everything is excluded
 
-    
-            if not cmd.sub_paths:
+            # build...
+            if not cmd.has_sub_paths():
                 target = datum                          # everything is included
 
             else:
@@ -120,44 +139,30 @@ if __name__ == '__main__':
                     # use datum field ordering...
                     for path in datum.paths():
                         if cmd.includes(path):
-                            target.append(path, datum.node(sub_path=path))
+                            target.append(path, datum.node(path))
 
                 else:
                     # use cmd.sub_paths field ordering...
                     for sub_path in cmd.sub_paths:
-                        if datum.has_sub_path(sub_path=sub_path):
-                            target.append(sub_path, datum.node(sub_path=sub_path))
+                        if datum.has_sub_path(sub_path):
+                            target.append(sub_path, datum.node(sub_path))
 
             # report...
             if not target:
                 continue                                # skip empty outputs
 
-            if cmd.sequence:
-                for path in cmd.sub_paths:
-                    node = target.node(sub_path=path)
-
-                    try:
-                        for item in node:
-                            print(JSONify.dumps(item))
-                    except TypeError as ex:
-                        print(ex)
-                        print(JSONify.dumps(node))
-
-            else:
-                if cmd.array:
-                    if first:
-                        print(JSONify.dumps(target), end='')
-                        first = False
-
-                    else:
-                        print(", %s" % JSONify.dumps(target), end='')
+            if cmd.array:
+                if first:
+                    print(JSONify.dumps(target), end='')
+                    first = False
 
                 else:
-                    print(JSONify.dumps(target, indent=cmd.indent))
+                    print(", %s" % JSONify.dumps(target), end='')
 
-            sys.stdout.flush()
-
-            output_count += 1
+            else:
+                print(JSONify.dumps(target, indent=cmd.indent))
+                sys.stdout.flush()
+                output_count += 1
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -167,11 +172,12 @@ if __name__ == '__main__':
         print(file=sys.stderr)
 
     except KeyError as ex:
-        print("node: %s" % repr(ex), file=sys.stderr)
+        logger.error(repr(ex))
+        exit(1)
 
     finally:
         if cmd.array:
             print(']')
+            output_count = 1
 
-        if cmd.verbose:
-            print("node: documents: %d output: %d" % (document_count, output_count), file=sys.stderr)
+        logger.info("documents: %d output: %d" % (document_count, output_count))

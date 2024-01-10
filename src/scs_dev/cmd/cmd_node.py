@@ -8,8 +8,9 @@ source repo: scs_analysis
 
 import optparse
 
-from scs_core.data.path_dict import PathDict
 from scs_dev import version
+
+from scs_core.data.path_dict import PathDict
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ class CmdNode(object):
         """
         Constructor
         """
-        self.__parser = optparse.OptionParser(usage="%prog [{ [-x] [-a] | -s }] [-f FILE] [-i INDENT] [-v] "
+        self.__parser = optparse.OptionParser(usage="%prog [-x] [-a] [-s] [-f FILE] [-i INDENT] [-v] "
                                                     "[SUB_PATH_1 .. SUB_PATH_N]", version=version())
 
         # mode...
@@ -49,13 +50,8 @@ class CmdNode(object):
 
     # ----------------------------------------------------------------------------------------------------------------
 
-    def is_valid(self):
-        if self.exclude and self.sequence:
-            return False
-
-        if self.array and self.sequence:
-            return False
-
+    @classmethod
+    def is_valid(cls):
         return True
 
 
@@ -65,6 +61,10 @@ class CmdNode(object):
                 return not self.exclude
 
         return self.exclude
+
+
+    def has_sub_paths(self):
+        return bool(self.__args)
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ class CmdNode(object):
 
     @property
     def sub_paths(self):
-        return self.__args
+        return self.__args if self.__args else [None]           # if empty return only the root node
 
 
     # ----------------------------------------------------------------------------------------------------------------
@@ -112,4 +112,4 @@ class CmdNode(object):
 
     def __str__(self, *args, **kwargs):
         return "CmdNode:{exclude:%s, array:%s, sequence:%s, filename:%s, indent:%s, verbose:%s, sub_paths:%s}" %  \
-               (self.exclude, self.array, self.sequence, self.filename, self.indent, self.verbose, self.sub_paths)
+               (self.exclude, self.array, self.sequence, self.filename, self.indent, self.verbose, self.__args)
