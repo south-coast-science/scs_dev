@@ -65,10 +65,9 @@ class GasesSampler(Sampler):
 
     def sample(self):
         try:
-            pressure_datum = None if self.__barometer is None else self.__barometer.sample()
+            pressure_datum = self.__barometer.sample() if self.__barometer else None
         except OSError as ex:
             self.__logger("sample error 1: %s" % repr(ex))
-            # noinspection PyUnresolvedReferences
             pressure_datum = self.__barometer.null_datum()
 
         actual_press = None if pressure_datum is None else pressure_datum.actual_press
@@ -92,17 +91,15 @@ class GasesSampler(Sampler):
             scd30_datum = self.__scd30.null_datum()
 
         try:
-            sht_datum = None if self.__sht is None else self.__sht.sample()
+            sht_datum = self.__sht.sample() if self.__sht else None
         except OSError as ex:
             self.__logger("sample error 4: %s" % repr(ex))
-            # noinspection PyUnresolvedReferences
             sht_datum = self.__sht.null_datum()
 
         try:
-            electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
+            electrochem_datum = self.__sensor_interface.sample(sht_datum) if self.__sensor_interface else None
         except OSError as ex:
             self.__logger("sample error 5: %s" % repr(ex))
-            # noinspection PyUnresolvedReferences
             electrochem_datum = self.__sensor_interface.null_datum()
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
