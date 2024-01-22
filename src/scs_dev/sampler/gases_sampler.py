@@ -66,7 +66,8 @@ class GasesSampler(Sampler):
     def sample(self):
         try:
             pressure_datum = None if self.__barometer is None else self.__barometer.sample()
-        except OSError:
+        except OSError as ex:
+            self.__logger("sample error 1: %s" % repr(ex))
             # noinspection PyUnresolvedReferences
             pressure_datum = self.__barometer.null_datum()
 
@@ -75,8 +76,8 @@ class GasesSampler(Sampler):
         try:
             if self.__scd30:
                 if self.__barometer and actual_press is None:
+                    self.__logger("sample error 2: pA specified but unavailable")
                     scd30_datum = self.__scd30.null_datum()
-                    self.__logger('pA specified but unavailable')
 
                 else:
                     scd30_datum = self.__scd30.sample()
@@ -86,19 +87,21 @@ class GasesSampler(Sampler):
             else:
                 scd30_datum = None
 
-        except OSError:
-            # noinspection PyUnresolvedReferences
+        except OSError as ex:
+            self.__logger("sample error 3: %s" % repr(ex))
             scd30_datum = self.__scd30.null_datum()
 
         try:
             sht_datum = None if self.__sht is None else self.__sht.sample()
-        except OSError:
+        except OSError as ex:
+            self.__logger("sample error 4: %s" % repr(ex))
             # noinspection PyUnresolvedReferences
             sht_datum = self.__sht.null_datum()
 
         try:
             electrochem_datum = None if self.__sensor_interface is None else self.__sensor_interface.sample(sht_datum)
-        except OSError:
+        except OSError as ex:
+            self.__logger("sample error 5: %s" % repr(ex))
             # noinspection PyUnresolvedReferences
             electrochem_datum = self.__sensor_interface.null_datum()
 
