@@ -100,7 +100,7 @@ from scs_core.particulate.opc_version import OPCVersion
 
 from scs_core.sample.particulates_sample import ParticulatesSample
 
-from scs_core.sync.schedule import Schedule
+from scs_core.sync.schedule import Schedule, ScheduleItem
 from scs_core.sync.timed_runner import TimedRunner
 
 from scs_core.sys.logging import Logging
@@ -149,10 +149,20 @@ if __name__ == '__main__':
 
     try:
         # ------------------------------------------------------------------------------------------------------------
-        # resources...
-
         # Schedule...
+
         schedule = Schedule.load(Host, skeleton=True)
+        semaphore = 'non-semaphore' if cmd.semaphore is None else cmd.semaphore
+
+        if cmd.semaphore and cmd.semaphore not in schedule:
+            logger.info("no schedule - halted.")
+
+            while True:
+                time.sleep(60.0)
+
+
+        # ------------------------------------------------------------------------------------------------------------
+        # resources...
 
         # SystemID...
         system_id = SystemID.load(Host)
@@ -200,8 +210,20 @@ if __name__ == '__main__':
         if inference_conf:
             logger.info(inference_conf)
 
+            # slope regression...
+            if cmd.interval:
+                schedule_item = ScheduleItem(semaphore, cmd.interval, 1)
+
+            elif schedule and schedule.item(semaphore):
+                schedule_item = schedule.item(semaphore)
+
+            else:
+                schedule_item = ScheduleItem(semaphore, 10, 1)
+
+            logger.info("schedule for inference: %s" % schedule_item)
+
             # inference client...
-            client = inference_conf.client(Host, DomainSocket)
+            client = inference_conf.client(Host, DomainSocket, schedule_item)
             client.wait_for_server()
 
             # SHT...
