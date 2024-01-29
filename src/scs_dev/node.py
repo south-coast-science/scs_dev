@@ -88,7 +88,7 @@ if __name__ == '__main__':
 
         if cmd.filename:
             try:
-                with open(cmd.filename, 'r') as file:
+                with open(cmd.filename) as file:
                     source = [file.read()]
 
             except FileNotFoundError:
