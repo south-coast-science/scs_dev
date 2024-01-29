@@ -273,6 +273,9 @@ if __name__ == '__main__':
         version = OPCVersion(opc_monitor.opc.serial_no(), opc_monitor.opc.firmware(), name=cmd.name)
         version.save(Host)
 
+        if inference_conf:
+            logger.info("greengrass model: %s" % client.model_name())
+
         for opc_sample in sampler.samples():
             if opc_sample is None:
                 continue
