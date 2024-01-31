@@ -67,7 +67,7 @@ class GasesSampler(Sampler):
         try:
             pressure_datum = self.__barometer.sample() if self.__barometer else None
         except OSError as ex:
-            self.__logger("sample error 1: %s" % repr(ex))
+            self.__logger.error("sample error 1: %s" % repr(ex))
             pressure_datum = self.__barometer.null_datum()
 
         actual_press = None if pressure_datum is None else pressure_datum.actual_press
@@ -75,7 +75,7 @@ class GasesSampler(Sampler):
         try:
             if self.__scd30:
                 if self.__barometer and actual_press is None:
-                    self.__logger("sample error 2: pA specified but unavailable")
+                    self.__logger.error("sample error 2: pA specified but unavailable")
                     scd30_datum = self.__scd30.null_datum()
 
                 else:
@@ -87,19 +87,19 @@ class GasesSampler(Sampler):
                 scd30_datum = None
 
         except OSError as ex:
-            self.__logger("sample error 3: %s" % repr(ex))
+            self.__logger.error("sample error 3: %s" % repr(ex))
             scd30_datum = self.__scd30.null_datum()
 
         try:
             sht_datum = self.__sht.sample() if self.__sht else None
         except OSError as ex:
-            self.__logger("sample error 4: %s" % repr(ex))
+            self.__logger.error("sample error 4: %s" % repr(ex))
             sht_datum = self.__sht.null_datum()
 
         try:
             electrochem_datum = self.__sensor_interface.sample(sht_datum) if self.__sensor_interface else None
         except OSError as ex:
-            self.__logger("sample error 5: %s" % repr(ex))
+            self.__logger.error("sample error 5: %s" % repr(ex))
             electrochem_datum = self.__sensor_interface.null_datum()
 
         recorded = LocalizedDatetime.now().utc()        # after sampling, so that we can monitor resource contention
