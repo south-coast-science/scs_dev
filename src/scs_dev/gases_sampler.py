@@ -299,8 +299,6 @@ if __name__ == '__main__':
             logger.info("greengrass model: %s" % client.model_name())
 
         for sample in sampler.samples():
-            logger.info("       rec: %s" % sample.rec.as_time())
-
             # inference...
             if inference_conf:
                 inference = client.infer(sample, interface.status().temp)
@@ -313,6 +311,8 @@ if __name__ == '__main__':
 
                 # sample.set_ox_vx_x_zero_cal(ox_calibrator)
 
+            # report...
+            logger.info("       rec: %s" % sample.rec.as_time())
             print(JSONify.dumps(sample))
             sys.stdout.flush()
 

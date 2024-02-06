@@ -282,8 +282,6 @@ if __name__ == '__main__':
 
             if inference_conf:
                 # climate...
-                int_sht_sample = opc_sample.values.get('sht')
-
                 try:
                     ext_sht_sample = None if sht is None else sht.sample()
 
@@ -303,7 +301,6 @@ if __name__ == '__main__':
 
             # report...
             logger.info("rec: %s" % opc_sample.rec.as_time())
-
             print(JSONify.dumps(opc_sample))
             sys.stdout.flush()
 
